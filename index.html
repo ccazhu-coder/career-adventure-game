@@ -108,7 +108,7 @@ const NO_PERSISTENCE = true;
 // 正式多人施測版：每次開啟皆為全新測驗，不讀取、不保留上一位填答者資料。
 // 若要啟用「測驗完成後自動寄送 PDF 到學員 Email」，請將 Google Apps Script Web App URL 貼在下方。
 // 也可以用網址參數帶入：?emailEndpoint=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2Fxxxx%2Fexec
-const EMAIL_SEND_ENDPOINT = "";
+const EMAIL_SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbykULczLz_dLx1WTVan1M5lw9jMamMnk8lJdi12r2Qcmccfg7ejF5V_Z5sy-ZsZJ94W5Q/exec";
 const AUTO_SEND_PDF_ON_COMPLETE = true;
 let current = "profile";
 cleanupPersistentStorage();

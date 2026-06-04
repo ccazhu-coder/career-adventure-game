@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>職涯冒險島｜荷倫興趣 × SUPER 工作價值觀線上遊戲</title>
+  <style>
+    :root{
+      --bg:#F3EFE4;
+      --paper:#FFFDF8;
+      --paper2:#F9F4EA;
+      --ink:#162B25;
+      --muted:#68776F;
+      --green:#173F33;
+      --green2:#2E6B55;
+      --green3:#DCEBE2;
+      --dark:#102A23;
+      --gold:#B8872E;
+      --gold2:#F1D18A;
+      --line:#E0D3BD;
+      --danger:#8E4A35;
+      --ok:#23684E;
+      --shadow:0 24px 60px rgba(26,43,35,.14);
+      --shadow2:0 10px 24px rgba(26,43,35,.09);
+      --radius:26px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:
+      radial-gradient(circle at 8% 0%,rgba(241,209,138,.42) 0,rgba(241,209,138,0) 32%),
+      radial-gradient(circle at 100% 6%,rgba(46,107,85,.20) 0,rgba(46,107,85,0) 30%),
+      linear-gradient(135deg,#F7F1E2 0%,#F3EFE4 42%,#EAF1EA 100%);
+      color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1240px;margin:0 auto;padding:24px 18px 72px}
+    .hero{position:relative;overflow:hidden;border-radius:34px;background:linear-gradient(135deg,#0E2A23 0%,#174032 42%,#2E6B55 74%,#70521A 120%);color:#fff;padding:34px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.16)}
+    .hero:before{content:"";position:absolute;right:-88px;top:-96px;width:310px;height:310px;border-radius:999px;background:rgba(241,209,138,.22);filter:blur(.2px)}
+    .hero:after{content:"";position:absolute;left:44%;bottom:-95px;width:420px;height:210px;border-radius:999px;background:rgba(255,255,255,.075)}
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.45fr .78fr;gap:22px;align-items:stretch}.hero-main{display:flex;flex-direction:column;justify-content:center}
+    .badge{display:inline-flex;align-items:center;gap:8px;width:max-content;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:8px 14px;font-weight:800;color:#FFF7E4;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+    h1{font-size:clamp(32px,4.4vw,58px);line-height:1.05;margin:16px 0 12px;letter-spacing:.015em}.hero p{margin:0;color:#F8ECD1;font-size:17px;max-width:790px}.hero-features{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.hero-chip{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.10);border-radius:999px;padding:8px 12px;color:#FFF3D5;font-size:13px;font-weight:800}
+    .hero-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:28px;padding:20px;backdrop-filter:blur(12px);display:flex;flex-direction:column;justify-content:space-between;min-height:190px}.hero-card strong{font-size:44px;color:#FFE4A7;line-height:1}.hero-card span{display:block;color:#F8ECD1;margin-top:6px}.hero-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.hero-stat div{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:10px}.hero-stat b{display:block;color:#fff;font-size:18px}.hero-stat small{color:#F8ECD1}
+    .topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin:18px 0 12px;position:sticky;top:0;z-index:10;background:rgba(243,239,228,.82);backdrop-filter:blur(16px);padding:11px 0}.progress-wrap{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;overflow:hidden;height:18px;box-shadow:var(--shadow2)}.progress{height:100%;width:0%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);transition:.28s ease}.small{font-size:13px;color:var(--muted)}
+    .layout{display:grid;grid-template-columns:282px 1fr;gap:22px;margin-top:18px}.nav{align-self:start;position:sticky;top:68px;background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:28px;padding:14px;box-shadow:var(--shadow);backdrop-filter:blur(18px)}.nav:before{content:"完整專業版｜262題";display:block;color:#7E6736;background:#FBF2D8;border:1px solid #E8D19A;border-radius:16px;padding:9px 11px;margin:2px 2px 10px;font-size:13px;font-weight:900;text-align:center}.nav button{width:100%;border:0;background:transparent;text-align:left;border-radius:18px;padding:13px 12px;margin:4px 0;color:var(--ink);display:flex;gap:10px;align-items:center;justify-content:space-between;transition:.18s ease}.nav button:hover{background:#F6EFDFFF;transform:translateX(2px)}.nav button.active{background:linear-gradient(135deg,#173F33,#2E6B55);font-weight:900;color:#fff;box-shadow:0 10px 22px rgba(23,63,51,.20)}.nav .dot{width:10px;height:10px;border-radius:50%;background:#D3C5A8;display:inline-block}.nav button.done .dot{background:#2F9C70}.nav button.active .dot{background:#FFE4A7}
+    .panel{background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:34px;padding:26px;box-shadow:var(--shadow);min-height:560px}.section-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(224,211,189,.65)}.section-head h2{margin:0;font-size:30px;color:var(--dark);letter-spacing:.01em}.section-head p{margin:7px 0 0;color:var(--muted)}.pill{display:inline-flex;align-items:center;border-radius:999px;background:#F4E6BD;color:#5B4012;border:1px solid #E4C778;padding:8px 13px;font-weight:900;white-space:nowrap}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .field{display:flex;flex-direction:column;gap:7px}.field label{font-weight:900;color:#354F45}.field input,.field textarea{border:1px solid var(--line);border-radius:18px;padding:13px 15px;background:#fff;color:var(--ink);outline:0;box-shadow:0 4px 12px rgba(30,45,38,.03)}.field input:focus,.field textarea:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(46,107,85,.12)}.required{color:#A1412D;font-weight:1000;margin-left:4px}.field .help{font-size:12px;color:#6C7A72;margin-top:-2px}
+    .mission-tip{background:linear-gradient(135deg,#EDF6EE,#FFF7DD);border:1px solid #D8E6D0;color:#254E43;border-radius:22px;padding:15px 17px;margin:16px 0;box-shadow:0 8px 18px rgba(46,107,85,.06)}details.type-card{background:#fff;border:1px solid var(--line);border-radius:24px;margin:15px 0;overflow:hidden;transition:.2s ease}details.type-card[open]{box-shadow:0 14px 30px rgba(48,77,62,.10);border-color:#D6C5A8}summary{list-style:none;cursor:pointer;padding:17px 19px;display:flex;justify-content:space-between;gap:10px;align-items:center;background:linear-gradient(180deg,#fff,#FFFCF5)}summary::-webkit-details-marker{display:none}.type-title{display:flex;gap:11px;align-items:center;font-weight:1000;font-size:18px;color:var(--dark)}.type-title b{font-size:23px}.count-chip{font-size:13px;color:#3E6958;background:#EEF6F0;border:1px solid #DAE9DE;border-radius:999px;padding:6px 10px;white-space:nowrap;font-weight:900}
+    .q-list{padding:0 18px 18px}.q-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:13px 0;border-top:1px dashed #E9DDC9}.q-text{font-weight:720}.choice{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.choice button{border:1px solid #9E9177;background:#E8DDC4;color:#17382F;border-radius:999px;padding:9px 13px;font-weight:900;min-width:86px;box-shadow:0 4px 10px rgba(34,47,40,.05)}.choice button:hover{background:#D8C89E;color:#0F2C24;border-color:#76694F}.choice button.selected.yes{background:#173F33;color:#fff;border-color:#123B30;box-shadow:0 8px 16px rgba(23,76,61,.20)}.choice button.selected.no{background:#8E4A35;color:#fff;border-color:#743927;box-shadow:0 8px 16px rgba(142,74,53,.18)}
+    .rating-row{display:grid;grid-template-columns:1.1fr auto;gap:12px;align-items:center;padding:14px 0;border-top:1px dashed #E9DDC9}.rating-row:first-child{border-top:0}.rating-title{font-weight:900}.rating-sub{font-size:13px;color:var(--muted)}.rating-buttons{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.rating-buttons button{width:40px;height:40px;border-radius:999px;border:1px solid #9E9177;background:#F0E7D4;color:#17382F;font-weight:1000}.rating-buttons button:hover{background:#D8C89E;color:#0F2C24;border-color:#76694F}.rating-buttons button.active{background:#163E32;border-color:#163E32;color:#fff;box-shadow:0 8px 14px rgba(22,62,50,.22)}
+    .super-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;margin:15px 0;box-shadow:0 10px 22px rgba(35,52,44,.045)}.super-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}.super-head h3{margin:0;font-size:19px;color:var(--dark)}.super-desc{margin:0 0 8px;color:var(--muted);font-size:14px}.actions{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:26px;flex-wrap:wrap}.actions .right{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:12px 18px;font-weight:1000;background:#CDBF9F;color:#17352C;transition:.16s ease}.btn:hover{filter:brightness(.96);transform:translateY(-1px)}.btn.primary{background:linear-gradient(135deg,#143B30,#24624E);color:#fff;box-shadow:0 12px 22px rgba(22,62,50,.25)}.btn.gold{background:linear-gradient(135deg,#805414,#BF8E32);color:#fff}.btn.ghost{background:#F8F2E6;border:1px solid #9E9177;color:#17382F}.btn.danger{background:#8E4A35;color:#fff}.btn:disabled{opacity:.6;cursor:not-allowed;filter:grayscale(.15)}
+    .result-hero{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;align-items:stretch}.result-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#102A23,#173F33 55%,#B8872E 140%);color:#fff;border-radius:28px;padding:26px;box-shadow:var(--shadow)}.result-card:after{content:"";position:absolute;right:-50px;bottom:-70px;width:190px;height:190px;border-radius:999px;background:rgba(241,209,138,.18)}.result-card h2{margin:0 0 8px;font-size:34px}.result-card p{color:#F6E7C1;margin:0}.code{font-size:64px;font-weight:1000;letter-spacing:.10em;margin:12px 0;color:#FFE19B}.sub-card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:20px;box-shadow:0 10px 24px rgba(35,52,44,.055)}.bar-row{display:grid;grid-template-columns:92px 1fr 52px;gap:10px;align-items:center;margin:10px 0}.bar-label{font-weight:1000}.bar-bg{height:17px;background:#F0E8D8;border-radius:999px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);width:0%}.score-num{text-align:right;font-weight:1000;color:var(--dark)}.rank-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}.rank-item{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 10px 22px rgba(35,52,44,.045)}.rank-item h3{margin:0 0 7px;color:var(--dark)}.rank-item p{margin:0;color:var(--muted)}
+    .hex-card{display:flex;flex-direction:column;gap:10px}.hex-wrap{display:flex;justify-content:center;align-items:center;padding:8px 0}.hex-svg{width:min(100%,440px);height:auto;display:block}.hex-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hex-legend .legend-item{display:flex;align-items:flex-start;gap:8px;background:#F7F3EA;border:1px solid var(--line);border-radius:15px;padding:9px 10px;font-size:13px;color:#4B5B53}.legend-badge{width:26px;height:26px;border-radius:999px;background:#E8F0EB;color:var(--green);display:inline-flex;align-items:center;justify-content:center;font-weight:1000;flex:0 0 26px}.counselor-list{display:grid;gap:10px}.counselor-note{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px 14px}.counselor-note strong{color:var(--dark)}.report-box{white-space:pre-wrap;background:#102A23;color:#F9EED7;border-radius:24px;padding:19px;max-height:380px;overflow:auto;font-family:"Noto Sans Mono","Consolas",monospace;font-size:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#102A23;color:#fff;border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:99}.toast.show{opacity:1;bottom:28px}.warning{background:#FFF7E4;border:1px solid #F0D59E;color:#6B501E;border-radius:18px;padding:12px 14px;margin:12px 0}.hidden{display:none!important}.email-status{font-size:13px;color:#6C7A72;margin-top:8px}
+
+    .email-send-box{margin:18px 0 0;background:linear-gradient(135deg,#F7F3EA,#FFFDF8);border:1px solid #D8C8A6;border-radius:20px;padding:14px 16px;color:#21372F;display:grid;gap:6px}
+    .email-send-box strong{color:#173F33}.email-send-box.ok{background:#EEF7EF;border-color:#BFD9C2}.email-send-box.warn{background:#FFF7E4;border-color:#F0D59E}.email-send-box.bad{background:#F8E8E1;border-color:#E2B5A2}.email-send-box .mini{font-size:13px;color:#6C7A72}
+    @media (max-width:900px){.hero-inner,.layout,.result-hero{grid-template-columns:1fr}.nav{position:relative;top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.nav:before{grid-column:1/-1}.topbar{position:relative}.grid2,.grid3,.rank-list,.hex-legend{grid-template-columns:1fr}.q-row,.rating-row{grid-template-columns:1fr}.choice,.rating-buttons{justify-content:flex-start}.app{padding:14px 12px 56px}.hero{padding:24px}.section-head{flex-direction:column}.panel{padding:18px}.code{font-size:50px}}
+    @media print{body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero,.nav,.topbar,.actions .left,.actions .right,.btn,.toast{display:none!important}.app{max-width:none;padding:0}.layout{display:block}.panel,.sub-card,.rank-item,.result-card{box-shadow:none}.panel{border:0;padding:0}.report-box{color:#111;background:#fff;border:1px solid #ddd}.result-card{color:#111;background:#fff;border:1px solid #ddd}.result-card p{color:#333}.code{color:#111}.hex-svg{max-width:360px}.counselor-note,.legend-item,.sub-card,.rank-item,.result-card{break-inside:avoid}.rank-list,.result-hero{gap:10px}.section-head{border-bottom:2px solid #333}}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="badge">🎮 職涯冒險島 · 線上遊戲版</span>
+        <h1>荷倫興趣 × SUPER 工作價值觀</h1>
+        <p>完成 6 個任務星球，收集興趣、能力、職業偏好與工作價值觀能量，最後解鎖你的職涯冒險角色、何倫碼六角型圖與職涯決策雷達。</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>262 題</b><span>完整量表題數</span></div>
+          <div class="hero-stat"><b>7 個模組</b><span>從建檔到報告輸出</span></div>
+          <div class="hero-stat"><b>PDF 報告</b><span>可下載、列印、寄送 Email</span></div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <strong id="heroPercent">0%</strong>
+        <span>目前探索進度</span>
+        <span id="heroHint">先填基本資料，即可開始任務。</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="topbar">
+    <div class="topbar-meta"><div><div class="topbar-title">測驗進度</div><div class="topbar-sub">系統會自動儲存目前作答內容</div></div><div class="small" id="progressText">0 / 262 題</div></div>
+    <div class="progress-wrap" aria-label="填答進度"><div id="progress" class="progress"></div></div>
+  </div>
+
+  <main class="layout">
+    <nav class="nav" id="nav"></nav>
+    <section class="panel" id="view"></section>
+  </main>
+</div>
+<div class="toast" id="toast">已儲存</div>
+
+<script>
+const DATA = {"riasec":{"R":{"name":"現實型","emoji":"🛠️","role":"實作技術家","desc":"喜歡動手操作、工具設備、技術實作、戶外或現場任務，重視具體成果。","advice":"用實作作品、證照技術、現場任務來累積自信；適合先從操作型、工程型、設備型、技術服務型任務探索。"},"I":{"name":"調查研究型","emoji":"🔬","role":"問題研究員","desc":"喜歡觀察、分析、研究、解題與探索原因，重視知識與邏輯。","advice":"用研究題目、資料分析、問題解決專案來探索；適合技術研究、分析、科普、數據與專業知識型工作。"},"A":{"name":"藝術型","emoji":"🎨","role":"創意表達者","desc":"喜歡創作、表達、美感、設計、文字、影像或表演，重視自由與原創。","advice":"用作品集、內容創作、設計任務與個人風格累積能見度；適合創意、設計、文字、影音與品牌表達相關工作。"},"S":{"name":"社會型","emoji":"🤝","role":"助人連結者","desc":"喜歡幫助人、陪伴、教學、溝通、服務與建立關係，重視人際互動。","advice":"用服務經驗、帶領活動、諮詢輔導或教學任務來累積專業；適合教育、諮詢、社福、服務與人際協作型工作。"},"E":{"name":"企業/事業型","emoji":"🚀","role":"影響推動者","desc":"喜歡說服、領導、企劃、推動目標、經營資源與面對挑戰，重視影響力與成果。","advice":"用企劃提案、業務開發、活動主持、專案管理來展現優勢；適合行銷業務、管理、創業、企劃與領導型工作。"},"C":{"name":"常規/傳統型","emoji":"📋","role":"秩序管理者","desc":"喜歡清楚規則、資料整理、行政流程、數字表格與穩定執行，重視正確與效率。","advice":"用流程管理、文件整理、財務行政、品質控管來展現價值；適合行政、會計、資料管理、品質與流程型工作。"}},"hollandSections":[{"id":"interest","title":"任務 1｜興趣活動星球","question":"你喜歡做下列事情嗎？","yes":"喜歡","no":"不喜歡","scoreLabel":"興趣活動","types":{"R":["裝配修理電器","修理自行車","裝修機器或機器零件","做木工活","駕駛卡車或拖拉機","開機床","騎摩托車","上金屬工藝課","上機械製圖課","上木工手藝課","上電氣自動化技術課"],"I":["閱讀科技書刊","在實驗室工作","研究某個科研項目","製作飛機、汽車模型","做化學實驗","閱讀專業性論文","解一道數學或棋藝難題","上物理課","上化學課","上幾何課","上生物課"],"A":["素描、製圖或繪畫","表演戲劇、小品或相聲節目","設計傢俱或房屋","在舞臺上演唱或跳舞","演奏一種樂器","閱讀流行小說","聽音樂會","從事攝影創作","閱讀電影、電視劇本","讀詩寫詩","上書法美術課"],"S":["給朋友們寫信","參加學校、單位組織的正式活動","加入某個社會團體或俱樂部","幫助別人解決困難","照看小孩","參加宴會、茶話會或聯歡晚會","跳交誼舞","參加討論會或辯論會","觀看運動會或體育比賽","尋親訪友","閱讀與人際交往有關的書刊"],"E":["對他人做勸說工作","買東西與人討價還價","討論政治問題","從事個體或獨立的經營活動","出席正式會議","做演講","在社會團體中做一名理事","檢查與評價別人的工作","結識名流","帶領一群人去完成某項任務","參與政治活動"],"C":["保持桌子和房間整潔","抄寫文章或信件","開發票、寫收據或打回條","打算盤或用電腦計算","記流水賬或備忘錄","上打字課或學速記法","上會計課","上商業統計課，將檔案、報告、記錄分類","分類與歸檔","為主管寫公務信函與報告","檢查個人收支情況"]}},{"id":"ability","title":"任務 2｜能力寶石星球","question":"你擅長或勝任下列事情嗎？","yes":"擅長","no":"不擅長","scoreLabel":"勝任能力","types":{"R":["使用鋸子、鉗子、車床、砂輪等工具","使用萬能電錶","給自行車或機器加油使它們正常運轉","使用鑽床、研磨機、縫紉機等","修整木器傢俱表面","看機械、建築設計圖紙","修理結構簡單的家用電器","製作簡單的傢俱","繪製機械設計圖紙","修理收答錄機的簡單部件","疏通、修理自來水管或下水道"],"I":["瞭解真空管的工作原理","知道三種以上蛋白質含量高的食物","知道一種放射性元素的半衰期","使用對數表","使用計算器、量具或計算尺","使用顯微鏡","辨認三個星座","說明白血球的功能","解釋簡單的化學分子式","理解人造衛星不會落地的道理","參加科技競賽或科研成果交流會"],"A":["演奏一種樂器","參加二重唱或四重唱","表演獨奏或獨唱","扮演劇中角色","說書或講故事","表演現代舞或芭蕾舞","人物素描","油畫或雕塑","製造陶器、捏泥塑或剪紙","設計服裝、海報或傢俱","寫得一手好文章"],"S":["善於向別人解釋問題","參加慰問或救濟活動","善與人合作、配合默契","殷勤待客","能深入淺出地教育兒童","為一次宴會安排娛樂活動","幫助他人解決困難","幫助護理病人或傷患","安排學校或社團組織的各種集體事務","善察人心或善於判斷人的性格","善與年長者相處"],"E":["在學校裏當過班幹部並且幹得不錯","善於督促他人工作","善於使他人按你的習慣做事","做事具有超常的精力和熱情","能做一個稱職的推銷員","代表某個團體向有關部門提出建議或反映意見","擔任某種領導職務期間獲過獎或受表揚","說服別人加入你所在的團體","創辦一家商店或企業","知道如何做一位成功的領導人","有很好的口才"],"C":["一天能寫或抄近一萬字","能熟練地使用算盤或電腦","能夠熟練地使用中文輸入","善於將書信、檔案迅速歸檔","做過行政工作且做得不錯","核對資料或文章時既快又準確","會使用外文打字或影印機","善於在短時間內分類和處理大量檔案","記賬或開發票時既快又準確","善於為自己或集體作財務預算表","能迅速謄清貸方和借方的賬目"]}},{"id":"career","title":"任務 3｜職業探索星球","question":"你喜歡或想了解下列職業嗎？","yes":"想做/喜歡","no":"沒興趣","scoreLabel":"職業偏好","types":{"R":["航空設備維修技術人員／無人機","魚類和野生動物專家／生態保育","自動化工程技術人員","木工／裝潢","機床安裝工或鉗工","電工／設備維護／機電整合／精密機械","通訊工程師／網管或資安工程師","長途汽車司機","火車／高鐵／捷運司機","機械工程師／設備維護工程師","水文技術人員／地理資訊分析"],"I":["氣象研究人員","生物學研究人員","天文學研究人員","藥劑師","人類學研究人員","化學研究人員","科學雜誌編輯","植物學研究人員","物理學研究人員","科普工作者","地質學研究人員"],"A":["詩人","文學藝術評論家","作家","記者","歌唱家或歌手","作曲家","劇本寫作人員","畫家","相聲演員","樂團指揮","電影演員"],"S":["街道、工會或婦聯負責人","中學教師","青少年犯罪問題專家","中學校長","心理諮詢人員","精神病醫生","職業介紹所工作人員","導遊","社團負責人","福利機構負責人","婚姻介紹所工作人員"],"E":["業務經理","業務、行銷專員","旅館經理","門市經理","廠長、工廠經理","律師或法官、法務顧問","電視劇製作人","飯店經理、連鎖品牌店長","民意代表","服裝批發商","企業管理諮詢人員"],"C":["會計","會計師","銀行出納","法庭書記員、法務行政人員","人口普查員、數據調查、市調研究","成本管理師、財務分析師","稅務顧問、租稅規劃師","編輯、文字審校","行政助理","秘書、行政專員","品質管理、品保專員、品質稽核"]}}],"abilityA":{"R":"機械操作","I":"科學研究","A":"藝術創造","S":"解釋表達","E":"商業洽談","C":"事務執行"},"abilityB":{"R":"體力技能","I":"數學技能","A":"音樂技能","S":"交際技能","E":"領導技能","C":"辦公技能"},"superGroups":[{"id":"V1","name":"利他主義","emoji":"🌱","desc":"工作的目的和價值，在於直接為大眾的幸福和利益盡一份力。","items":["工作能為社會福利帶來看得見的效果","工作使您能常常幫助人","您為他人服務，他人滿意，您自己也很高興","由於您的工作或服務，經常有許多人來感謝您"]},{"id":"V2","name":"美感","emoji":"✨","desc":"工作的目的和價值，在於能不斷追求美的東西，得到美感的享受。","items":["工作帶有藝術性","工作能使世界更美麗","工作結果不是一般產品而是藝術品","工作需要同電影、音樂、美術、文學等藝術打交道"]},{"id":"V3","name":"智力刺激","emoji":"🧠","desc":"工作的目的和價值，在於持續動腦、學習、探索新事物並解決新問題。","items":["工作必須經常解決新的問題","工作是一項對智力的挑戰","工作需要敏銳的思考","在工作中常常要您提出許多新的想法"]},{"id":"V4","name":"成就感","emoji":"🏆","desc":"工作的目的和價值，在於不斷取得成果、被肯定，並實現自己想做的事。","items":["工作使您有不斷取得成功的感覺","您能從工作的成果中知道自己做得不錯","您可以預見自己努力工作的成果","工作成果常常能得到別人的肯定"]},{"id":"V5","name":"獨立性","emoji":"🧭","desc":"工作的目的和價值，在於能按自己的方式、步調或想法做事，不受過多干擾。","items":["您能在工作範圍內自由發揮","您能在工作中試行自己的新想法","您在工作中不會有人常來打擾您","您在工作中是不受別人差遣的"]},{"id":"V6","name":"社會地位","emoji":"🌟","desc":"工作的目的和價值，在於職業受到重視與尊敬，具有較高社會形象。","items":["工作能使朋友和同事非常羨慕","在別人眼裡，您的工作是非常重要的","您的工作作風使您被別人尊重","您從事的工作經常被報刊、電視提到，因而在人們心目中很有地位"]},{"id":"V7","name":"管理","emoji":"🧩","desc":"工作的目的和價值，在於獲得管理權，能指揮、組織與調遣一定範圍內的人或事。","items":["工作賦予您高於別人的權力","工作要求您把一些事物管理得井井有條","工作需要計劃和組織別人的工作","在工作中，您可能做一個負責人，並偏好主導任務"]},{"id":"V8","name":"經濟報酬","emoji":"💰","desc":"工作的目的和價值，在於獲得優厚報酬，使生活更富足。","items":["工作獎金很高","只要努力，工資會高於同齡人或升級加薪可能性更大","工作可以使您獲得較多額外收入","工作有可觀的中夜班費、加班費、保健費或營養費等"]},{"id":"V9","name":"社會交際","emoji":"🌐","desc":"工作的目的和價值，在於能與各種人交往，建立廣泛社會聯繫。","items":["在工作中能接觸到各種不同的人","工作經常要外出，參加各種集會和活動","工作有可能結識各行各業的知名人物","工作會使許多人認識您"]},{"id":"V10","name":"安全感","emoji":"🛡️","desc":"重視工作局面的安穩，不希望因獎金、加薪、調動或主管訓斥而常感不安。","items":["不論怎樣做，您總能和大多數人一樣晉級和加薪","在工作中不會因身體或體力等因素被人瞧不起","只要做這份工作，就不會再被調到其他意想不到的單位或崗位","不必擔心因領導不滿意而受到訓斥或經濟處罰"]},{"id":"V11","name":"舒適","emoji":"☕","desc":"希望工作條件輕鬆、自由、舒適，能降低體力與精神壓力。","items":["工作上下班時間比較隨便、自由","工作單位有舒適的休息室、更衣室、浴室及其他設備","工作場所環境整潔、燈光適度、空間寬敞、溫度適宜","工作體力上比較輕鬆，精神上也不緊張"]},{"id":"V12","name":"人際關係","emoji":"💬","desc":"重視同事與主管人品、關係融洽，工作時感到愉快自然。","items":["工作能使人感覺到您是團體中的一分子","工作中能和同事建立良好的關係","工作單位的同事和領導人品較好，相處比較隨便","在工作中能與領導有融洽的關係"]},{"id":"V13","name":"變異性","emoji":"🎲","desc":"希望工作內容、地點、方式或職務有變化，讓生活豐富不單調。","items":["工作內容經常變換","工作使您有可能經常變換工作地點、工作場所或工作方式","您在工作中經常接觸到新鮮的事物","您在工作單位中，有可能經常變換職務"]}]};
+const TYPES = ["R","I","A","S","E","C"];
+const STEPS = [
+  {id:"profile", icon:"🧑", title:"建立角色"},
+  {id:"interest", icon:"🌿", title:"興趣活動"},
+  {id:"ability", icon:"💎", title:"勝任能力"},
+  {id:"career", icon:"🧭", title:"職業偏好"},
+  {id:"rating", icon:"📊", title:"能力簡評"},
+  {id:"super", icon:"🏛️", title:"工作價值觀"},
+  {id:"result", icon:"🏆", title:"結果報告"}
+];
+const storageKey = "careerAdventureGame_v2_professional";
+const NO_PERSISTENCE = true;
+// 正式多人施測版：每次開啟皆為全新測驗，不讀取、不保留上一位填答者資料。
+// 若要啟用「測驗完成後自動寄送 PDF 到學員 Email」，請將 Google Apps Script Web App URL 貼在下方。
+// 也可以用網址參數帶入：?emailEndpoint=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2Fxxxx%2Fexec
+const EMAIL_SEND_ENDPOINT = "";
+const AUTO_SEND_PDF_ON_COMPLETE = true;
+let current = "profile";
+cleanupPersistentStorage();
+let state = emptyState();
+let emailSendAttempted = false;
+let emailSendState = {kind:"warn", title:"寄信後台尚未設定", text:"完成測驗後可先下載 PDF；部署 Apps Script 並貼上 Web App URL 後，才會自動寄送 PDF。"};
+
+function emptyState(){
+  const s = { profile:{name:"", gender:"", age:"", phone:"", email:"", date:new Date().toISOString().slice(0,10), ideals:["","",""]}, holland:{}, abilityA:{}, abilityB:{}, super:{} };
+  DATA.hollandSections.forEach(sec=>{s.holland[sec.id]={}; TYPES.forEach(t=>{s.holland[sec.id][t]=Array(sec.types[t].length).fill(null);});});
+  DATA.superGroups.forEach(g=>{s.super[g.id]=Array(g.items.length).fill(null);});
+  TYPES.forEach(t=>{s.abilityA[t]=null;s.abilityB[t]=null;});
+  return s;
+}
+function cleanupPersistentStorage(){
+  try{
+    ["careerAdventureGame_v2","careerAdventureGame_v2_professional"].forEach(k=>localStorage.removeItem(k));
+    Object.keys(localStorage).filter(k=>k.startsWith("careerAdventureGame")).forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
+}
+function loadState(){cleanupPersistentStorage();return emptyState();}
+function mergeState(base, saved){
+  if(!saved || typeof saved!=="object") return base;
+  Object.assign(base.profile, saved.profile || {});
+  if(saved.holland){Object.keys(base.holland).forEach(sec=>{if(saved.holland[sec]) TYPES.forEach(t=>{if(Array.isArray(saved.holland[sec][t])) base.holland[sec][t]=base.holland[sec][t].map((_,i)=> saved.holland[sec][t][i] ?? null);});});}
+  if(saved.abilityA) TYPES.forEach(t=>base.abilityA[t]=saved.abilityA[t] ?? null);
+  if(saved.abilityB) TYPES.forEach(t=>base.abilityB[t]=saved.abilityB[t] ?? null);
+  if(saved.super) DATA.superGroups.forEach(g=>{if(Array.isArray(saved.super[g.id])) base.super[g.id]=base.super[g.id].map((_,i)=>saved.super[g.id][i] ?? null);});
+  return base;
+}
+function save(){updateAll();}
+function toast(msg="已儲存"){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1100);}
+function answeredCount(){
+  let n=0;
+  DATA.hollandSections.forEach(sec=>TYPES.forEach(t=>state.holland[sec.id][t].forEach(v=>{if(v!==null)n++;})));
+  TYPES.forEach(t=>{if(state.abilityA[t])n++; if(state.abilityB[t])n++;});
+  DATA.superGroups.forEach(g=>state.super[g.id].forEach(v=>{if(v!==null)n++;}));
+  return n;
+}
+function totalCount(){return DATA.hollandSections.reduce((a,sec)=>a+TYPES.reduce((b,t)=>b+sec.types[t].length,0),0)+12+DATA.superGroups.reduce((a,g)=>a+g.items.length,0);}
+function stepDone(id){
+  if(id==="profile") return !!state.profile.name && validEmail(state.profile.email);
+  if(["interest","ability","career"].includes(id)){const sec=DATA.hollandSections.find(s=>s.id===id);return TYPES.every(t=>state.holland[id][t].every(v=>v!==null));}
+  if(id==="rating") return TYPES.every(t=>state.abilityA[t] && state.abilityB[t]);
+  if(id==="super") return DATA.superGroups.every(g=>state.super[g.id].every(v=>v!==null));
+  if(id==="result") return answeredCount()===totalCount();
+  return false;
+}
+function updateAll(){renderNav();updateProgress();}
+function updateProgress(){
+  const total=totalCount(), ans=answeredCount(), pct=Math.round(ans/total*100);
+  document.getElementById("progress").style.width=pct+"%";
+  document.getElementById("progressText").textContent=`${ans} / ${total} 題`;
+  document.getElementById("heroPercent").textContent=pct+"%";
+  document.getElementById("heroHint").textContent=pct>=100?"已解鎖完整報告，可以下載PDF、寄送Email或列印。":"完整專業版題數較多；本頁不讀取上一位測驗資料。";
+}
+function renderNav(){
+  const nav=document.getElementById("nav");
+  const doneCount=STEPS.filter(st=>stepDone(st.id)).length;
+  nav.innerHTML=`<div class="nav-head"><strong>測驗任務導覽</strong><span>已完成 ${doneCount} / ${STEPS.length} 個主要步驟</span></div>` + STEPS.map(st=>`<button class="${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><span><span class="dot"></span> ${st.icon} ${st.title}</span><span>${stepDone(st.id)?'✓':''}</span></button>`).join('') + `<button onclick="resetGame()"><span><span class="dot"></span> ♻️ 重新開始</span></button>`;
+}
+function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||'').trim());}
+function getEmailEndpoint(){
+  const fromQuery = new URLSearchParams(location.search).get('emailEndpoint') || '';
+  return String(fromQuery || EMAIL_SEND_ENDPOINT || '').trim();
+}
+function isEmailEndpointReady(){return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(getEmailEndpoint());}
+function setEmailSendState(kind,title,text){
+  emailSendState={kind,title,text};
+  const box=document.getElementById('emailSendStatus');
+  if(box){box.className=`email-send-box ${kind}`;box.innerHTML=emailSendStatusHtml();}
+}
+function emailSendStatusHtml(){return `<strong>${escapeHtml(emailSendState.title)}</strong><span>${escapeHtml(emailSendState.text)}</span><span class="mini">收件信箱：${escapeHtml(state.profile.email || '尚未填寫')}</span>`;}
+function scheduleAutoEmailSend(complete){
+  if(!AUTO_SEND_PDF_ON_COMPLETE || !complete || emailSendAttempted) return;
+  if(!isEmailEndpointReady()){
+    setEmailSendState('warn','寄信後台尚未設定','目前尚未貼上 Apps Script Web App URL，因此不會寄信；可先下載 PDF。');
+    return;
+  }
+  emailSendAttempted=true;
+  setTimeout(()=>sendPdfToEmail(null,true),450);
+}
+function validateProfile(showAlert=false){
+  const nameOk=!!String(state.profile.name||'').trim();
+  const emailOk=validEmail(state.profile.email);
+  if(nameOk && emailOk) return true;
+  const msg=!nameOk?'請先填寫姓名或暱稱。':'請填寫正確的 Email，完成後才能進入完整專業版測驗與寄送 PDF。';
+  if(showAlert) alert(msg);
+  return false;
+}
+function go(id){if(id!=="profile" && !validateProfile(true)) return; current=id;render();window.scrollTo({top:0,behavior:'smooth'});}
+function render(){updateAll(); const view=document.getElementById("view"); if(current==="profile") renderProfile(view); else if(["interest","ability","career"].includes(current)) renderHolland(view,current); else if(current==="rating") renderRating(view); else if(current==="super") renderSuper(view); else renderResult(view);}
+function nextStep(){if(current==="profile" && !validateProfile(true)) return; const i=STEPS.findIndex(s=>s.id===current); if(i<STEPS.length-1) go(STEPS[i+1].id);}
+function prevStep(){const i=STEPS.findIndex(s=>s.id===current); if(i>0) go(STEPS[i-1].id);}
+function quickStats(items){return `<div class="quick-stats">${items.map(it=>`<div class="quick-stat"><b>${it.value}</b><span>${it.label}</span></div>`).join('')}</div>`;}
+function actions(){return `<div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 上一關</button></div><div class="right"><button class="btn ghost" onclick="toast('本次作答只存在目前頁面，關閉後不保留')">本次作答狀態</button><button class="btn primary" onclick="nextStep()">下一關 →</button></div></div>`;}
+function renderProfile(view){
+  view.innerHTML=`
+  <div class="section-head"><div><h2>🧑 建立完整專業版測驗資料</h2><p>Email 為必填；完成後可下載 PDF，或串接寄信後台寄送正式結果報告。</p></div><span class="pill">第 0 關｜完整專業版</span></div>
+  <div class="grid3">
+    <div class="field"><label>姓名或暱稱 <span class="required">*</span></label><input value="${escapeHtml(state.profile.name)}" oninput="state.profile.name=this.value;save()" placeholder="例如：珍珠"></div>
+    <div class="field"><label>性別</label><input value="${escapeHtml(state.profile.gender)}" oninput="state.profile.gender=this.value;save()" placeholder="可不填"></div>
+    <div class="field"><label>年齡</label><input value="${escapeHtml(state.profile.age)}" oninput="state.profile.age=this.value;save()" placeholder="可不填"></div>
+    <div class="field"><label>測試日期</label><input type="date" value="${escapeHtml(state.profile.date)}" oninput="state.profile.date=this.value;save()"></div>
+    <div class="field"><label>電話</label><input value="${escapeHtml(state.profile.phone)}" oninput="state.profile.phone=this.value;save()" placeholder="可不填"></div>
+    <div class="field"><label>Email <span class="required">*</span></label><input type="email" required value="${escapeHtml(state.profile.email)}" oninput="state.profile.email=this.value.trim();save()" placeholder="請填寫可收信的 Email"><span class="help">完成測驗後，PDF 報告會以此信箱寄送。</span></div>
+  </div>
+  ${validEmail(state.profile.email)?'':`<div class="warning">📩 Email 為必填，請填寫正確信箱後再開始完整專業版測驗。</div>`}
+  <div class="mission-tip"><strong>🎯 完整專業版說明：</strong>本版本保留 262 題完整量表，適合正式課程、團體施測與個別諮詢。正式多人施測版不讀取上一位資料；請學員一次完成，避免關閉或重新整理頁面後作答消失。</div>
+  <h3>你心目中的理想職業／專業</h3>
+  <div class="grid3">
+    ${[0,1,2].map(i=>`<div class="field"><label>理想職業 ${i+1}</label><input value="${escapeHtml(state.profile.ideals[i]||'')}" oninput="state.profile.ideals[${i}]=this.value;save()" placeholder="例如：職涯顧問、行銷企劃"></div>`).join('')}
+  </div>
+  ${actions()}`;
+}
+function renderHolland(view, id){
+  const sec=DATA.hollandSections.find(s=>s.id===id);
+  const answered=TYPES.reduce((a,t)=>a+state.holland[id][t].filter(v=>v!==null).length,0);
+  const total=TYPES.reduce((a,t)=>a+sec.types[t].length,0);
+  view.innerHTML=`<div class="section-head"><div><h2>${sec.title}</h2><p>${sec.question} 每題選一個答案，系統會自動計入 RIASEC 六型分數。</p></div><span class="pill">${answered}/${total}</span></div>
+  ${quickStats([{value:`${answered}/${total}`,label:'本關已完成題數'},{value:'6 類型',label:'R / I / A / S / E / C 同步統計'},{value:id==='ability'?'看擅長程度':'看直覺偏好',label:'本關作答重點'}])}
+  <div class="mission-tip"><strong>玩法：</strong>${id==='ability'?'只看你目前是否擅長或勝任，不用管喜不喜歡。':'依照第一直覺點選。'} 點完六個類型，即可進入下一關。</div>
+  ${TYPES.map(t=>typeBlock(sec,t)).join('')}
+  ${actions()}`;
+}
+function typeBlock(sec,t){
+  const meta=DATA.riasec[t], arr=sec.types[t], vals=state.holland[sec.id][t];
+  const score=vals.filter(v=>v===true).length, done=vals.filter(v=>v!==null).length;
+  return `<details class="type-card" ${done<arr.length?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
+    ${arr.map((q,i)=>`<div class="q-row"><div class="q-text">${i+1}. ${escapeHtml(q)}</div><div class="choice"><button class="${vals[i]===true?'selected yes':''}" onclick="setHolland('${sec.id}','${t}',${i},true)">${sec.yes}</button><button class="${vals[i]===false?'selected no':''}" onclick="setHolland('${sec.id}','${t}',${i},false)">${sec.no}</button></div></div>`).join('')}
+  </div></details>`;
+}
+function setHolland(sec,t,i,val){state.holland[sec][t][i]=val;save();render();}
+function renderRating(view){
+  view.innerHTML=`<div class="section-head"><div><h2>📊 任務 4｜能力類型簡評</h2><p>請與同齡人比較，評估自己在六個面向的能力。1 代表低，7 代表高。</p></div><span class="pill">${TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2}/12</span></div>
+  ${quickStats([{value:'表 A',label:'工作能力向度'},{value:'表 B',label:'技能能力向度'},{value:'1～7 分',label:'請依自我評估作答'}])}
+  <div class="grid2"><div class="super-card"><div class="super-head"><h3>表 A｜工作能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityA',t,DATA.abilityA[t],DATA.riasec[t].name)).join('')}</div>
+  <div class="super-card"><div class="super-head"><h3>表 B｜技能能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityB',t,DATA.abilityB[t],DATA.riasec[t].name)).join('')}</div></div>
+  ${actions()}`;
+}
+function ratingRow(bucket,t,label,sub){
+  const val=state[bucket][t];
+  return `<div class="rating-row"><div><div class="rating-title">${DATA.riasec[t].emoji} ${t} 型｜${label}</div><div class="rating-sub">${sub}</div></div><div class="rating-buttons">${[1,2,3,4,5,6,7].map(n=>`<button class="${val===n?'active':''}" onclick="setRating('${bucket}','${t}',${n})">${n}</button>`).join('')}</div></div>`;
+}
+function setRating(bucket,t,n){state[bucket][t]=n;save();render();}
+function renderSuper(view){
+  const ans=DATA.superGroups.reduce((a,g)=>a+state.super[g.id].filter(v=>v!==null).length,0), total=DATA.superGroups.reduce((a,g)=>a+g.items.length,0);
+  view.innerHTML=`<div class="section-head"><div><h2>🏛️ 任務 5｜SUPER 工作價值觀神殿</h2><p>請依照「這件事對你有多重要」評分。5 非常重要，1 不重要。</p></div><span class="pill">${ans}/${total}</span></div>
+  ${quickStats([{value:`${ans}/${total}`,label:'本關已完成題數'},{value:'13 組',label:'工作價值觀面向'},{value:'1～5 分',label:'分數越高代表越重視'}])}
+  <div class="mission-tip"><strong>玩法：</strong>不是問你現在有沒有，而是問「未來工作中，你重不重視」。請選出真正會影響你工作滿意度的因素。</div>
+  ${DATA.superGroups.map(g=>superBlock(g)).join('')}
+  ${actions().replace('下一關 →','查看結果 →')}`;
+}
+function superBlock(g){
+  const vals=state.super[g.id]; const score=vals.reduce((a,v)=>a+(v||0),0); const done=vals.filter(v=>v!==null).length;
+  return `<div class="super-card"><div class="super-head"><h3>${g.emoji} ${g.name}</h3><span class="count-chip">${done}/${g.items.length}　${score} 分</span></div><p class="super-desc">${escapeHtml(g.desc)}</p>
+  ${g.items.map((q,i)=>`<div class="rating-row"><div class="rating-title">${i+1}. ${escapeHtml(q)}</div><div class="rating-buttons">${[1,2,3,4,5].map(n=>`<button class="${vals[i]===n?'active':''}" onclick="setSuper('${g.id}',${i},${n})">${n}</button>`).join('')}</div></div>`).join('')}
+  </div>`;
+}
+function setSuper(gid,i,n){state.super[gid][i]=n;save();render();}
+function calcHolland(){
+  const scores={}, breakdown={}; TYPES.forEach(t=>{scores[t]=0;breakdown[t]={};});
+  DATA.hollandSections.forEach(sec=>TYPES.forEach(t=>{const n=state.holland[sec.id][t].filter(v=>v===true).length; breakdown[t][sec.id]=n; scores[t]+=n;}));
+  TYPES.forEach(t=>{breakdown[t].abilityA=state.abilityA[t]||0; breakdown[t].abilityB=state.abilityB[t]||0; scores[t]+=(state.abilityA[t]||0)+(state.abilityB[t]||0);});
+  const ranking=TYPES.map(t=>({type:t,score:scores[t],meta:DATA.riasec[t],breakdown:breakdown[t]})).sort((a,b)=>b.score-a.score || TYPES.indexOf(a.type)-TYPES.indexOf(b.type));
+  return {scores,breakdown,ranking,code:ranking.slice(0,3).map(x=>x.type).join('')};
+}
+function calcSuper(){
+  const rows=DATA.superGroups.map(g=>({id:g.id,name:g.name,emoji:g.emoji,desc:g.desc,score:state.super[g.id].reduce((a,v)=>a+(v||0),0), done:state.super[g.id].filter(v=>v!==null).length, max:g.items.length*5}));
+  const ranking=[...rows].sort((a,b)=>b.score-a.score || a.id.localeCompare(b.id));
+  const low=[...rows].sort((a,b)=>a.score-b.score || a.id.localeCompare(b.id));
+  return {rows,ranking,low};
+}
+function maxScore(obj){return Math.max(...Object.values(obj),1);}
+function hollandTypeMax(t){return DATA.hollandSections.reduce((sum,sec)=>sum + ((sec.types[t]||[]).length),0) + 14;}
+function hexPolygonPoints(cx,cy,r){return ['R','I','A','S','E','C'].map((_,idx)=>{const a=(-90+idx*60)*Math.PI/180;return `${(cx+Math.cos(a)*r).toFixed(1)},${(cy+Math.sin(a)*r).toFixed(1)}`;}).join(' ');}
+function hollandHexScorePoints(scores,cx,cy,r){return ['R','I','A','S','E','C'].map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const pct=Math.max(0,Math.min(1,(scores[t]||0)/hollandTypeMax(t)));const rr=r*pct;return `${(cx+Math.cos(a)*rr).toFixed(1)},${(cy+Math.sin(a)*rr).toFixed(1)}`;}).join(' ');}
+function renderHollandHexSvg(scores,opt={}){
+  const size=opt.size||380,cx=size/2,cy=size/2,r=size*.29,order=['R','I','A','S','E','C'];
+  const levels=[1,.75,.5,.25];
+  const grid=levels.map(level=>`<polygon points="${hexPolygonPoints(cx,cy,r*level)}" fill="none" stroke="#E7DCC7" stroke-width="${level===1?1.8:1}"/>`).join('');
+  const axes=order.map((_,idx)=>{const a=(-90+idx*60)*Math.PI/180;return `<line x1="${cx}" y1="${cy}" x2="${(cx+Math.cos(a)*r).toFixed(1)}" y2="${(cy+Math.sin(a)*r).toFixed(1)}" stroke="#DCCFB9" stroke-width="1.2"/>`;}).join('');
+  const dataPoly=`<polygon points="${hollandHexScorePoints(scores,cx,cy,r)}" fill="rgba(46,107,85,.20)" stroke="#173F33" stroke-width="3"/>`;
+  const dots=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const pct=Math.max(0,Math.min(1,(scores[t]||0)/hollandTypeMax(t)));const rr=r*pct;return `<circle cx="${(cx+Math.cos(a)*rr).toFixed(1)}" cy="${(cy+Math.sin(a)*rr).toFixed(1)}" r="5.5" fill="#B8872E" stroke="#FFFDF8" stroke-width="2"/>`;}).join('');
+  const labels=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const meta=DATA.riasec[t];const lx=cx+Math.cos(a)*(r+48),ly=cy+Math.sin(a)*(r+48);const anchor=Math.cos(a)>0.35?'start':(Math.cos(a)<-0.35?'end':'middle');const boxX=anchor==='start'?lx-4:(anchor==='end'?lx-88:lx-44);const boxY=ly-24;return `<g><rect x="${boxX.toFixed(1)}" y="${boxY.toFixed(1)}" width="88" height="46" rx="13" fill="#FFFDF8" stroke="#DCCFB9"/><text x="${lx.toFixed(1)}" y="${(ly-6).toFixed(1)}" text-anchor="${anchor}" font-size="14" font-weight="900" fill="#173F33">${meta.emoji} ${t}</text><text x="${lx.toFixed(1)}" y="${(ly+11).toFixed(1)}" text-anchor="${anchor}" font-size="11" fill="#53665C">${meta.name}</text><text x="${lx.toFixed(1)}" y="${(ly+25).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="800" fill="#B8872E">${scores[t]||0}/${hollandTypeMax(t)}</text></g>`;}).join('');
+  const ticks=levels.map(level=>`<text x="${(cx+6).toFixed(1)}" y="${(cy-r*level+14).toFixed(1)}" font-size="10" fill="#8A826F">${Math.round(level*100)}%</text>`).join('');
+  return `<svg class="hex-svg" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-label="荷倫六角型圖"><rect x="0" y="0" width="${size}" height="${size}" rx="26" fill="#FCFAF4"/><text x="${cx}" y="30" text-anchor="middle" font-size="16" font-weight="900" fill="#173F33">何倫碼六角型職涯圖</text><text x="${cx}" y="50" text-anchor="middle" font-size="11" fill="#617168">R→I→A→S→E→C　越外圈代表傾向越高</text>${grid}${axes}${ticks}${dataPoly}${dots}<circle cx="${cx}" cy="${cy}" r="4" fill="#173F33"/>${labels}</svg>`;
+}
+function counselorHints(h,s){
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,2), lows=s.low.slice(0,2);
+  return [
+    `優勢主軸：${top3.map(x=>`${x.type}型 ${x.meta.name}`).join(' → ')}。可優先往這三型交會的任務、職務或學習方向探索。`,
+    `工作動機：${values.map(v=>v.name).join('、')} 分數最高，代表選工作時最容易影響投入度與滿意度。`,
+    `低優先提醒：${lows.map(v=>v.name).join('、')} 目前分數較低，諮詢時可追問是否真的不重要，或只是現階段尚未被滿足。`,
+    '判讀技巧：六角型上相鄰類型通常較容易整合；若對角類型同時很高，代表可能需要兼具兩種不同工作情境，建議做職務拆解。'
+  ];
+}
+function renderResult(view){
+  const h=calcHolland(), s=calcSuper(), complete=answeredCount()===totalCount();
+  const top=h.ranking[0], top3=h.ranking.slice(0,3), values=s.ranking.slice(0,2), lows=s.low.slice(0,2);
+  const report=makeReport(h,s), hints=counselorHints(h,s);
+  view.innerHTML=`<div class="section-head"><div><h2>🏆 完整專業版結果報告</h2><p>含何倫碼六角型圖、RIASEC 六型分數、SUPER 價值觀排序與諮詢師快速判讀。</p></div><span class="pill">${complete?'完整報告':'尚有未答題'}</span></div>
+  ${complete?'':`<div class="warning">⚠️ 目前還有 ${totalCount()-answeredCount()} 題未完成，系統已依現有答案試算。建議補完後再列印正式報告。</div>`}
+  <div class="result-hero"><div class="result-card"><h2>${state.profile.name?escapeHtml(state.profile.name)+' 的':''}職涯角色</h2><div class="code">${h.code || '---'}</div><p>${top.meta.emoji} 主型：${top.type} 型｜${top.meta.name}｜${top.meta.role}</p><p style="margin-top:10px">工作價值觀優先：${values.map(v=>v.emoji+' '+v.name).join('、')}</p></div>
+  <div class="sub-card"><h3>報告摘要</h3><p><strong>興趣/能力主軸：</strong>${top3.map(x=>`${x.type}型${x.meta.name}`).join(' → ')}</p><p><strong>決策關鍵：</strong>${values.map(v=>v.name).join('、')}</p><p><strong>低優先提醒：</strong>${lows.map(v=>v.name).join('、')} 目前可能不是你最在意的工作條件。</p></div></div>
+  <div class="rank-list"><div class="sub-card hex-card"><h3>何倫碼六角型圖</h3><p class="small">依 R→I→A→S→E→C 排列；越外圈代表分數越高，越容易成為自然偏好的工作風格。</p><div class="hex-wrap">${renderHollandHexSvg(h.scores,{size:400})}</div><div class="hex-legend">${top3.map((x,i)=>`<div class="legend-item"><span class="legend-badge">${i+1}</span><div><strong>${x.type} 型｜${x.meta.name}</strong><br><span>${x.meta.role}</span></div></div>`).join('')}</div></div>
+  <div class="sub-card"><h3>諮詢師快速判讀</h3><div class="counselor-list">${hints.map((txt,i)=>`<div class="counselor-note"><strong>${i+1}.</strong> ${escapeHtml(txt)}</div>`).join('')}</div></div></div>
+  <div class="rank-list"><div class="sub-card"><h3>RIASEC 六型分數</h3>${TYPES.map(t=>barRow(t,DATA.riasec[t].emoji+' '+t+' '+DATA.riasec[t].name,h.scores[t],hollandTypeMax(t))).join('')}</div>
+  <div class="sub-card"><h3>SUPER 價值觀分數</h3>${s.ranking.map(v=>barRow(v.id,v.emoji+' '+v.name,v.score,20)).join('')}</div></div>
+  <div class="rank-list">${top3.map((x,i)=>`<div class="rank-item"><h3>${i+1}. ${x.meta.emoji} ${x.type} 型｜${x.meta.name}</h3><p>${escapeHtml(x.meta.desc)}</p><p style="margin-top:8px"><strong>行動建議：</strong>${escapeHtml(x.meta.advice)}</p></div>`).join('')}${values.map((v,i)=>`<div class="rank-item"><h3>${i+1}. ${v.emoji} 價值觀｜${v.name}</h3><p>${escapeHtml(v.desc)}</p></div>`).join('')}</div>
+  <h3>可複製報告</h3><div class="report-box" id="reportText">${escapeHtml(report)}</div>
+  <div id="emailSendStatus" class="email-send-box ${emailSendState.kind}">${emailSendStatusHtml()}</div>
+  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回上一關</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this)">下載 PDF</button><button class="btn primary" onclick="sendPdfToEmail(this,false)">寄送 PDF 到 Email</button><button class="btn danger" onclick="resetGame()">重新測驗</button></div></div>`;
+  scheduleAutoEmailSend(complete);
+}
+function barRow(key,label,score,max){return `<div class="bar-row"><div class="bar-label">${escapeHtml(label)}</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,Math.round(score/max*100))}%"></div></div><div class="score-num">${score}</div></div>`;}
+function makeReport(h,s){
+  const lines=[];
+  lines.push('職涯冒險島｜荷倫興趣 × SUPER 工作價值觀結果報告');
+  lines.push('');
+  lines.push(`姓名/暱稱：${state.profile.name || '未填'}`);
+  lines.push(`Email：${state.profile.email || '未填'}`);
+  lines.push(`測試日期：${state.profile.date || '未填'}`);
+  const ideals=state.profile.ideals.filter(Boolean); if(ideals.length) lines.push(`理想職業：${ideals.join('、')}`);
+  lines.push('');
+  lines.push(`一、荷倫 RIASEC 職業傾向代碼：${h.code}`);
+  h.ranking.forEach((r,i)=>lines.push(`${i+1}. ${r.type}型 ${r.meta.name}：${r.score}分`));
+  lines.push('');
+  lines.push('二、SUPER 工作價值觀排序');
+  s.ranking.forEach((v,i)=>lines.push(`${i+1}. ${v.name}：${v.score}分`));
+  lines.push('');
+  lines.push(`三、初步解讀：你的職涯探索可優先從「${h.ranking.slice(0,3).map(x=>x.meta.name).join('、')}」相關任務開始，並在選工作時優先檢查「${s.ranking.slice(0,2).map(v=>v.name).join('、')}」是否被滿足。`);
+  lines.push('');
+  lines.push('四、諮詢師快速判讀');
+  counselorHints(h,s).forEach((txt,i)=>lines.push(`${i+1}. ${txt}`));
+  lines.push('');
+  lines.push('提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。');
+  return lines.join('\n');
+}
+
+function pdfReportHtml(){
+  const h=calcHolland(), s=calcSuper();
+  const report=makeReport(h,s);
+  const top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-'}};
+  const top3=h.ranking.slice(0,3);
+  const hints=counselorHints(h,s);
+  return `<div style="font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#1F2F29;padding:24px;line-height:1.62;background:#fff;">
+    <div style="border-bottom:4px solid #173F33;padding-bottom:12px;margin-bottom:16px;">
+      <div style="font-size:14px;color:#7A6A4D;font-weight:800;">職涯冒險島｜完整專業版｜荷倫興趣 × SUPER 工作價值觀</div>
+      <h1 style="margin:6px 0 4px;font-size:28px;color:#173F33;">${escapeHtml(state.profile.name || '學員')} 的測驗結果報告</h1>
+      <div style="font-size:13px;color:#6C7A72;">Email：${escapeHtml(state.profile.email || '')}　｜　測試日期：${escapeHtml(state.profile.date || '')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;">
+      <div style="background:#F6F1E5;border:1px solid #DED2B8;border-radius:16px;padding:16px;">
+        <div style="font-size:15px;color:#6C7A72;font-weight:800;">RIASEC 職涯代碼</div>
+        <div style="font-size:52px;font-weight:1000;color:#173F33;letter-spacing:.12em;">${escapeHtml(h.code || '---')}</div>
+        <div style="font-weight:800;">主型：${escapeHtml(top.type)} 型｜${escapeHtml(top.meta.name)}｜${escapeHtml(top.meta.role)}</div>
+        <div style="margin-top:8px;font-size:14px;">工作價值觀優先：${escapeHtml(s.ranking.slice(0,2).map(v=>v.name).join('、'))}</div>
+      </div>
+      <div style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;">
+        <div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">何倫碼六角型圖</div>
+        <div style="display:flex;justify-content:center;">${renderHollandHexSvg(h.scores,{size:320})}</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:14px;">
+      <div style="font-size:18px;font-weight:900;color:#173F33;margin-bottom:8px;">諮詢師快速判讀</div>
+      ${hints.map((txt,i)=>`<div style="margin:6px 0;padding:8px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}.</strong> ${escapeHtml(txt)}</div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;align-items:start;">
+      <div style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:14px;">
+        <div style="font-size:18px;font-weight:900;color:#173F33;margin-bottom:8px;">RIASEC 前三型</div>
+        ${top3.map((x,i)=>`<div style="margin:8px 0;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}. ${x.type} 型｜${x.meta.name}</strong><br><span style="font-size:13px;color:#5D6D66;">${escapeHtml(x.meta.desc)}</span></div>`).join('')}
+      </div>
+      <div style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:14px;">
+        <div style="font-size:18px;font-weight:900;color:#173F33;margin-bottom:8px;">完整分數摘要</div>
+        <pre style="white-space:pre-wrap;font-family:'Microsoft JhengHei',Arial,sans-serif;background:#fff;border:1px solid #E5D8C2;border-radius:12px;padding:12px;font-size:12px;line-height:1.55;">${escapeHtml(report)}</pre>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:12px;color:#6C7A72;border-top:1px solid #E4DAC7;padding-top:12px;">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>
+  </div>`;
+}
+function pdfFileName(){
+  const name=String(state.profile.name||'學員').trim().replace(/[\\/:*?"<>|\s]+/g,'_');
+  const date=String(state.profile.date||new Date().toISOString().slice(0,10));
+  return `職涯冒險島完整專業版測驗結果_${name}_${date}.pdf`;
+}
+async function createPdfBlob(){
+  if(!window.html2pdf) throw new Error('PDF套件尚未載入，請確認網路連線或改用列印另存PDF。');
+  const el=document.createElement('div');
+  el.innerHTML=pdfReportHtml();
+  el.style.position='fixed';el.style.left='-99999px';el.style.top='0';el.style.width='794px';el.style.background='#fff';
+  document.body.appendChild(el);
+  try{
+    const opt={margin:8,filename:pdfFileName(),image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+    return await html2pdf().set(opt).from(el).outputPdf('blob');
+  }finally{el.remove();}
+}
+function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob);});}
+async function downloadPdf(btn){
+  const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF產生中...';}
+  try{
+    if(!window.html2pdf){window.print();return;}
+    const el=document.createElement('div');el.innerHTML=pdfReportHtml();document.body.appendChild(el);
+    const opt={margin:8,filename:pdfFileName(),image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+    await html2pdf().set(opt).from(el).save();el.remove();toast('PDF 已產生');
+  }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
+  finally{if(btn){btn.disabled=false;btn.textContent=old;}}
+}
+async function sendPdfToEmail(btn,silent=false){
+  if(!validateProfile(!silent)) return false;
+  const endpoint=getEmailEndpoint();
+  if(!isEmailEndpointReady()){
+    setEmailSendState('warn','寄信後台尚未設定','請先部署 Google Apps Script，並把 Web App URL 貼到 HTML 的 EMAIL_SEND_ENDPOINT，或用網址參數 emailEndpoint 帶入。');
+    if(!silent) alert('尚未設定寄信後台。請先部署 Google Apps Script，並把 Web App URL 貼到 HTML 裡的 EMAIL_SEND_ENDPOINT。');
+    return false;
+  }
+  const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF寄送中...';}
+  try{
+    setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，並送出寄信請求，請不要關閉頁面。');
+    const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
+    const payload={email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName:pdfFileName(),subject:'職涯冒險島｜完整專業版測驗結果 PDF',pdfBase64,reportText:makeReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString()};
+    await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    setEmailSendState('ok','PDF 寄送請求已送出',`系統已送出寄送請求到 ${payload.email}。若幾分鐘內沒有收到，請檢查垃圾信件或 Apps Script 部署權限。`);
+    toast('已送出寄送請求');
+    if(!silent) alert(`已送出 PDF 寄送請求到：${payload.email}
+若沒有收到，請確認 Apps Script 是否部署成功，或檢查垃圾信件。`);
+    return true;
+  }catch(err){
+    console.error(err);
+    setEmailSendState('bad','PDF 寄送失敗',err.message || '請確認網路、PDF 套件與 Apps Script Web App URL。');
+    if(!silent) alert('PDF 寄送失敗：' + (err.message || '請確認網路、PDF套件與 Apps Script Web App URL。'));
+    return false;
+  }finally{if(btn){btn.disabled=false;btn.textContent=old;}}
+}
+
+function copyReport(){const text=document.getElementById('reportText')?.innerText || makeReport(calcHolland(),calcSuper());navigator.clipboard.writeText(text).then(()=>toast('報告已複製')).catch(()=>toast('無法複製，請手動選取'));}
+function resetGame(){if(confirm('確定要清除目前填答並重新開始嗎？')){cleanupPersistentStorage();state=emptyState();current='profile';emailSendAttempted=false;emailSendState={kind:'warn',title:'寄信後台尚未設定',text:'完成測驗後可先下載 PDF；部署 Apps Script 並貼上 Web App URL 後，才會自動寄送 PDF。'};render();toast('已清空並重新開始');}}
+function escapeHtml(s){return String(s ?? '').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+render();
+</script>
+</body>
+</html>

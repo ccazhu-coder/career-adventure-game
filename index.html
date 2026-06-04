@@ -117,6 +117,7 @@ cleanupPersistentStorage();
 let state = emptyState();
 let emailSendAttempted = false;
 let emailSendState = {kind:"warn", title:"寄信後台尚未設定", text:"完成測驗後可先下載 PDF；部署 Apps Script 並貼上 Web App URL 後，才會自動寄送 PDF。"};
+let hollandAdvancePause = {sec:null, type:null, timer:null};
 
 function emptyState(){
   const s = { profile:{name:"", gender:"", age:"", phone:"", email:"", date:new Date().toISOString().slice(0,10), ideals:["","",""]}, holland:{}, abilityA:{}, abilityB:{}, super:{} };
@@ -233,17 +234,38 @@ function renderHolland(view, id){
   view.innerHTML=`<div class="section-head"><div><h2>${sec.title}</h2><p>${sec.question} 每題選一個答案，系統會自動計入 RIASEC 六型分數。</p></div><span class="pill">${answered}/${total}</span></div>
   ${quickStats([{value:`${answered}/${total}`,label:'本關已完成題數'},{value:'6 類型',label:'R / I / A / S / E / C 同步統計'},{value:id==='ability'?'看擅長程度':'看直覺偏好',label:'本關作答重點'}])}
   <div class="mission-tip"><strong>玩法：</strong>${id==='ability'?'只看你目前是否擅長或勝任，不用管喜不喜歡。':'依照第一直覺點選。'} 點完六個類型，即可進入下一關。</div>
-  ${TYPES.map(t=>typeBlock(sec,t)).join('')}
+  ${TYPES.map(t=>typeBlock(sec,t,activeHollandType(sec))).join('')}
   ${actions()}`;
 }
-function typeBlock(sec,t){
+function activeHollandType(sec){
+  if(hollandAdvancePause.sec===sec.id && hollandAdvancePause.type) return hollandAdvancePause.type;
+  return TYPES.find(t=>state.holland[sec.id][t].some(v=>v===null)) || null;
+}
+function typeBlock(sec,t,activeType){
   const meta=DATA.riasec[t], arr=sec.types[t], vals=state.holland[sec.id][t];
   const score=vals.filter(v=>v===true).length, done=vals.filter(v=>v!==null).length;
-  return `<details class="type-card" ${done<arr.length?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
+  return `<details class="type-card" ${t===activeType?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
     ${arr.map((q,i)=>`<div class="q-row"><div class="q-text">${i+1}. ${escapeHtml(q)}</div><div class="choice"><button class="${vals[i]===true?'selected yes':''}" onclick="setHolland('${sec.id}','${t}',${i},true)">${sec.yes}</button><button class="${vals[i]===false?'selected no':''}" onclick="setHolland('${sec.id}','${t}',${i},false)">${sec.no}</button></div></div>`).join('')}
   </div></details>`;
 }
-function setHolland(sec,t,i,val){state.holland[sec][t][i]=val;save();render();}
+function setHolland(sec,t,i,val){
+  const vals=state.holland[sec][t];
+  const wasDone=vals.every(v=>v!==null);
+  vals[i]=val;
+  const isDone=vals.every(v=>v!==null);
+  if(!wasDone && isDone){
+    if(hollandAdvancePause.timer) clearTimeout(hollandAdvancePause.timer);
+    hollandAdvancePause={sec,type:t,timer:null};
+    hollandAdvancePause.timer=setTimeout(()=>{
+      if(hollandAdvancePause.sec===sec && hollandAdvancePause.type===t){
+        hollandAdvancePause={sec:null,type:null,timer:null};
+        render();
+      }
+    },800);
+  }
+  save();
+  render();
+}
 function renderRating(view){
   view.innerHTML=`<div class="section-head"><div><h2>📊 任務 4｜能力類型簡評</h2><p>請與同齡人比較，評估自己在六個面向的能力。1 代表低，7 代表高。</p></div><span class="pill">${TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2}/12</span></div>
   ${quickStats([{value:'表 A',label:'工作能力向度'},{value:'表 B',label:'技能能力向度'},{value:'1～7 分',label:'請依自我評估作答'}])}

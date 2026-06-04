@@ -119,7 +119,7 @@ const NO_PERSISTENCE = true;
 // 正式多人施測版：每次開啟皆為全新測驗，不讀取、不保留上一位填答者資料。
 // 若要啟用「測驗完成後自動寄送 PDF 到學員 Email」，請將 Google Apps Script Web App URL 貼在下方。
 // 也可以用網址參數帶入：?emailEndpoint=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2Fxxxx%2Fexec
-const EMAIL_SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbykULczLz_dLx1WTVan1M5lw9jMamMnk8lJdi12r2Qcmccfg7ejF5V_Z5sy-ZsZJ94W5Q/exec";
+const EMAIL_SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbxXLGO5s9qvvJMCt-qgeauMG7DGf1XXyhHfV5Fn3yFjKExlWWLZnqLqVlN5C6ThSwAMkw/exec";
 const AUTO_SEND_PDF_ON_COMPLETE = true;
 const EMAIL_SEND_ONCE_KEY = "careerAdventureGame_emailPdfSent_v1";
 let current = "profile";
@@ -491,6 +491,51 @@ async function downloadPdf(btn){
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
   finally{if(btn){btn.disabled=false;btn.textContent=old;}}
 }
+function buildResultRecord(h,s,fileName,status){
+  const top3=h.ranking.slice(0,3);
+  const valueTop=s.ranking.slice(0,2);
+  const valueLow=s.low.slice(0,2);
+  const ideals=state.profile.ideals || [];
+  const ans=answeredCount(), total=totalCount();
+  const record={};
+  record['送出時間']=new Date().toISOString();
+  record['姓名']=state.profile.name || '';
+  record['性別']=state.profile.gender || '';
+  record['年齡']=state.profile.age || '';
+  record['電話']=state.profile.phone || '';
+  record['Email']=state.profile.email || '';
+  record['測驗日期']=state.profile.date || '';
+  record['理想職業1']=ideals[0] || '';
+  record['理想職業2']=ideals[1] || '';
+  record['理想職業3']=ideals[2] || '';
+  record['已完成題數']=ans;
+  record['總題數']=total;
+  record['完成率']=total ? Math.round(ans/total*100) : 0;
+  record['何倫碼']=h.code || '';
+  record['第一型']=top3[0] ? `${top3[0].type} ${top3[0].meta.name}` : '';
+  record['第二型']=top3[1] ? `${top3[1].type} ${top3[1].meta.name}` : '';
+  record['第三型']=top3[2] ? `${top3[2].type} ${top3[2].meta.name}` : '';
+  TYPES.forEach(t=>{record[`${t}總分`]=h.scores[t] || 0;});
+  TYPES.forEach(t=>{record[`${t}興趣分數`]=(h.breakdown[t]&&h.breakdown[t].interest)||0;});
+  TYPES.forEach(t=>{record[`${t}能力分數`]=(h.breakdown[t]&&h.breakdown[t].ability)||0;});
+  TYPES.forEach(t=>{record[`${t}職業分數`]=(h.breakdown[t]&&h.breakdown[t].career)||0;});
+  TYPES.forEach(t=>{record[`${t}能力A分數`]=(h.breakdown[t]&&h.breakdown[t].abilityA)||0;});
+  TYPES.forEach(t=>{record[`${t}能力B分數`]=(h.breakdown[t]&&h.breakdown[t].abilityB)||0;});
+  s.rows.forEach(v=>{record[`SUPER_${v.id}_${v.name}`]=v.score;});
+  record['價值觀第一']=valueTop[0] ? `${valueTop[0].name}：${valueTop[0].score}` : '';
+  record['價值觀第二']=valueTop[1] ? `${valueTop[1].name}：${valueTop[1].score}` : '';
+  record['低優先提醒1']=valueLow[0] ? `${valueLow[0].name}：${valueLow[0].score}` : '';
+  record['低優先提醒2']=valueLow[1] ? `${valueLow[1].name}：${valueLow[1].score}` : '';
+  record['PDF檔名']=fileName || pdfFileName();
+  record['PDF寄送狀態']=status || '待寄送';
+  record['PDF寄送時間']='';
+  record['PDF錯誤訊息']='';
+  record['測驗頁網址']=location.href;
+  record['瀏覽器資訊']=navigator.userAgent;
+  record['原始答案JSON']=JSON.stringify({profile:state.profile,holland:state.holland,abilityA:state.abilityA,abilityB:state.abilityB,super:state.super});
+  record['備註']='';
+  return record;
+}
 async function sendPdfToEmail(btn,silent=false){
   if(!validateProfile(!silent)) return false;
   const recipient=normalizedEmail();
@@ -510,7 +555,8 @@ async function sendPdfToEmail(btn,silent=false){
   try{
     setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，並送出寄信請求，請不要關閉頁面。');
     const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
-    const payload={email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName:pdfFileName(),subject:'職涯冒險島｜完整專業版測驗結果 PDF',pdfBase64,reportText:makeReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString()};
+    const fileName=pdfFileName();
+    const payload={email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'職涯冒險島｜完整專業版測驗結果 PDF',pdfBase64,reportText:makeReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
     await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
     markEmailPdfSent(recipient);
     setEmailSendState('ok','PDF 寄送請求已送出',`系統已送出寄送請求到 ${payload.email}。若幾分鐘內沒有收到，請檢查垃圾信件或 Apps Script 部署權限。`);

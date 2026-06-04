@@ -121,6 +121,7 @@ const NO_PERSISTENCE = true;
 // 也可以用網址參數帶入：?emailEndpoint=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2Fxxxx%2Fexec
 const EMAIL_SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbykULczLz_dLx1WTVan1M5lw9jMamMnk8lJdi12r2Qcmccfg7ejF5V_Z5sy-ZsZJ94W5Q/exec";
 const AUTO_SEND_PDF_ON_COMPLETE = true;
+const EMAIL_SEND_ONCE_KEY = "careerAdventureGame_emailPdfSent_v1";
 let current = "profile";
 cleanupPersistentStorage();
 let state = emptyState();
@@ -183,6 +184,22 @@ function renderNav(){
   nav.innerHTML=`<div class="nav-head"><strong>測驗任務導覽</strong><span>已完成 ${doneCount} / ${STEPS.length} 個主要步驟</span></div>` + STEPS.map(st=>`<button class="${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><span><span class="dot"></span> ${st.icon} ${st.title}</span><span>${stepDone(st.id)?'✓':''}</span></button>`).join('') + `<button onclick="resetGame()"><span><span class="dot"></span> ♻️ 重新開始</span></button>`;
 }
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||'').trim());}
+function normalizedEmail(){return String(state.profile.email||'').trim().toLowerCase();}
+function getSentEmailMap(){
+  try{return JSON.parse(localStorage.getItem(EMAIL_SEND_ONCE_KEY)||'{}') || {};}catch(e){return {};}
+}
+function hasEmailPdfBeenSent(email=normalizedEmail()){
+  if(!email) return false;
+  return !!getSentEmailMap()[email];
+}
+function markEmailPdfSent(email=normalizedEmail()){
+  if(!email) return;
+  try{
+    const sent=getSentEmailMap();
+    sent[email]=new Date().toISOString();
+    localStorage.setItem(EMAIL_SEND_ONCE_KEY,JSON.stringify(sent));
+  }catch(e){}
+}
 function getEmailEndpoint(){
   const fromQuery = new URLSearchParams(location.search).get('emailEndpoint') || '';
   return String(fromQuery || EMAIL_SEND_ENDPOINT || '').trim();
@@ -196,6 +213,11 @@ function setEmailSendState(kind,title,text){
 function emailSendStatusHtml(){return `<strong>${escapeHtml(emailSendState.title)}</strong><span>${escapeHtml(emailSendState.text)}</span><span class="mini">收件信箱：${escapeHtml(state.profile.email || '尚未填寫')}</span>`;}
 function scheduleAutoEmailSend(complete){
   if(!AUTO_SEND_PDF_ON_COMPLETE || !complete || emailSendAttempted) return;
+  if(hasEmailPdfBeenSent()){
+    emailSendAttempted=true;
+    setEmailSendState('ok','PDF 已寄送過','這個 Email 已經寄送過一次，系統不會重複寄送；如需備份可直接下載 PDF。');
+    return;
+  }
   if(!isEmailEndpointReady()){
     setEmailSendState('warn','寄信後台尚未設定','目前尚未貼上 Apps Script Web App URL，因此不會寄信；可先下載 PDF。');
     return;
@@ -471,6 +493,13 @@ async function downloadPdf(btn){
 }
 async function sendPdfToEmail(btn,silent=false){
   if(!validateProfile(!silent)) return false;
+  const recipient=normalizedEmail();
+  if(hasEmailPdfBeenSent(recipient)){
+    emailSendAttempted=true;
+    setEmailSendState('ok','PDF 已寄送過',`系統已經寄送過一次到 ${recipient}，為避免重複寄信，本次不會再送出；可直接下載 PDF 備份。`);
+    if(!silent) alert(`這個 Email 已經寄送過一次：${recipient}\n\n為避免重複寄信，系統不會再送出第二封。`);
+    return false;
+  }
   const endpoint=getEmailEndpoint();
   if(!isEmailEndpointReady()){
     setEmailSendState('warn','寄信後台尚未設定','請先部署 Google Apps Script，並把 Web App URL 貼到 HTML 的 EMAIL_SEND_ENDPOINT，或用網址參數 emailEndpoint 帶入。');
@@ -483,6 +512,7 @@ async function sendPdfToEmail(btn,silent=false){
     const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
     const payload={email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName:pdfFileName(),subject:'職涯冒險島｜完整專業版測驗結果 PDF',pdfBase64,reportText:makeReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString()};
     await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    markEmailPdfSent(recipient);
     setEmailSendState('ok','PDF 寄送請求已送出',`系統已送出寄送請求到 ${payload.email}。若幾分鐘內沒有收到，請檢查垃圾信件或 Apps Script 部署權限。`);
     toast('已送出寄送請求');
     if(!silent) alert(`已送出 PDF 寄送請求到：${payload.email}

@@ -122,10 +122,8 @@ const STEPS = [
 const storageKey = "careerAdventureGame_v2_professional";
 const NO_PERSISTENCE = true;
 // 正式多人施測版：每次開啟皆為全新測驗，不讀取、不保留上一位填答者資料。
-// 若要啟用「測驗完成後自動寄送 PDF 到學員 Email」，請將 Google Apps Script Web App URL 貼在下方。
-// 也可以用網址參數帶入：?emailEndpoint=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2Fxxxx%2Fexec
-const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwVPTwxgPEWtOl4Xulq3t0PBoupjJafxixQb7Mf9O_eupAp36XUII9fpP5PqY7bdRJ3XA/exec";
-const EMAIL_SEND_ENDPOINT = API_ENDPOINT;
+// 正式營運版不走 Google。Vercel 部署時使用同網域 /api；測試可用 ?apiBase=https://your-domain。
+const API_BASE_URL = "";
 const SUPPORT_LINE_URL = "https://lin.ee/PbfeRUU";
 const SUPPORT_EMAIL = "pucezhang@gmail.com";
 const AUTO_SEND_PDF_ON_COMPLETE = true;
@@ -213,28 +211,32 @@ function renderNav(){
 }
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||'').trim());}
 function getApiEndpoint(){
-  const fromQuery = new URLSearchParams(location.search).get('apiEndpoint') || new URLSearchParams(location.search).get('emailEndpoint') || '';
-  return String(fromQuery || API_ENDPOINT || API_ENDPOINT || '').trim();
+  const params = new URLSearchParams(location.search);
+  const fromQuery = params.get('apiBase') || params.get('apiEndpoint') || '';
+  return String(fromQuery || API_BASE_URL || location.origin).replace(/\/$/,'');
 }
 function getEmailEndpoint(){return getApiEndpoint();}
-function isEmailEndpointReady(){return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(getApiEndpoint());}
+function isEmailEndpointReady(){return !!getApiEndpoint();}
 function getShortCode(){return String(state.profile.accessCode || SHORT_CODE_FROM_URL || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,12);}
-function apiJsonp(action, params={}, timeout=15000){
-  return new Promise((resolve,reject)=>{
-    const endpoint=getApiEndpoint();
-    if(!isEmailEndpointReady()) return reject(new Error('系統尚未完成寄送設定'));
-    const cb='careerCb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-    const u=new URL(endpoint);
-    u.searchParams.set('action',action);
-    u.searchParams.set('callback',cb);
-    Object.entries(params||{}).forEach(([k,v])=>u.searchParams.set(k,String(v??'')));
-    const s=document.createElement('script');
-    const timer=setTimeout(()=>{cleanup();reject(new Error('系統連線逾時，請稍後再試'));},timeout);
-    function cleanup(){clearTimeout(timer);delete window[cb];s.remove();}
-    window[cb]=(data)=>{cleanup();resolve(data||{});};
-    s.onerror=()=>{cleanup();reject(new Error('目前無法連線，請稍後再試'));};
-    s.src=u.toString();document.body.appendChild(s);
-  });
+async function apiFetch(path, body={}, options={}){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(), options.timeout || 20000);
+  try{
+    const res=await fetch(`${getApiEndpoint()}${path}`,{
+      method:options.method || 'POST',
+      headers:{'Content-Type':'application/json'},
+      body:options.method==='GET'?undefined:JSON.stringify(body||{}),
+      signal:controller.signal
+    });
+    const data=await res.json().catch(()=>({ok:false,message:'系統回應格式錯誤'}));
+    if(!res.ok || data.ok===false) throw new Error(data.message || '系統暫時無法處理');
+    return data;
+  }catch(err){
+    if(err.name==='AbortError') throw new Error('系統連線逾時，請稍後再試');
+    throw err;
+  }finally{
+    clearTimeout(timer);
+  }
 }
 function accessStatusHtml(){
   const kind=accessVerified?'ok':(accessInfo.status==='驗證失敗'?'bad':'warn');
@@ -255,7 +257,7 @@ async function verifyAccessCode(showAlert=false){
   }
   try{
     accessInfo={shortCode:code,status:'驗證中',message:'正在確認短碼與可測驗時間...'};render();
-    const res=await apiJsonp('validateBatchCode',{c:code, email:state.profile.email || '', name:state.profile.name || ''});
+    const res=await apiFetch('/api/public/validate-pass',{code, email:state.profile.email || '', name:state.profile.name || ''});
     if(!res.ok) throw new Error(res.message || '短碼無效');
     const batch=res.batch || {};
     accessVerified=true;
@@ -807,7 +809,6 @@ function buildResultRecord(h,s,fileName,status){
 }
 async function sendPdfToEmail(btn,silent=false){
   if(!validateProfile(!silent)) return false;
-  const endpoint=getEmailEndpoint();
   if(!isEmailEndpointReady()){
     setEmailSendState('warn','尚未寄送報告','目前無法自動寄送 Email，可先下載 PDF。');
     if(!silent) alert('目前無法自動寄送 Email，可先下載 PDF。');
@@ -818,11 +819,11 @@ async function sendPdfToEmail(btn,silent=false){
     setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，請不要關閉頁面。');
     const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
     const fileName=pdfFileName();
-    const payload={action:'submitResult',shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
-    await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    setEmailSendState('ok','PDF 寄送請求已送出',`系統已送出寄送請求到 ${payload.email}。若幾分鐘內沒有收到，請先檢查垃圾信件。`);
-    toast('已送出寄送請求');
-    if(!silent) alert(`已送出 PDF 寄送請求到：${payload.email}
+    const payload={shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topRiasec:h.ranking.slice(0,3),hollandScores:h.scores,valueScores:Object.fromEntries(s.rows.map(v=>[v.id,v.score])),topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),rawAnswers:{questionBankVersion:QUESTION_BANK_VERSION,shortCode:getShortCode(),accessInfo,profile:state.profile,holland:state.holland,abilityA:state.abilityA,abilityB:state.abilityB,super:state.super},record:buildResultRecord(h,s,fileName,'待寄送')};
+    const res=await apiFetch('/api/public/submit-result',payload,{timeout:60000});
+    setEmailSendState('ok','PDF 報告已完成',`系統已建立報告並送出 Email 到 ${payload.email}。報告編號：${res.resultId || '已建立'}`);
+    toast('PDF 報告已完成');
+    if(!silent) alert(`PDF 報告已完成，已送出到：${payload.email}
 若沒有收到，請先檢查垃圾信件。`);
     return true;
   }catch(err){

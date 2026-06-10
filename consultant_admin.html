@@ -143,7 +143,7 @@
 </div>
 
 <script>
-const ADMIN_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwVPTwxgPEWtOl4Xulq3t0PBoupjJafxixQb7Mf9O_eupAp36XUII9fpP5PqY7bdRJ3XA/exec";
+const API_BASE_URL = "";
 let sessionToken = localStorage.getItem("careerAdminToken") || "";
 let sessionRole = localStorage.getItem("careerAdminRole") || "";
 let sessionUsername = localStorage.getItem("careerAdminUsername") || "";
@@ -151,20 +151,24 @@ let allRecords = [];
 let allBatches = [];
 let registerMode = false;
 
-function jsonp(params){
-  return new Promise((resolve,reject)=>{
-    const cb="admin_cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);
-    const url=new URL(ADMIN_API_ENDPOINT);
-    Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-    url.searchParams.set("callback",cb);
-    const script=document.createElement("script");
-    const timer=setTimeout(()=>{cleanup();reject(new Error("後台連線逾時"));},20000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
-    window[cb]=(data)=>{cleanup();resolve(data);};
-    script.onerror=()=>{cleanup();reject(new Error("無法連線到 Apps Script 後台"));};
-    script.src=url.toString();
-    document.body.appendChild(script);
-  });
+function apiBase(){
+  const params=new URLSearchParams(location.search);
+  return String(params.get("apiBase") || API_BASE_URL || location.origin).replace(/\/$/,"");
+}
+async function apiFetch(path,{method="GET",body=null,auth=true,timeout=20000}={}){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const headers={"Content-Type":"application/json"};
+    if(auth && sessionToken) headers.Authorization=`Bearer ${sessionToken}`;
+    const res=await fetch(`${apiBase()}${path}`,{method,headers,body:body?JSON.stringify(body):undefined,signal:controller.signal});
+    const data=await res.json().catch(()=>({ok:false,message:"系統回應格式錯誤"}));
+    if(!res.ok || data.ok===false) throw new Error(data.message || "系統暫時無法處理");
+    return data;
+  }catch(err){
+    if(err.name==="AbortError") throw new Error("後台連線逾時");
+    throw err;
+  }finally{clearTimeout(timer);}
 }
 function showMsg(id,msg,bad=false){
   const el=document.getElementById(id);
@@ -185,11 +189,11 @@ async function login(){
   const password=document.getElementById("adminPass").value;
   if(!username || !password){showMsg("loginMsg","請輸入帳號與密碼。",true);return;}
   try{
-    const res=await jsonp({action:"adminLogin",username,password});
+    const res=await apiFetch("/api/auth/login",{method:"POST",auth:false,body:{username,password}});
     if(!res.ok) throw new Error(res.message||"登入失敗");
     sessionToken=res.token;
-    sessionUsername=(res.username || username || "").trim().toLowerCase();
-    sessionRole=res.role || "";
+    sessionUsername=(res.user?.username || username || "").trim().toLowerCase();
+    sessionRole=res.user?.role || "";
     localStorage.setItem("careerAdminToken",sessionToken);
     localStorage.setItem("careerAdminRole",sessionRole);
     localStorage.setItem("careerAdminUsername",sessionUsername);
@@ -214,7 +218,7 @@ async function registerCounselor(){
     return;
   }
   try{
-    const res=await jsonp({action:"adminRegister",username,password,displayName,registerCode});
+    const res=await apiFetch("/api/auth/register-counselor",{method:"POST",auth:false,body:{username,password,displayName,registerCode,email:username}});
     if(!res.ok) throw new Error(res.message||"註冊失敗");
     showMsg("loginMsg","帳號已建立，請直接登入。");
     toggleRegister(false);
@@ -243,12 +247,54 @@ function logout(){
 async function loadDashboard(){
   await Promise.all([loadBatches(),loadRecords()]);
 }
+function normalizeBatch(b){
+  const status=b.status==="active"?"啟用":(b.status==="stopped"?"停用":b.status || "");
+  return {
+    _row:b.id,
+    "批次碼":b.batch_code || b.batchCode || "",
+    "批次名稱":b.batch_name || b.batchName || "",
+    "短碼":b.short_code || b.shortCode || "",
+    "數量":b.quantity || 0,
+    "已完成數":b.completed_count || b.completedCount || 0,
+    "開始時間":b.starts_at || b.startsAt || "",
+    "結束時間":b.ends_at || b.endsAt || "",
+    "諮詢師Email":b.counselor_email || b.counselorEmail || "",
+    "狀態":status,
+    "測驗連結":b.link || `${location.origin}/?c=${encodeURIComponent(b.short_code || b.shortCode || "")}`
+  };
+}
+function normalizeRecord(r){
+  const top=Array.isArray(r.top_riasec)?r.top_riasec:[];
+  const valueScores=r.value_scores || {};
+  const values=Object.entries(valueScores).sort((a,b)=>Number(b[1])-Number(a[1]));
+  return {
+    _row:r.id,
+    row:r.id,
+    "送出時間":r.created_at || "",
+    "姓名/暱稱":r.student_name || "",
+    "Email":r.student_email || "",
+    "批次碼":r.batches?.batch_code || "",
+    "批次名稱":r.batches?.batch_name || "",
+    "短碼":r.short_code || "",
+    "荷倫代碼":r.holland_code || "",
+    "主型":top[0]?.type || top[0]?.name || "",
+    "次型":top[1]?.type || top[1]?.name || "",
+    "第三型":top[2]?.type || top[2]?.name || "",
+    "價值觀第1名":values[0] ? `${values[0][0]}：${values[0][1]}` : "",
+    "價值觀第2名":values[1] ? `${values[1][0]}：${values[1][1]}` : "",
+    "完成率":r.completion_rate || 100,
+    "PDF寄送狀態":r.pdf_storage_path ? "成功" : "",
+    "PDF檔案ID":r.pdf_storage_path || "",
+    "PDF檔名":r.pdf_storage_path || "",
+    "諮詢師專用分析":r.counselor_advice || ""
+  };
+}
 async function loadBatches(){
   hideMsg("batchMsg");
   try{
-    const res=await jsonp({action:"adminBatchList",token:sessionToken});
+    const res=await apiFetch("/api/consultant/batches");
     if(!res.ok) throw new Error(res.message||"批次讀取失敗");
-    allBatches=res.batches||[];
+    allBatches=(res.batches||[]).map(normalizeBatch);
     renderBatches();
   }catch(err){
     showMsg("batchMsg",err.message,true);
@@ -278,7 +324,7 @@ async function createBatch(){
   if(btn){btn.disabled=true;btn.textContent="建立中...";}
   showHtmlMsg("batchMsg","<strong>正在建立批次短碼...</strong><br>系統正在確認授權額度並產生短碼，請稍候。","warn");
   try{
-    const res=await jsonp({action:"adminCreateBatch",token:sessionToken,batchCode,batchName,quantity,startTime,endTime,counselorEmail,status});
+    const res=await apiFetch("/api/consultant/batches",{method:"POST",body:{batchCode,batchName,quantity,startsAt:startTime,endTime,endsAt:endTime,counselorEmail,status:status==="停用"?"stopped":"active"}});
     if(!res.ok) throw new Error(res.message||"建立批次失敗");
     const b=res.batch || {};
     showHtmlMsg("batchMsg",`<strong>建立成功</strong><br>短碼：<span class="code">${esc(b.shortCode || "")}</span><br>測驗連結：<a class="linkbox" href="${escAttr(b.link || "")}" target="_blank" rel="noopener">${esc(b.link || "")}</a><br><button class="btn" style="margin-top:8px" onclick="copyText('${escAttr(b.link || "")}')">複製測驗連結</button>`,"success");
@@ -341,7 +387,7 @@ async function updateBatch(params){
   hideMsg("batchMsg");
   showHtmlMsg("batchMsg","<strong>正在更新批次...</strong>","warn");
   try{
-    const res=await jsonp({action:"adminUpdateBatch",token:sessionToken,...params});
+    const res=await apiFetch("/api/consultant/update-batch",{method:"PATCH",body:{id:params.row,batchName:params.batchName,quantity:params.quantity,startsAt:params.startTime,endsAt:params.endTime,counselorEmail:params.counselorEmail,status:params.status==="停用"?"stopped":"active"}});
     if(!res.ok) throw new Error(res.message||"更新失敗");
     showHtmlMsg("batchMsg",`<strong>更新成功</strong><br>${esc(res.message || "批次已更新")}`,"success");
     await loadBatches();
@@ -354,7 +400,7 @@ async function deleteBatch(row){
   hideMsg("batchMsg");
   showHtmlMsg("batchMsg","<strong>正在處理刪除...</strong>","warn");
   try{
-    const res=await jsonp({action:"adminDeleteBatch",token:sessionToken,row});
+    const res=await apiFetch("/api/consultant/delete-batch",{method:"POST",body:{id:row}});
     if(!res.ok) throw new Error(res.message||"刪除失敗");
     showHtmlMsg("batchMsg",`<strong>處理完成</strong><br>${esc(res.message || "批次已刪除")}`,"success");
     await loadBatches();
@@ -363,9 +409,9 @@ async function deleteBatch(row){
 async function loadRecords(){
   hideMsg("adminMsg");
   try{
-    const res=await jsonp({action:"adminList",token:sessionToken});
+    const res=await apiFetch("/api/consultant/results");
     if(!res.ok) throw new Error(res.message||"讀取失敗");
-    allRecords=res.records||[];
+    allRecords=(res.results||[]).map(normalizeRecord);
     renderRows();
   }catch(err){
     showMsg("adminMsg",err.message,true);
@@ -385,7 +431,7 @@ function renderRows(){
   document.getElementById("visibleCount").textContent=rows.length;
   document.getElementById("rows").innerHTML=rows.map(r=>{
     const idx=encodeURIComponent(r._row || r.row || "");
-    const pdfUrl=`${ADMIN_API_ENDPOINT}?action=adminDownloadPdf&token=${encodeURIComponent(sessionToken)}&row=${idx}`;
+    const pdfUrl=`${apiBase()}/api/consultant/download-pdf?id=${idx}&token=${encodeURIComponent(sessionToken)}`;
     const hasPdf=!!(r["PDF檔案ID"] || r["PDF_BASE64"] || r["PDF檔名"]);
     const advisorReport=r["諮詢師專用分析"] || r["諮詢師個案摘要"] || "";
     const reportId=`advisorReport_${escAttr(idx || Math.random().toString(36).slice(2))}`;

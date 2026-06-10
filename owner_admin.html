@@ -246,7 +246,7 @@
 </div>
 
 <script>
-const ADMIN_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwVPTwxgPEWtOl4Xulq3t0PBoupjJafxixQb7Mf9O_eupAp36XUII9fpP5PqY7bdRJ3XA/exec";
+const API_BASE_URL = "";
 let sessionToken = localStorage.getItem("careerAdminToken") || "";
 let sessionRole = localStorage.getItem("careerAdminRole") || "";
 let sessionUsername = localStorage.getItem("careerAdminUsername") || "";
@@ -257,20 +257,24 @@ let allAuthorizations = [];
 let registerMode = false;
 const SUPER_ADMIN_USERNAME = "ccazhu";
 
-function jsonp(params){
-  return new Promise((resolve,reject)=>{
-    const cb="admin_cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);
-    const url=new URL(ADMIN_API_ENDPOINT);
-    Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-    url.searchParams.set("callback",cb);
-    const script=document.createElement("script");
-    const timer=setTimeout(()=>{cleanup();reject(new Error("後台連線逾時"));},20000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
-    window[cb]=(data)=>{cleanup();resolve(data);};
-    script.onerror=()=>{cleanup();reject(new Error("無法連線到 Apps Script 後台"));};
-    script.src=url.toString();
-    document.body.appendChild(script);
-  });
+function apiBase(){
+  const params=new URLSearchParams(location.search);
+  return String(params.get("apiBase") || API_BASE_URL || location.origin).replace(/\/$/,"");
+}
+async function apiFetch(path,{method="GET",body=null,auth=true,timeout=20000}={}){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const headers={"Content-Type":"application/json"};
+    if(auth && sessionToken) headers.Authorization=`Bearer ${sessionToken}`;
+    const res=await fetch(`${apiBase()}${path}`,{method,headers,body:body?JSON.stringify(body):undefined,signal:controller.signal});
+    const data=await res.json().catch(()=>({ok:false,message:"系統回應格式錯誤"}));
+    if(!res.ok || data.ok===false) throw new Error(data.message || "系統暫時無法處理");
+    return data;
+  }catch(err){
+    if(err.name==="AbortError") throw new Error("後台連線逾時");
+    throw err;
+  }finally{clearTimeout(timer);}
 }
 function showMsg(id,msg,bad=false){
   const el=document.getElementById(id);
@@ -291,16 +295,16 @@ async function login(){
   const password=document.getElementById("adminPass").value;
   if(!username || !password){showMsg("loginMsg","請輸入帳號與密碼。",true);return;}
   try{
-    const res=await jsonp({action:"adminLogin",username,password});
+    const res=await apiFetch("/api/auth/login",{method:"POST",auth:false,body:{username,password}});
     if(!res.ok) throw new Error(res.message||"登入失敗");
     sessionToken=res.token;
-    sessionUsername=(res.username || username || "").trim().toLowerCase();
-    sessionRole=res.role || "";
+    sessionUsername=(res.user?.username || username || "").trim().toLowerCase();
+    sessionRole=res.user?.role || "";
     if(!isSuperAdminSession()) throw new Error("此入口僅限最高管理者使用。諮詢師請使用諮詢師後台。");
     localStorage.setItem("careerAdminToken",sessionToken);
     localStorage.setItem("careerAdminRole",sessionRole);
     localStorage.setItem("careerAdminUsername",sessionUsername);
-    if(isSuperAdminSession() && !sessionRole) sessionRole="最高管理者";
+    if(isSuperAdminSession() && !sessionRole) sessionRole="owner";
     document.getElementById("sessionLabel").textContent=`已登入：${sessionUsername || username}${sessionRole?"｜"+sessionRole:""}`;
     document.getElementById("loginPanel").classList.add("hidden");
     document.getElementById("adminPanel").classList.remove("hidden");
@@ -322,7 +326,7 @@ async function registerCounselor(){
     return;
   }
   try{
-    const res=await jsonp({action:"adminRegister",username,password,displayName,registerCode});
+    const res=await apiFetch("/api/auth/register-counselor",{method:"POST",auth:false,body:{username,password,displayName,registerCode,email:username}});
     if(!res.ok) throw new Error(res.message||"註冊失敗");
     showMsg("loginMsg","帳號已建立，請直接登入。");
     toggleRegister(false);
@@ -352,7 +356,49 @@ async function loadDashboard(){
   await Promise.all([loadBatches(),loadRecords(),loadOwnerConfig()]);
 }
 function isSuperAdminSession(){
-  return String(sessionUsername || "").trim().toLowerCase() === SUPER_ADMIN_USERNAME || String(sessionRole || "").includes("最高管理者");
+  return String(sessionUsername || "").trim().toLowerCase() === SUPER_ADMIN_USERNAME || String(sessionRole || "") === "owner" || String(sessionRole || "").includes("最高管理者");
+}
+function normalizeBatch(b){
+  const status=b.status==="active"?"啟用":(b.status==="stopped"?"停用":b.status || "");
+  return {
+    _row:b.id,
+    "批次碼":b.batch_code || b.batchCode || "",
+    "批次名稱":b.batch_name || b.batchName || "",
+    "短碼":b.short_code || b.shortCode || "",
+    "數量":b.quantity || 0,
+    "已完成數":b.completed_count || b.completedCount || 0,
+    "開始時間":b.starts_at || b.startsAt || "",
+    "結束時間":b.ends_at || b.endsAt || "",
+    "諮詢師Email":b.counselor_email || b.counselorEmail || "",
+    "狀態":status,
+    "測驗連結":b.link || `${location.origin}/?c=${encodeURIComponent(b.short_code || b.shortCode || "")}`
+  };
+}
+function normalizeRecord(r){
+  const top=Array.isArray(r.top_riasec)?r.top_riasec:[];
+  const valueScores=r.value_scores || {};
+  const values=Object.entries(valueScores).sort((a,b)=>Number(b[1])-Number(a[1]));
+  return {
+    _row:r.id,
+    row:r.id,
+    "送出時間":r.created_at || "",
+    "姓名/暱稱":r.student_name || "",
+    "Email":r.student_email || "",
+    "批次碼":r.batches?.batch_code || "",
+    "批次名稱":r.batches?.batch_name || "",
+    "短碼":r.short_code || "",
+    "荷倫代碼":r.holland_code || "",
+    "主型":top[0]?.type || top[0]?.name || "",
+    "次型":top[1]?.type || top[1]?.name || "",
+    "第三型":top[2]?.type || top[2]?.name || "",
+    "價值觀第1名":values[0] ? `${values[0][0]}：${values[0][1]}` : "",
+    "價值觀第2名":values[1] ? `${values[1][0]}：${values[1][1]}` : "",
+    "完成率":r.completion_rate || 100,
+    "PDF寄送狀態":r.pdf_storage_path ? "成功" : "",
+    "PDF檔案ID":r.pdf_storage_path || "",
+    "PDF檔名":r.pdf_storage_path || "",
+    "諮詢師專用分析":r.counselor_advice || ""
+  };
 }
 async function loadOwnerConfig(){
   const panel=document.getElementById("ownerPanel");
@@ -361,24 +407,43 @@ async function loadOwnerConfig(){
   panel.classList.remove("hidden");
   showMsg("ownerMsg","正在讀取最高管理者授權資料...");
   try{
-    const res=await jsonp({action:"adminOwnerConfig",token:sessionToken});
-    if(!res.ok) throw new Error(res.message || "最高管理者資料讀取失敗");
+    const [plansRes,counselorsRes]=await Promise.all([
+      apiFetch("/api/owner/license-plans"),
+      apiFetch("/api/owner/counselors")
+    ]);
     hideMsg("ownerMsg");
-    document.getElementById("ownerRegisterCode").textContent=res.registrationCode || "";
-    document.getElementById("ownerAuthPolicy").textContent=res.authorizationPolicy || "";
-    document.getElementById("ownerPurchasePolicy").textContent=res.purchasePolicy || "";
-    allLicensePlans=res.licensePlans || [];
-    allAuthorizations=res.counselorAuthorizations || [];
+    document.getElementById("ownerRegisterCode").textContent="CAREER-2026";
+    document.getElementById("ownerAuthPolicy").textContent="諮詢師需由最高管理者授權額度後使用。1 位學員完成 1 次測驗扣 1 額度。";
+    document.getElementById("ownerPurchasePolicy").textContent="可依方案管理金額與測驗數量，例如單次測驗 100 元。";
+    allLicensePlans=(plansRes.plans || []).map(p=>({
+      "授權方案ID":p.id,
+      "方案名稱":p.name,
+      "金額":Math.round(Number(p.price_cents||0)/100),
+      "可用數量":p.test_quantity,
+      "已使用數量":0,
+      "剩餘數量":p.test_quantity,
+      "狀態":p.status==="active"?"啟用":"停用"
+    }));
+    allAuthorizations=(counselorsRes.counselors || []).map(c=>({
+      id:c.id,
+      "諮詢師Email":c.email || c.username,
+      "方案名稱":"帳號額度",
+      "金額":"",
+      "購買/授權數量":c.creditBalance,
+      "已使用數量":"",
+      "剩餘數量":c.creditBalance,
+      "狀態":c.status==="active"?"啟用":"停用"
+    }));
     renderLicenseManagement();
     panel.classList.remove("hidden");
   }catch(err){
     document.getElementById("ownerRegisterCode").textContent="待後端回傳";
-    document.getElementById("ownerAuthPolicy").textContent="最高管理者帳號已辨識，但 Apps Script 後端尚未成功回傳授權管理資料。";
-    document.getElementById("ownerPurchasePolicy").textContent="請確認 Apps Script 已貼上最新版 Code.gs，並重新部署 Web App。";
+    document.getElementById("ownerAuthPolicy").textContent="最高管理者帳號已辨識，但後端尚未成功回傳授權管理資料。";
+    document.getElementById("ownerPurchasePolicy").textContent="請確認 Supabase 與 Vercel 環境變數已設定。";
     allLicensePlans=[];
     allAuthorizations=[];
     renderLicenseManagement();
-    showMsg("ownerMsg",`最高管理者功能尚未完全啟用：${err.message}。請更新 Apps Script 後重新登入。`,true);
+    showMsg("ownerMsg",`最高管理者功能尚未完全啟用：${err.message}。請確認正式後端設定後重新登入。`,true);
   }
 }
 function renderLicenseManagement(){
@@ -406,14 +471,13 @@ function showOwnerSection(section){
 async function saveLicensePlan(){
   hideMsg("ownerMsg");
   try{
-    const res=await jsonp({
-      action:"adminSaveLicensePlan",token:sessionToken,
+    const res=await apiFetch("/api/owner/license-plans",{method:"POST",body:{
       planName:document.getElementById("licensePlanName").value.trim(),
       amount:document.getElementById("licenseAmount").value.trim(),
       quantity:document.getElementById("licenseQuantity").value.trim(),
       status:document.getElementById("licenseStatus").value,
       note:document.getElementById("licenseNote").value.trim()
-    });
+    }});
     if(!res.ok) throw new Error(res.message||"儲存授權方案失敗");
     showMsg("ownerMsg","授權方案已儲存。");
     await loadOwnerConfig();
@@ -422,15 +486,14 @@ async function saveLicensePlan(){
 async function saveCounselorAuthorization(){
   hideMsg("ownerMsg");
   try{
-    const res=await jsonp({
-      action:"adminSaveCounselorAuthorization",token:sessionToken,
-      counselorEmail:document.getElementById("authCounselorEmail").value.trim(),
-      planName:document.getElementById("authPlanName").value.trim(),
-      amount:document.getElementById("authAmount").value.trim(),
-      purchasedQuantity:document.getElementById("authQuantity").value.trim(),
-      status:document.getElementById("authStatus").value,
-      note:document.getElementById("authNote").value.trim()
-    });
+    const counselorEmail=document.getElementById("authCounselorEmail").value.trim();
+    const target=allAuthorizations.find(a=>String(a["諮詢師Email"]).toLowerCase()===counselorEmail.toLowerCase());
+    if(!target?.id) throw new Error("找不到此諮詢師，請先確認對方已註冊");
+    const res=await apiFetch("/api/owner/credits",{method:"POST",body:{
+      consultantId:target.id,
+      amount:Number(document.getElementById("authQuantity").value.trim() || 0),
+      reason:document.getElementById("authNote").value.trim() || "最高管理者授權額度"
+    }});
     if(!res.ok) throw new Error(res.message||"儲存諮詢師授權失敗");
     showMsg("ownerMsg","諮詢師授權已儲存。");
     await loadOwnerConfig();
@@ -442,7 +505,7 @@ async function resetCounselorPassword(){
   const newPassword=document.getElementById("resetCounselorPass").value;
   if(!username || !newPassword){showMsg("ownerMsg","請填諮詢師帳號與新臨時密碼。",true);return;}
   try{
-    const res=await jsonp({action:"adminResetCounselorPassword",token:sessionToken,username,newPassword});
+    const res=await apiFetch("/api/owner/reset-password",{method:"POST",body:{username,newPassword}});
     if(!res.ok) throw new Error(res.message||"重設密碼失敗");
     document.getElementById("resetCounselorPass").value="";
     showMsg("ownerMsg",res.message || "密碼已重設。");
@@ -451,9 +514,9 @@ async function resetCounselorPassword(){
 async function loadBatches(){
   hideMsg("batchMsg");
   try{
-    const res=await jsonp({action:"adminBatchList",token:sessionToken});
+    const res=await apiFetch("/api/consultant/batches");
     if(!res.ok) throw new Error(res.message||"批次讀取失敗");
-    allBatches=res.batches||[];
+    allBatches=(res.batches||[]).map(normalizeBatch);
     renderBatches();
   }catch(err){
     showMsg("batchMsg",err.message,true);
@@ -483,7 +546,7 @@ async function createBatch(){
   if(btn){btn.disabled=true;btn.textContent="建立中...";}
   showHtmlMsg("batchMsg","<strong>正在建立批次短碼...</strong><br>系統正在確認授權額度並產生短碼，請稍候。","warn");
   try{
-    const res=await jsonp({action:"adminCreateBatch",token:sessionToken,batchCode,batchName,quantity,startTime,endTime,counselorEmail,status});
+    const res=await apiFetch("/api/consultant/batches",{method:"POST",body:{batchCode,batchName,quantity,startsAt:startTime,endsAt:endTime,counselorEmail,status:status==="停用"?"stopped":"active"}});
     if(!res.ok) throw new Error(res.message||"建立批次失敗");
     const b=res.batch || {};
     showHtmlMsg("batchMsg",`<strong>建立成功</strong><br>短碼：<span class="code">${esc(b.shortCode || "")}</span><br>測驗連結：<a class="linkbox" href="${escAttr(b.link || "")}" target="_blank" rel="noopener">${esc(b.link || "")}</a><br><button class="btn" style="margin-top:8px" onclick="copyText('${escAttr(b.link || "")}')">複製測驗連結</button>`,"success");
@@ -546,7 +609,7 @@ async function updateBatch(params){
   hideMsg("batchMsg");
   showHtmlMsg("batchMsg","<strong>正在更新批次...</strong>","warn");
   try{
-    const res=await jsonp({action:"adminUpdateBatch",token:sessionToken,...params});
+    const res=await apiFetch("/api/consultant/update-batch",{method:"PATCH",body:{id:params.row,batchName:params.batchName,quantity:params.quantity,startsAt:params.startTime,endsAt:params.endTime,counselorEmail:params.counselorEmail,status:params.status==="停用"?"stopped":"active"}});
     if(!res.ok) throw new Error(res.message||"更新失敗");
     showHtmlMsg("batchMsg",`<strong>更新成功</strong><br>${esc(res.message || "批次已更新")}`,"success");
     await loadBatches();
@@ -559,7 +622,7 @@ async function deleteBatch(row){
   hideMsg("batchMsg");
   showHtmlMsg("batchMsg","<strong>正在處理刪除...</strong>","warn");
   try{
-    const res=await jsonp({action:"adminDeleteBatch",token:sessionToken,row});
+    const res=await apiFetch("/api/consultant/delete-batch",{method:"POST",body:{id:row}});
     if(!res.ok) throw new Error(res.message||"刪除失敗");
     showHtmlMsg("batchMsg",`<strong>處理完成</strong><br>${esc(res.message || "批次已刪除")}`,"success");
     await loadBatches();
@@ -568,9 +631,9 @@ async function deleteBatch(row){
 async function loadRecords(){
   hideMsg("adminMsg");
   try{
-    const res=await jsonp({action:"adminList",token:sessionToken});
+    const res=await apiFetch("/api/consultant/results");
     if(!res.ok) throw new Error(res.message||"讀取失敗");
-    allRecords=res.records||[];
+    allRecords=(res.results||[]).map(normalizeRecord);
     renderRows();
   }catch(err){
     showMsg("adminMsg",err.message,true);
@@ -590,7 +653,7 @@ function renderRows(){
   document.getElementById("visibleCount").textContent=rows.length;
   document.getElementById("rows").innerHTML=rows.map(r=>{
     const idx=encodeURIComponent(r._row || r.row || "");
-    const pdfUrl=`${ADMIN_API_ENDPOINT}?action=adminDownloadPdf&token=${encodeURIComponent(sessionToken)}&row=${idx}`;
+    const pdfUrl=`${apiBase()}/api/consultant/download-pdf?id=${idx}&token=${encodeURIComponent(sessionToken)}`;
     const hasPdf=!!(r["PDF檔案ID"] || r["PDF_BASE64"] || r["PDF檔名"]);
     const advisorReport=r["諮詢師專用分析"] || r["諮詢師個案摘要"] || "";
     const reportId=`advisorReport_${escAttr(idx || Math.random().toString(36).slice(2))}`;

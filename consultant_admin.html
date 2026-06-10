@@ -52,27 +52,10 @@
     .advisor-report{margin-top:8px;background:#102A23;color:#F9EED7;border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}
     details.advisor-box{margin-top:8px}
     details.advisor-box summary{cursor:pointer;color:var(--green);font-weight:1000;margin-bottom:6px}
-    .owner-panel{background:linear-gradient(135deg,#102A23,#173F33 70%,#7E5B1B 150%);color:#fff;border:0}
-    .owner-panel h2{color:#fff}.owner-panel p,.owner-panel .muted{color:#F8ECD1}
-    .owner-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:13px}
-    .owner-card b{display:block;color:#FFE4A7;margin-bottom:5px}
-    .owner-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:14px;align-items:start}
-    .owner-nav{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:10px;position:sticky;top:12px}
-    .owner-tab{width:100%;border:0;border-radius:13px;background:transparent;color:#F8ECD1;text-align:left;padding:12px 13px;font-weight:1000}
-    .owner-tab.active{background:#FFF7E4;color:#173F33}
-    .owner-main{min-width:0}
-    .owner-section{display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px}
-    .owner-section.active{display:block}
-    .owner-section h3{margin:0 0 6px;color:#FFE4A7;font-size:22px}
-    .owner-section .table-wrap{background:rgba(255,255,255,.94)}
-    .owner-section .field label{color:#FFF7E4}
-    .owner-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .owner-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .batch-actions{display:grid;gap:6px;min-width:92px}
     .batch-actions .btn{width:100%;padding:8px 10px;font-size:13px}
     .contact-card{margin-top:12px;background:#F1FAF4;border:1px solid #CFE8D7;border-radius:16px;padding:12px 14px;color:#1C473A;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.contact-card strong{display:block;color:#173F33}.contact-card span{font-size:13px;color:#49665A}.contact-card a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 12px;background:#173F33;color:#fff;text-decoration:none;font-weight:1000}.contact-card a.mail{background:#B8872E}
-    @media(max-width:900px){.owner-layout{grid-template-columns:1fr}.owner-nav{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.owner-tab{text-align:center}.owner-form-grid{grid-template-columns:1fr}}
-    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid,.stats{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .left,.toolbar .right{display:grid;grid-template-columns:1fr;width:100%}.btn,input{width:100%}.owner-nav{grid-template-columns:1fr}}
+    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid,.stats{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .left,.toolbar .right{display:grid;grid-template-columns:1fr;width:100%}.btn,input{width:100%}}
   </style>
 </head>
 <body>
@@ -129,7 +112,6 @@
       <div class="field"><label>&nbsp;</label><button id="createBatchBtn" class="btn primary" onclick="createBatch()">建立批次短碼</button></div>
     </div>
     <div id="batchMsg" class="notice hidden"></div>
-    <div id="ownerPanel" class="hidden"></div>
     <div class="table-wrap" style="margin:16px 0 18px">
       <table>
         <thead>
@@ -167,10 +149,7 @@ let sessionRole = localStorage.getItem("careerAdminRole") || "";
 let sessionUsername = localStorage.getItem("careerAdminUsername") || "";
 let allRecords = [];
 let allBatches = [];
-let allLicensePlans = [];
-let allAuthorizations = [];
 let registerMode = false;
-const SUPER_ADMIN_USERNAME = "ccazhu";
 
 function jsonp(params){
   return new Promise((resolve,reject)=>{
@@ -214,7 +193,6 @@ async function login(){
     localStorage.setItem("careerAdminToken",sessionToken);
     localStorage.setItem("careerAdminRole",sessionRole);
     localStorage.setItem("careerAdminUsername",sessionUsername);
-    if(isSuperAdminSession() && !sessionRole) sessionRole="最高管理者";
     document.getElementById("sessionLabel").textContent=`已登入：${sessionUsername || username}${sessionRole?"｜"+sessionRole:""}`;
     document.getElementById("loginPanel").classList.add("hidden");
     document.getElementById("adminPanel").classList.remove("hidden");
@@ -263,80 +241,7 @@ function logout(){
   document.getElementById("loginPanel").classList.remove("hidden");
 }
 async function loadDashboard(){
-  await Promise.all([loadBatches(),loadRecords(),loadOwnerConfig()]);
-}
-function isSuperAdminSession(){
-  return String(sessionUsername || "").trim().toLowerCase() === SUPER_ADMIN_USERNAME || String(sessionRole || "").includes("最高管理者");
-}
-async function loadOwnerConfig(){
-  return;
-}
-function renderLicenseManagement(){
-  const planRows=document.getElementById("licensePlanRows");
-  const authRows=document.getElementById("authRows");
-  if(planRows){
-    planRows.innerHTML=allLicensePlans.map(p=>`<tr>
-      <td>${esc(p["授權方案ID"])}</td><td>${esc(p["方案名稱"])}</td><td>${esc(p["金額"])}</td><td>${esc(p["可用數量"])}</td><td>${esc(p["已使用數量"]||0)}</td><td>${esc(p["剩餘數量"])}</td><td>${esc(p["狀態"])}</td>
-    </tr>`).join("") || `<tr><td colspan="7" class="muted">尚未建立授權方案。</td></tr>`;
-  }
-  if(authRows){
-    authRows.innerHTML=allAuthorizations.map(a=>`<tr>
-      <td>${esc(a["諮詢師Email"])}</td><td>${esc(a["方案名稱"])}</td><td>${esc(a["金額"])}</td><td>${esc(a["購買/授權數量"])}</td><td>${esc(a["已使用數量"]||0)}</td><td>${esc(a["剩餘數量"])}</td><td>${esc(a["狀態"])}</td>
-    </tr>`).join("") || `<tr><td colspan="7" class="muted">尚未開通諮詢師授權。</td></tr>`;
-  }
-}
-function showOwnerSection(section){
-  document.querySelectorAll("[data-owner-tab]").forEach(btn=>{
-    btn.classList.toggle("active",btn.dataset.ownerTab===section);
-  });
-  document.querySelectorAll("[data-owner-section]").forEach(panel=>{
-    panel.classList.toggle("active",panel.dataset.ownerSection===section);
-  });
-}
-async function saveLicensePlan(){
-  hideMsg("ownerMsg");
-  try{
-    const res=await jsonp({
-      action:"adminSaveLicensePlan",token:sessionToken,
-      planName:document.getElementById("licensePlanName").value.trim(),
-      amount:document.getElementById("licenseAmount").value.trim(),
-      quantity:document.getElementById("licenseQuantity").value.trim(),
-      status:document.getElementById("licenseStatus").value,
-      note:document.getElementById("licenseNote").value.trim()
-    });
-    if(!res.ok) throw new Error(res.message||"儲存授權方案失敗");
-    showMsg("ownerMsg","授權方案已儲存。");
-    await loadOwnerConfig();
-  }catch(err){showMsg("ownerMsg",err.message,true);}
-}
-async function saveCounselorAuthorization(){
-  hideMsg("ownerMsg");
-  try{
-    const res=await jsonp({
-      action:"adminSaveCounselorAuthorization",token:sessionToken,
-      counselorEmail:document.getElementById("authCounselorEmail").value.trim(),
-      planName:document.getElementById("authPlanName").value.trim(),
-      amount:document.getElementById("authAmount").value.trim(),
-      purchasedQuantity:document.getElementById("authQuantity").value.trim(),
-      status:document.getElementById("authStatus").value,
-      note:document.getElementById("authNote").value.trim()
-    });
-    if(!res.ok) throw new Error(res.message||"儲存諮詢師授權失敗");
-    showMsg("ownerMsg","諮詢師授權已儲存。");
-    await loadOwnerConfig();
-  }catch(err){showMsg("ownerMsg",err.message,true);}
-}
-async function resetCounselorPassword(){
-  hideMsg("ownerMsg");
-  const username=document.getElementById("resetCounselorUser").value.trim();
-  const newPassword=document.getElementById("resetCounselorPass").value;
-  if(!username || !newPassword){showMsg("ownerMsg","請填諮詢師帳號與新臨時密碼。",true);return;}
-  try{
-    const res=await jsonp({action:"adminResetCounselorPassword",token:sessionToken,username,newPassword});
-    if(!res.ok) throw new Error(res.message||"重設密碼失敗");
-    document.getElementById("resetCounselorPass").value="";
-    showMsg("ownerMsg",res.message || "密碼已重設。");
-  }catch(err){showMsg("ownerMsg",err.message,true);}
+  await Promise.all([loadBatches(),loadRecords()]);
 }
 async function loadBatches(){
   hideMsg("batchMsg");
@@ -518,7 +423,6 @@ function shouldLogoutForError(msg){
 }
 
 if(sessionToken){
-  if(isSuperAdminSession() && !sessionRole) sessionRole="最高管理者";
   document.getElementById("loginPanel").classList.add("hidden");
   document.getElementById("adminPanel").classList.remove("hidden");
   document.getElementById("sessionLabel").textContent=`已登入：${sessionUsername || "管理者"}${sessionRole?"｜"+sessionRole:""}`;

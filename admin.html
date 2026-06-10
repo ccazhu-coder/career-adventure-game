@@ -3,235 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>諮詢師後台｜職涯冒險島</title>
+  <title>知己知途｜後台入口</title>
   <style>
-    :root{--bg:#F3EFE4;--paper:#FFFDF8;--ink:#162B25;--muted:#68776F;--green:#173F33;--green2:#2E6B55;--gold:#B8872E;--line:#E0D3BD;--bad:#8E4A35;--shadow:0 18px 48px rgba(26,43,35,.12)}
+    :root{--bg:#F3EFE4;--paper:#FFFDF8;--ink:#162B25;--muted:#68776F;--green:#173F33;--green2:#2E6B55;--gold:#B8872E;--line:#E0D3BD;--shadow:0 18px 48px rgba(26,43,35,.12)}
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:linear-gradient(135deg,#F7F1E2 0%,#F3EFE4 48%,#EAF1EA 100%);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.55}
-    button,input{font:inherit}
-    button{cursor:pointer}
-    .app{max-width:1180px;margin:0 auto;padding:24px 16px 64px}
-    .hero{background:linear-gradient(135deg,#102A23,#173F33 68%,#80601F 150%);color:#fff;border-radius:26px;padding:24px 26px;box-shadow:var(--shadow)}
-    .hero h1{margin:0;font-size:clamp(28px,4vw,42px);letter-spacing:0}
-    .hero p{margin:8px 0 0;color:#F8ECD1}
-    .panel{margin-top:18px;background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
-    .login{max-width:560px}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .field{display:flex;flex-direction:column;gap:6px;min-width:0}
-    .field label{font-weight:900;color:#354F45}
-    input{width:100%;min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px 13px;background:#fff;color:var(--ink);outline:0}
-    input:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(46,107,85,.12)}
-    .btn{border:0;border-radius:999px;padding:11px 16px;font-weight:1000;background:#E8DDC4;color:#17382F}
-    .btn.primary{background:linear-gradient(135deg,#143B30,#24624E);color:#fff}
-    .btn.gold{background:linear-gradient(135deg,#805414,#BF8E32);color:#fff}
-    .btn.danger{background:var(--bad);color:#fff}
-    .btn:disabled{opacity:.55;cursor:not-allowed}
-    .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-    .toolbar .left,.toolbar .right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
-    .stat{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px}
-    .stat b{display:block;font-size:24px;color:var(--green)}
-    .stat span{font-size:13px;color:var(--muted)}
-    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff}
-    table{width:100%;border-collapse:collapse;min-width:980px}
-    th,td{padding:11px 12px;border-bottom:1px solid #EEE4D6;text-align:left;vertical-align:top}
-    th{position:sticky;top:0;background:#F8F2E6;color:#354F45;font-size:13px;z-index:1}
-    td{font-size:14px}
-    .code{font-weight:1000;color:var(--gold);letter-spacing:.08em}
-    .pill{display:inline-flex;border:1px solid #D8C8A6;background:#FBF2D8;color:#6B501E;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900}
-    .muted{color:var(--muted)}
-    .hidden{display:none!important}
-    .notice{border:1px solid #E4C778;background:#FFF7E4;color:#6B501E;border-radius:16px;padding:11px 13px;margin-top:12px}
-    .error{border-color:#E2B5A2;background:#F8E8E1;color:#7A3828}
-    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid,.stats{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .left,.toolbar .right{display:grid;grid-template-columns:1fr;width:100%}.btn,input{width:100%}}
+    body{margin:0;min-height:100vh;background:linear-gradient(135deg,#F7F1E2 0%,#F3EFE4 48%,#EAF1EA 100%);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}
+    .app{max-width:1040px;margin:0 auto;padding:28px 16px 64px}
+    .hero{background:linear-gradient(135deg,#102A23,#173F33 68%,#80601F 150%);color:#fff;border-radius:28px;padding:28px;box-shadow:var(--shadow)}
+    h1{margin:0;font-size:clamp(30px,5vw,46px)}
+    .hero p{margin:10px 0 0;color:#F8ECD1}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:22px}
+    .card{background:rgba(255,253,248,.96);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+    .card h2{margin:0 0 8px;color:var(--green);font-size:26px}
+    .card p{margin:0 0 18px;color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:12px 18px;font-weight:1000;text-decoration:none;background:linear-gradient(135deg,#143B30,#24624E);color:#fff}
+    .btn.gold{background:linear-gradient(135deg,#805414,#BF8E32)}
+    .note{margin-top:18px;background:#FFF7E4;border:1px solid #E4C778;color:#6B501E;border-radius:16px;padding:12px 14px}
+    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid{grid-template-columns:1fr}.btn{width:100%}}
   </style>
 </head>
 <body>
-<div class="app">
-  <header class="hero">
-    <h1>諮詢師後台</h1>
-    <p>登入後可查看每位學員的測驗資料、分數摘要，並直接下載 PDF 報告。</p>
-  </header>
-
-  <section id="loginPanel" class="panel login">
-    <h2 id="authTitle">諮詢師登入</h2>
-    <div class="grid">
-      <div class="field"><label>帳號</label><input id="adminUser" autocomplete="username" placeholder="請輸入管理者帳號"></div>
-      <div class="field"><label>密碼</label><input id="adminPass" type="password" autocomplete="current-password" placeholder="請輸入密碼"></div>
-    </div>
-    <div id="registerFields" class="grid hidden" style="margin-top:12px">
-      <div class="field"><label>姓名</label><input id="displayName" placeholder="諮詢師姓名"></div>
-      <div class="field"><label>註冊碼</label><input id="registerCode" placeholder="請向管理者索取註冊碼"></div>
-    </div>
-    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-      <button id="loginBtn" class="btn primary" onclick="login()">登入後台</button>
-      <button id="registerBtn" class="btn primary hidden" onclick="registerCounselor()">建立帳號</button>
-      <button class="btn" onclick="toggleRegister()" id="toggleRegisterBtn">諮詢師註冊</button>
-    </div>
-    <div id="loginMsg" class="notice hidden"></div>
-  </section>
-
-  <section id="adminPanel" class="panel hidden">
-    <div class="toolbar">
-      <div class="left">
-        <input id="searchInput" placeholder="搜尋姓名、Email、何倫碼..." oninput="renderRows()">
-        <button class="btn" onclick="loadRecords()">重新整理</button>
-      </div>
-      <div class="right">
-        <span class="pill" id="sessionLabel">已登入</span>
-        <button class="btn danger" onclick="logout()">登出</button>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="stat"><b id="totalCount">0</b><span>總測驗紀錄</span></div>
-      <div class="stat"><b id="sentCount">0</b><span>PDF 已寄送</span></div>
-      <div class="stat"><b id="todayCount">0</b><span>今日新增</span></div>
-      <div class="stat"><b id="visibleCount">0</b><span>目前顯示</span></div>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>送出時間</th><th>姓名</th><th>Email</th><th>何倫碼</th><th>前三型</th><th>價值觀</th><th>完成率</th><th>PDF</th><th>操作</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-    <div id="adminMsg" class="notice hidden"></div>
-  </section>
-</div>
-
-<script>
-const ADMIN_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxFAorVaPXj_qoIPtHGG8kK1x8sEc7iGAtKxA8rgSAfKVdrPXBoUT8PeT24bZUWA5lNCQ/exec";
-let sessionToken = localStorage.getItem("careerAdminToken") || "";
-let allRecords = [];
-let registerMode = false;
-
-function jsonp(params){
-  return new Promise((resolve,reject)=>{
-    const cb="admin_cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);
-    const url=new URL(ADMIN_API_ENDPOINT);
-    Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-    url.searchParams.set("callback",cb);
-    const script=document.createElement("script");
-    const timer=setTimeout(()=>{cleanup();reject(new Error("後台連線逾時"));},20000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
-    window[cb]=(data)=>{cleanup();resolve(data);};
-    script.onerror=()=>{cleanup();reject(new Error("無法連線到 Apps Script 後台"));};
-    script.src=url.toString();
-    document.body.appendChild(script);
-  });
-}
-function showMsg(id,msg,bad=false){
-  const el=document.getElementById(id);
-  el.textContent=msg;
-  el.className="notice"+(bad?" error":"");
-  el.classList.remove("hidden");
-}
-function hideMsg(id){document.getElementById(id).classList.add("hidden");}
-async function login(){
-  hideMsg("loginMsg");
-  const username=document.getElementById("adminUser").value.trim();
-  const password=document.getElementById("adminPass").value;
-  if(!username || !password){showMsg("loginMsg","請輸入帳號與密碼。",true);return;}
-  try{
-    const res=await jsonp({action:"adminLogin",username,password});
-    if(!res.ok) throw new Error(res.message||"登入失敗");
-    sessionToken=res.token;
-    localStorage.setItem("careerAdminToken",sessionToken);
-    document.getElementById("sessionLabel").textContent=`已登入：${username}`;
-    document.getElementById("loginPanel").classList.add("hidden");
-    document.getElementById("adminPanel").classList.remove("hidden");
-    await loadRecords();
-  }catch(err){showMsg("loginMsg",err.message,true);}
-}
-async function registerCounselor(){
-  hideMsg("loginMsg");
-  const username=document.getElementById("adminUser").value.trim();
-  const password=document.getElementById("adminPass").value;
-  const displayName=document.getElementById("displayName").value.trim();
-  const registerCode=document.getElementById("registerCode").value.trim();
-  if(!username || !password || !displayName || !registerCode){
-    showMsg("loginMsg","請填寫帳號、密碼、姓名與註冊碼。",true);
-    return;
-  }
-  if(password.length < 8){
-    showMsg("loginMsg","密碼至少需要 8 個字元。",true);
-    return;
-  }
-  try{
-    const res=await jsonp({action:"adminRegister",username,password,displayName,registerCode});
-    if(!res.ok) throw new Error(res.message||"註冊失敗");
-    showMsg("loginMsg","帳號已建立，請直接登入。");
-    toggleRegister(false);
-    document.getElementById("adminPass").value="";
-  }catch(err){showMsg("loginMsg",err.message,true);}
-}
-function toggleRegister(force){
-  registerMode = typeof force === "boolean" ? force : !registerMode;
-  document.getElementById("authTitle").textContent = registerMode ? "諮詢師註冊" : "諮詢師登入";
-  document.getElementById("registerFields").classList.toggle("hidden",!registerMode);
-  document.getElementById("registerBtn").classList.toggle("hidden",!registerMode);
-  document.getElementById("loginBtn").classList.toggle("hidden",registerMode);
-  document.getElementById("toggleRegisterBtn").textContent = registerMode ? "返回登入" : "諮詢師註冊";
-  hideMsg("loginMsg");
-}
-function logout(){
-  sessionToken="";
-  localStorage.removeItem("careerAdminToken");
-  allRecords=[];
-  document.getElementById("adminPanel").classList.add("hidden");
-  document.getElementById("loginPanel").classList.remove("hidden");
-}
-async function loadRecords(){
-  hideMsg("adminMsg");
-  try{
-    const res=await jsonp({action:"adminList",token:sessionToken});
-    if(!res.ok) throw new Error(res.message||"讀取失敗");
-    allRecords=res.records||[];
-    renderRows();
-  }catch(err){
-    showMsg("adminMsg",err.message,true);
-    if(/登入|token|權限|逾時/.test(err.message)) logout();
-  }
-}
-function renderRows(){
-  const q=document.getElementById("searchInput").value.trim().toLowerCase();
-  const rows=allRecords.filter(r=>{
-    if(!q) return true;
-    return [r["姓名"],r["Email"],r["何倫碼"],r["第一型"],r["第二型"],r["第三型"]].some(v=>String(v||"").toLowerCase().includes(q));
-  });
-  document.getElementById("totalCount").textContent=allRecords.length;
-  document.getElementById("sentCount").textContent=allRecords.filter(r=>String(r["PDF寄送狀態"]||"").includes("成功") || String(r["PDF寄送狀態"]||"").includes("已")).length;
-  const today=new Date().toISOString().slice(0,10);
-  document.getElementById("todayCount").textContent=allRecords.filter(r=>String(r["送出時間"]||"").slice(0,10)===today).length;
-  document.getElementById("visibleCount").textContent=rows.length;
-  document.getElementById("rows").innerHTML=rows.map(r=>{
-    const idx=encodeURIComponent(r._row || r.row || "");
-    const pdfUrl=`${ADMIN_API_ENDPOINT}?action=adminDownloadPdf&token=${encodeURIComponent(sessionToken)}&row=${idx}`;
-    const hasPdf=!!(r["PDF檔案ID"] || r["PDF_BASE64"] || r["PDF檔名"]);
-    return `<tr>
-      <td>${esc(fmtTime(r["送出時間"]))}</td>
-      <td><strong>${esc(r["姓名"])}</strong><br><span class="muted">${esc(r["電話"])}</span></td>
-      <td>${esc(r["Email"])}</td>
-      <td><span class="code">${esc(r["何倫碼"])}</span></td>
-      <td>${esc(r["第一型"])}<br>${esc(r["第二型"])}<br>${esc(r["第三型"])}</td>
-      <td>${esc(r["價值觀第一"])}<br>${esc(r["價值觀第二"])}</td>
-      <td>${esc(r["完成率"])}%</td>
-      <td>${esc(r["PDF寄送狀態"]||"")}</td>
-      <td><a class="btn gold" style="display:inline-block;text-decoration:none;${hasPdf?"":"opacity:.55;pointer-events:none"}" href="${pdfUrl}" target="_blank" rel="noopener">下載 PDF</a></td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="9" class="muted">目前沒有資料。</td></tr>`;
-}
-function fmtTime(v){return v ? String(v).replace("T"," ").slice(0,19) : "";}
-function esc(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));}
-
-if(sessionToken){
-  document.getElementById("loginPanel").classList.add("hidden");
-  document.getElementById("adminPanel").classList.remove("hidden");
-  loadRecords();
-}
-</script>
+  <main class="app">
+    <section class="hero">
+      <h1>知己知途｜後台入口</h1>
+      <p>請依照身份進入對應後台。諮詢師與最高管理者已分流，避免權限與功能混在一起。</p>
+    </section>
+    <section class="grid">
+      <article class="card">
+        <h2>諮詢師後台</h2>
+        <p>建立施測批次、查看學員測驗紀錄、下載 PDF 報告與查看諮詢分析。</p>
+        <a class="btn" href="consultant_admin.html">進入諮詢師後台</a>
+      </article>
+      <article class="card">
+        <h2>最高管理者後台</h2>
+        <p>最高權限專用。管理授權方案、諮詢師額度、密碼協助、批次與全部資料。</p>
+        <a class="btn gold" href="owner_admin.html">進入最高管理者後台</a>
+      </article>
+    </section>
+    <div class="note">你的最高管理者帳號請使用最高管理者後台登入；其它諮詢師請使用諮詢師後台。</div>
+  </main>
 </body>
 </html>

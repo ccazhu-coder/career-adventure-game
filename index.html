@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>職涯冒險島｜荷倫興趣 × SUPER 工作價值觀線上遊戲</title>
+  <title>知己知途｜職涯探索冒險遊戲｜正式營運版</title>
   <style>
     :root{
       --bg:#F3EFE4;
@@ -39,25 +39,39 @@
     .badge{display:inline-flex;align-items:center;gap:8px;width:max-content;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:8px 14px;font-weight:800;color:#FFF7E4;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
     h1{font-size:clamp(32px,4.4vw,58px);line-height:1.05;margin:16px 0 12px;letter-spacing:.015em}.hero p{margin:0;color:#F8ECD1;font-size:17px;max-width:790px}.hero-features{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.hero-chip{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.10);border-radius:999px;padding:8px 12px;color:#FFF3D5;font-size:13px;font-weight:800}
     .hero-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:28px;padding:20px;backdrop-filter:blur(12px);display:flex;flex-direction:column;justify-content:space-between;min-height:190px}.hero-card strong{font-size:44px;color:#FFE4A7;line-height:1}.hero-card span{display:block;color:#F8ECD1;margin-top:6px}.hero-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.hero-stat div{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:10px}.hero-stat b{display:block;color:#fff;font-size:18px}.hero-stat small{color:#F8ECD1}
-    .topbar{display:grid;grid-template-columns:1fr;gap:10px;margin:18px 0 14px;position:sticky;top:10px;z-index:10;background:rgba(255,253,248,.92);border:1px solid rgba(224,211,189,.88);border-radius:22px;box-shadow:0 12px 26px rgba(26,43,35,.08);backdrop-filter:blur(16px);padding:14px 16px}.topbar-meta{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}.topbar-title{font-weight:1000;color:#173F33;line-height:1.2}.topbar-sub{font-size:13px;color:#68776F;margin-top:2px}.progress-wrap{width:100%;background:#fff;border:1px solid var(--line);border-radius:999px;overflow:hidden;height:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 8px 18px rgba(26,43,35,.06)}.progress{height:100%;width:0%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);transition:.28s ease}.small{font-size:13px;color:var(--muted)}
+    .topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin:18px 0 12px;position:sticky;top:0;z-index:10;background:rgba(243,239,228,.82);backdrop-filter:blur(16px);padding:11px 0}.progress-wrap{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;overflow:hidden;height:18px;box-shadow:var(--shadow2)}.progress{height:100%;width:0%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);transition:.28s ease}.small{font-size:13px;color:var(--muted)}
     .layout{display:grid;grid-template-columns:282px 1fr;gap:22px;margin-top:18px}.nav{align-self:start;position:sticky;top:68px;background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:28px;padding:14px;box-shadow:var(--shadow);backdrop-filter:blur(18px)}.nav:before{content:"完整專業版｜262題";display:block;color:#7E6736;background:#FBF2D8;border:1px solid #E8D19A;border-radius:16px;padding:9px 11px;margin:2px 2px 10px;font-size:13px;font-weight:900;text-align:center}.nav button{width:100%;border:0;background:transparent;text-align:left;border-radius:18px;padding:13px 12px;margin:4px 0;color:var(--ink);display:flex;gap:10px;align-items:center;justify-content:space-between;transition:.18s ease}.nav button:hover{background:#F6EFDFFF;transform:translateX(2px)}.nav button.active{background:linear-gradient(135deg,#173F33,#2E6B55);font-weight:900;color:#fff;box-shadow:0 10px 22px rgba(23,63,51,.20)}.nav .dot{width:10px;height:10px;border-radius:50%;background:#D3C5A8;display:inline-block}.nav button.done .dot{background:#2F9C70}.nav button.active .dot{background:#FFE4A7}
     .panel{background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:34px;padding:26px;box-shadow:var(--shadow);min-height:560px}.section-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(224,211,189,.65)}.section-head h2{margin:0;font-size:30px;color:var(--dark);letter-spacing:.01em}.section-head p{margin:7px 0 0;color:var(--muted)}.pill{display:inline-flex;align-items:center;border-radius:999px;background:#F4E6BD;color:#5B4012;border:1px solid #E4C778;padding:8px 13px;font-weight:900;white-space:nowrap}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .field{display:flex;flex-direction:column;gap:7px}.field label{font-weight:900;color:#354F45}.field input,.field textarea{border:1px solid var(--line);border-radius:18px;padding:13px 15px;background:#fff;color:var(--ink);outline:0;box-shadow:0 4px 12px rgba(30,45,38,.03)}.field input:focus,.field textarea:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(46,107,85,.12)}.required{color:#A1412D;font-weight:1000;margin-left:4px}.field .help{font-size:12px;color:#6C7A72;margin-top:-2px}
-    .mission-tip{background:linear-gradient(135deg,#EDF6EE,#FFF7DD);border:1px solid #D8E6D0;color:#254E43;border-radius:22px;padding:15px 17px;margin:16px 0;box-shadow:0 8px 18px rgba(46,107,85,.06)}details.type-card{background:#fff;border:1px solid var(--line);border-radius:24px;margin:15px 0;overflow:hidden;transition:.2s ease}details.type-card[open]{box-shadow:0 14px 30px rgba(48,77,62,.10);border-color:#D6C5A8}summary{list-style:none;cursor:pointer;padding:17px 19px;display:flex;justify-content:space-between;gap:10px;align-items:center;background:linear-gradient(180deg,#fff,#FFFCF5)}summary::-webkit-details-marker{display:none}.type-title{display:flex;gap:11px;align-items:center;font-weight:1000;font-size:18px;color:var(--dark)}.type-title b{font-size:23px}.count-chip{font-size:13px;color:#3E6958;background:#EEF6F0;border:1px solid #DAE9DE;border-radius:999px;padding:6px 10px;white-space:nowrap;font-weight:900}
-    .q-list{padding:0 18px 18px}.q-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:13px 0;border-top:1px dashed #E9DDC9}.q-text{font-weight:720}.choice{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.choice button{border:1px solid #9E9177;background:#E8DDC4;color:#17382F;border-radius:999px;padding:9px 13px;font-weight:900;min-width:86px;box-shadow:0 4px 10px rgba(34,47,40,.05)}.choice button:hover{background:#D8C89E;color:#0F2C24;border-color:#76694F}.choice button.selected.yes{background:#173F33;color:#fff;border-color:#123B30;box-shadow:0 8px 16px rgba(23,76,61,.20)}.choice button.selected.no{background:#8E4A35;color:#fff;border-color:#743927;box-shadow:0 8px 16px rgba(142,74,53,.18)}
-    .rating-row{display:grid;grid-template-columns:1fr;gap:10px;align-items:start;padding:16px 0;border-top:1px dashed #E9DDC9}.rating-row:first-child{border-top:0}.rating-title{font-weight:900;line-height:1.45}.rating-sub{font-size:13px;color:var(--muted);margin-top:2px}.rating-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start}.rating-buttons button{width:42px;height:42px;border-radius:999px;border:1px solid #9E9177;background:#F0E7D4;color:#17382F;font-weight:1000}.rating-buttons button:hover{background:#D8C89E;color:#0F2C24;border-color:#76694F}.rating-buttons button.active{background:#163E32;border-color:#163E32;color:#fff;box-shadow:0 8px 14px rgba(22,62,50,.22)}
+    .field{display:flex;flex-direction:column;gap:7px}.field label{font-weight:900;color:#354F45}.field input,.field textarea,.field select{border:1px solid var(--line);border-radius:18px;padding:13px 15px;background:#fff;color:var(--ink);outline:0;box-shadow:0 4px 12px rgba(30,45,38,.03)}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(46,107,85,.12)}.required{color:#A1412D;font-weight:1000;margin-left:4px}.field .help{font-size:12px;color:#6C7A72;margin-top:-2px}
+    .mission-tip{background:linear-gradient(135deg,#EDF6EE,#FFF7DD);border:1px solid #D8E6D0;color:#254E43;border-radius:22px;padding:15px 17px;margin:16px 0;box-shadow:0 8px 18px rgba(46,107,85,.06);font-size:16px;line-height:1.75}.section-intro{border-radius:26px;padding:20px 22px;margin:0 0 18px;border:1px solid #DCCFB8;box-shadow:0 10px 24px rgba(42,62,49,.07)}.section-intro h3{margin:0 0 8px;font-size:24px;color:#17382F}.section-intro p{margin:0;color:#365247;font-size:16px;line-height:1.8}.section-intro .intro-tag{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:1000;letter-spacing:.06em;margin-bottom:12px}.section-intro .intro-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.section-intro .intro-card{background:rgba(255,255,255,.78);border:1px solid rgba(220,207,184,.9);border-radius:18px;padding:14px 14px 13px}.section-intro .intro-card b{display:block;color:#18382E;font-size:15px;margin-bottom:5px}.section-intro .intro-card span{display:block;color:#52645B;font-size:14px;line-height:1.65}.section-intro.profile{background:linear-gradient(135deg,#F4FBF6,#FFF8E4)}.section-intro.profile .intro-tag{background:#DDEEE2;color:#1D5848}.section-intro.holland{background:linear-gradient(135deg,#F3F8FF,#F8F4FF)}.section-intro.holland .intro-tag{background:#E3ECFF;color:#244B7A}.section-intro.rating{background:linear-gradient(135deg,#FFF8EC,#F8FBFF)}.section-intro.rating .intro-tag{background:#F6E4BE;color:#6B4A0B}.section-intro.super{background:linear-gradient(135deg,#F5F9EF,#FFF7E7)}.section-intro.super .intro-tag{background:#E8F1D8;color:#46602D}.section-intro.result{background:linear-gradient(135deg,#F7F6FF,#EFF8F2)}.section-intro.result .intro-tag{background:#E6E1FF;color:#4B3D8A}details.type-card{background:#fff;border:1px solid var(--line);border-radius:24px;margin:15px 0;overflow:hidden;transition:.2s ease}details.type-card[open]{box-shadow:0 14px 30px rgba(48,77,62,.10);border-color:#D6C5A8}summary{list-style:none;cursor:pointer;padding:17px 19px;display:flex;justify-content:space-between;gap:10px;align-items:center;background:linear-gradient(180deg,#fff,#FFFCF5)}summary::-webkit-details-marker{display:none}.type-title{display:flex;gap:11px;align-items:center;font-weight:1000;font-size:18px;color:var(--dark)}.type-title b{font-size:23px}.count-chip{font-size:13px;color:#3E6958;background:#EEF6F0;border:1px solid #DAE9DE;border-radius:999px;padding:6px 10px;white-space:nowrap;font-weight:900}
+    .q-list{padding:0 18px 18px}.q-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:13px 0;border-top:1px dashed #E9DDC9;min-height:104px}.q-text{font-weight:720;overflow-wrap:anywhere;word-break:break-word;line-height:1.55}.choice{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.choice button{border:1px solid #9E9177;background:#E8DDC4;color:#17382F;border-radius:999px;padding:9px 13px;font-weight:900;min-width:86px;box-shadow:0 4px 10px rgba(34,47,40,.05)}.choice button:hover{background:#D8C89E;color:#0F2C24;border-color:#76694F}.choice button.selected.yes{background:#173F33;color:#fff;border-color:#123B30;box-shadow:0 8px 16px rgba(23,76,61,.20)}.choice button.selected.no{background:#8E4A35;color:#fff;border-color:#743927;box-shadow:0 8px 16px rgba(142,74,53,.18)}
+    .rating-row{display:grid;grid-template-columns:1.1fr auto;gap:12px;align-items:center;padding:14px 0;border-top:1px dashed #E9DDC9;min-height:82px}.rating-row:first-child{border-top:0}.rating-title{font-weight:900}.rating-sub{font-size:13px;color:var(--muted)}.rating-buttons{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.rating-buttons button{width:40px;height:40px;border-radius:999px;border:1px solid #9E9177;background:#F0E7D4;color:#17382F;font-weight:1000}.rating-buttons button:hover{background:#D8C89E;color:#0F2C24;border-color:#76694F}.rating-buttons button.active{background:#163E32;border-color:#163E32;color:#fff;box-shadow:0 8px 14px rgba(22,62,50,.22)}
     .super-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;margin:15px 0;box-shadow:0 10px 22px rgba(35,52,44,.045)}.super-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}.super-head h3{margin:0;font-size:19px;color:var(--dark)}.super-desc{margin:0 0 8px;color:var(--muted);font-size:14px}.actions{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:26px;flex-wrap:wrap}.actions .right{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:12px 18px;font-weight:1000;background:#CDBF9F;color:#17352C;transition:.16s ease}.btn:hover{filter:brightness(.96);transform:translateY(-1px)}.btn.primary{background:linear-gradient(135deg,#143B30,#24624E);color:#fff;box-shadow:0 12px 22px rgba(22,62,50,.25)}.btn.gold{background:linear-gradient(135deg,#805414,#BF8E32);color:#fff}.btn.ghost{background:#F8F2E6;border:1px solid #9E9177;color:#17382F}.btn.danger{background:#8E4A35;color:#fff}.btn:disabled{opacity:.6;cursor:not-allowed;filter:grayscale(.15)}
     .result-hero{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;align-items:stretch}.result-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#102A23,#173F33 55%,#B8872E 140%);color:#fff;border-radius:28px;padding:26px;box-shadow:var(--shadow)}.result-card:after{content:"";position:absolute;right:-50px;bottom:-70px;width:190px;height:190px;border-radius:999px;background:rgba(241,209,138,.18)}.result-card h2{margin:0 0 8px;font-size:34px}.result-card p{color:#F6E7C1;margin:0}.code{font-size:64px;font-weight:1000;letter-spacing:.10em;margin:12px 0;color:#FFE19B}.sub-card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:20px;box-shadow:0 10px 24px rgba(35,52,44,.055)}.bar-row{display:grid;grid-template-columns:92px 1fr 52px;gap:10px;align-items:center;margin:10px 0}.bar-label{font-weight:1000}.bar-bg{height:17px;background:#F0E8D8;border-radius:999px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);width:0%}.score-num{text-align:right;font-weight:1000;color:var(--dark)}.rank-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}.rank-item{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 10px 22px rgba(35,52,44,.045)}.rank-item h3{margin:0 0 7px;color:var(--dark)}.rank-item p{margin:0;color:var(--muted)}
-    .hex-card{display:flex;flex-direction:column;gap:10px}.hex-wrap{display:flex;justify-content:center;align-items:center;padding:8px 0}.hex-svg{width:min(100%,440px);height:auto;display:block}.hex-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hex-legend .legend-item{display:flex;align-items:flex-start;gap:8px;background:#F7F3EA;border:1px solid var(--line);border-radius:15px;padding:9px 10px;font-size:13px;color:#4B5B53}.legend-badge{width:26px;height:26px;border-radius:999px;background:#E8F0EB;color:var(--green);display:inline-flex;align-items:center;justify-content:center;font-weight:1000;flex:0 0 26px}.counselor-list{display:grid;gap:10px}.counselor-note{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px 14px}.counselor-note strong{color:var(--dark)}.report-box{white-space:pre-wrap;background:#102A23;color:#F9EED7;border-radius:24px;padding:19px;max-height:380px;overflow:auto;font-family:"Noto Sans Mono","Consolas",monospace;font-size:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#102A23;color:#fff;border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:99}.toast.show{opacity:1;bottom:28px}.celebration{position:fixed;inset:0;z-index:120;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s ease;background:rgba(16,42,35,.10);backdrop-filter:blur(2px)}.celebration.show{opacity:1;visibility:visible}.celebration-card{position:relative;overflow:hidden;min-width:min(86vw,430px);border-radius:28px;background:linear-gradient(135deg,#102A23,#23684E 72%,#B8872E 150%);color:#FFF7E4;text-align:center;padding:28px 24px;box-shadow:0 28px 70px rgba(16,42,35,.28);transform:translateY(8px) scale(.96);animation:celebratePop 1.15s ease both}.celebration-card strong{display:block;font-size:clamp(24px,5vw,34px);line-height:1.15}.celebration-card span{display:block;margin-top:8px;color:#F8ECD1;font-weight:800}.spark{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:999px;background:#FFE19B;opacity:0;transform:translate(-50%,-50%);animation:sparkBurst .95s ease-out both}.spark:nth-child(1){--x:-160px;--y:-88px;background:#F1D18A}.spark:nth-child(2){--x:145px;--y:-74px;background:#DCEBE2}.spark:nth-child(3){--x:-120px;--y:82px;background:#C7E7D4}.spark:nth-child(4){--x:132px;--y:86px;background:#FFE4A7}.spark:nth-child(5){--x:0;--y:-116px;background:#fff}.spark:nth-child(6){--x:0;--y:112px;background:#F1D18A}.spark:nth-child(7){--x:-72px;--y:-124px;background:#DCEBE2}.spark:nth-child(8){--x:86px;--y:-118px;background:#FFE4A7}@keyframes celebratePop{0%{transform:translateY(10px) scale(.94);opacity:0}18%{transform:translateY(0) scale(1.02);opacity:1}78%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-4px) scale(.98);opacity:0}}@keyframes sparkBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}20%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.6)}}.warning{background:#FFF7E4;border:1px solid #F0D59E;color:#6B501E;border-radius:18px;padding:12px 14px;margin:12px 0}.hidden{display:none!important}.email-status{font-size:13px;color:#6C7A72;margin-top:8px}
+    .hex-card{display:flex;flex-direction:column;gap:10px}.hex-wrap{display:flex;justify-content:center;align-items:center;padding:8px 0}.hex-svg{width:min(100%,440px);height:auto;display:block}.hex-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hex-legend .legend-item{display:flex;align-items:flex-start;gap:8px;background:#F7F3EA;border:1px solid var(--line);border-radius:15px;padding:9px 10px;font-size:13px;color:#4B5B53}.legend-badge{width:26px;height:26px;border-radius:999px;background:#E8F0EB;color:var(--green);display:inline-flex;align-items:center;justify-content:center;font-weight:1000;flex:0 0 26px}.counselor-list{display:grid;gap:10px}.counselor-note{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px 14px}.counselor-note strong{color:var(--dark)}.report-box{white-space:pre-wrap;background:#102A23;color:#F9EED7;border-radius:24px;padding:19px;max-height:380px;overflow:auto;font-family:"Noto Sans Mono","Consolas",monospace;font-size:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#102A23;color:#fff;border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:99}.toast.show{opacity:1;bottom:28px}.warning{background:#FFF7E4;border:1px solid #F0D59E;color:#6B501E;border-radius:18px;padding:12px 14px;margin:12px 0}.hidden{display:none!important}.email-status{font-size:13px;color:#6C7A72;margin-top:8px}
 
     .email-send-box{margin:18px 0 0;background:linear-gradient(135deg,#F7F3EA,#FFFDF8);border:1px solid #D8C8A6;border-radius:20px;padding:14px 16px;color:#21372F;display:grid;gap:6px}
     .email-send-box strong{color:#173F33}.email-send-box.ok{background:#EEF7EF;border-color:#BFD9C2}.email-send-box.warn{background:#FFF7E4;border-color:#F0D59E}.email-send-box.bad{background:#F8E8E1;border-color:#E2B5A2}.email-send-box .mini{font-size:13px;color:#6C7A72}
-    .pdf-export{width:980px;max-width:980px;background:#FFFDF8;color:var(--ink);padding:22px;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}.pdf-export .actions,.pdf-export #emailSendStatus,.pdf-export .email-send-box{display:none!important}.pdf-export .result-hero{display:grid!important;grid-template-columns:1.18fr .82fr!important;gap:18px}.pdf-export .rank-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px}.pdf-export .hex-legend{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}.pdf-export .report-box{max-height:none}.pdf-export .result-card,.pdf-export .sub-card,.pdf-export .rank-item{break-inside:avoid;page-break-inside:avoid}.pdf-export h3{break-after:avoid}
-    @media (max-width:900px){.hero-inner,.layout,.result-hero{grid-template-columns:1fr}.nav{position:relative;top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.nav:before{grid-column:1/-1}.topbar{position:relative;align-items:stretch}.grid2,.grid3,.rank-list,.hex-legend{grid-template-columns:1fr}.q-row,.rating-row{grid-template-columns:1fr}.choice,.rating-buttons{justify-content:flex-start}.app{padding:14px 12px 56px}.hero{padding:24px}.section-head{flex-direction:column}.panel{padding:18px}.code{font-size:50px}.actions,.actions .right{align-items:stretch}.btn{min-height:46px}.field input,.field textarea{font-size:16px}}
-    @media (min-width:901px) and (max-width:1180px){.grid2{grid-template-columns:1fr}.rating-buttons button{width:46px;height:46px}}
-    @media (max-width:560px){body{line-height:1.55}.app{padding:10px 8px 42px}.hero{border-radius:22px;padding:18px}.hero:before,.hero:after{display:none}h1{font-size:30px;line-height:1.12;margin:12px 0 8px}.hero p{font-size:15px}.badge{max-width:100%;white-space:normal;border-radius:16px;padding:7px 10px}.hero-card{min-height:auto;border-radius:20px;padding:14px}.hero-card strong{font-size:38px}.hero-stat{grid-template-columns:1fr;gap:8px}.topbar{top:6px;gap:8px;margin:10px 0 10px;padding:12px;border-radius:18px}.topbar-meta{align-items:flex-start}.topbar-sub{font-size:12px}.progress-wrap{height:13px}.layout{gap:10px;margin-top:8px}.nav{display:flex;overflow-x:auto;gap:8px;padding:8px;border-radius:18px;box-shadow:var(--shadow2);scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}.nav:before{display:none}.nav .nav-head{display:none}.nav button{flex:0 0 auto;width:auto;min-width:118px;min-height:44px;margin:0;padding:10px 12px;border-radius:14px;scroll-snap-align:start;white-space:nowrap}.nav button:hover{transform:none}.nav button span:first-child{overflow:hidden;text-overflow:ellipsis}.nav .dot{display:none}.panel{border-radius:22px;padding:14px;min-height:auto}.section-head{gap:10px;margin-bottom:12px;padding-bottom:12px}.section-head h2{font-size:23px;line-height:1.2}.section-head p{font-size:14px}.pill{white-space:normal;border-radius:14px;padding:7px 10px}.mission-tip,.warning,.email-send-box{border-radius:16px;padding:12px}.field{gap:6px}.field input,.field textarea{border-radius:14px;min-height:46px;padding:12px}.super-card,details.type-card,.sub-card,.rank-item{border-radius:18px}.super-card{padding:14px}.super-head{align-items:flex-start;flex-direction:column}.super-head h3{font-size:17px}summary{padding:14px;align-items:flex-start}.type-title{font-size:16px;line-height:1.35}.count-chip{font-size:12px;padding:5px 8px}.q-list{padding:0 12px 12px}.q-row,.rating-row{gap:10px;padding:14px 0}.q-text,.rating-title{font-size:15px;line-height:1.55}.choice{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}.choice button{width:100%;min-width:0;min-height:46px;padding:10px 8px}.rating-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;gap:8px}.rating-buttons button{width:100%;height:44px}.actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:18px}.actions .left,.actions .right{display:grid;grid-template-columns:1fr;gap:8px;width:100%}.btn{width:100%;border-radius:16px;padding:12px 14px}.result-card{border-radius:20px;padding:18px}.result-card h2{font-size:24px}.code{font-size:42px;letter-spacing:.08em}.bar-row{grid-template-columns:72px 1fr 42px;gap:8px}.report-box{border-radius:16px;max-height:300px;font-size:13px;padding:14px}.hex-svg{width:100%;max-width:330px}.toast{width:calc(100% - 28px);text-align:center;border-radius:16px;bottom:14px}.toast.show{bottom:18px}}
-    @media print{body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero,.nav,.topbar,.actions .left,.actions .right,.btn,.toast,.celebration{display:none!important}.app{max-width:none;padding:0}.layout{display:block}.panel,.sub-card,.rank-item,.result-card{box-shadow:none}.panel{border:0;padding:0}.report-box{color:#111;background:#fff;border:1px solid #ddd}.result-card{color:#111;background:#fff;border:1px solid #ddd}.result-card p{color:#333}.code{color:#111}.hex-svg{max-width:360px}.counselor-note,.legend-item,.sub-card,.rank-item,.result-card{break-inside:avoid}.rank-list,.result-hero{gap:10px}.section-head{border-bottom:2px solid #333}}
-  </style>
+    .contact-card{margin:14px 0;background:#F1FAF4;border:1px solid #CFE8D7;border-radius:20px;padding:14px 16px;color:#1C473A;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.contact-card strong{display:block;color:#173F33}.contact-card span{font-size:14px;color:#49665A}.contact-card a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:9px 13px;background:#173F33;color:#fff;text-decoration:none;font-weight:1000}.contact-card a.mail{background:#B8872E}
+
+    .game-bg{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}.game-orb{position:absolute;border-radius:999px;filter:blur(.2px);opacity:.32;animation:floatOrb 9s ease-in-out infinite}.game-orb.one{width:140px;height:140px;left:5%;top:18%;background:#F1D18A}.game-orb.two{width:190px;height:190px;right:8%;top:36%;background:#A8D7BC;animation-delay:-2s}.game-orb.three{width:110px;height:110px;left:48%;bottom:8%;background:#C9B7FF;animation-delay:-4s}.spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#D8A63F;opacity:.38;animation:twinkle 2.8s ease-in-out infinite}.spark.s1{left:18%;top:12%}.spark.s2{right:24%;top:18%;animation-delay:.8s}.spark.s3{left:72%;bottom:20%;animation-delay:1.5s}@keyframes floatOrb{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.04)}}@keyframes twinkle{0%,100%{transform:scale(.65);opacity:.22}50%{transform:scale(1.25);opacity:.65}}@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes popSelect{0%{transform:scale(.96)}55%{transform:scale(1.06)}100%{transform:scale(1)}}.panel{animation:slideUp .38s ease both}.hero-card strong{animation:twinkle 3s ease-in-out infinite}.q-row,.rating-row,.type-card,.super-card,.result-card,.rank-item{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.q-row:hover,.rating-row:hover{transform:translateX(4px);background:linear-gradient(90deg,rgba(46,107,85,.045),rgba(241,209,138,.05));border-radius:14px;padding-left:10px;padding-right:10px}.choice button.selected,.rating-buttons button.active{animation:popSelect .24s ease}.progress{background-size:180% 100%;animation:xpFlow 2.8s linear infinite}@keyframes xpFlow{0%{background-position:0% 50%}100%{background-position:180% 50%}}.access-card{background:linear-gradient(135deg,#FFF8E7,#EFF8F2);border:1px solid #DCCFB8;border-radius:24px;padding:18px;margin:16px 0;box-shadow:0 10px 24px rgba(42,62,49,.07)}.access-card h3{margin:0 0 8px;color:#17382F;font-size:22px}.access-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}.access-status{margin-top:10px;border-radius:14px;padding:10px 12px;font-weight:800}.access-status.warn{background:#FFF6DD;color:#6B501E;border:1px solid #EED393}.access-status.ok{background:#E8F6EE;color:#23684E;border:1px solid #BFDCCB}.access-status.bad{background:#FFEDE8;color:#8E4A35;border:1px solid #E9B8A9}.code-chip{display:inline-flex;align-items:center;gap:8px;background:#102A23;color:#FFE9B5;border-radius:999px;padding:8px 13px;font-weight:1000;letter-spacing:.06em}.game-stage-label{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 12px;margin-top:14px;color:#FFE8AC;font-weight:900}.pdf-safe *{box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word}.pdf-avoid{break-inside:avoid;page-break-inside:avoid}
+
+    @media (max-width:900px){.hero-inner,.layout,.result-hero{grid-template-columns:1fr}.nav{position:relative;top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.nav:before{grid-column:1/-1}.topbar{position:relative}.grid2,.grid3,.rank-list,.hex-legend,.section-intro .intro-grid{grid-template-columns:1fr}.q-row,.rating-row{grid-template-columns:1fr}.choice,.rating-buttons{justify-content:flex-start}.app{padding:14px 12px 56px}.hero{padding:24px}.section-head{flex-direction:column}.panel{padding:18px}.code{font-size:50px}}
+    @media print{body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero,.nav,.topbar,.actions .left,.actions .right,.btn,.toast{display:none!important}.app{max-width:none;padding:0}.layout{display:block}.panel,.sub-card,.rank-item,.result-card{box-shadow:none}.panel{border:0;padding:0}.report-box{color:#111;background:#fff;border:1px solid #ddd}.result-card{color:#111;background:#fff;border:1px solid #ddd}.result-card p{color:#333}.code{color:#111}.hex-svg{max-width:360px}.counselor-note,.legend-item,.sub-card,.rank-item,.result-card{break-inside:avoid}.rank-list,.result-hero{gap:10px}.section-head{border-bottom:2px solid #333}}
+  
+    /* v6 正式營運版：遊戲化但保留專業感 */
+    .hero-stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:11px 13px}
+    .mission-map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0 8px}.mission-node{position:relative;background:#FFFDF8;border:1px solid var(--line);border-radius:20px;padding:12px 10px;min-height:88px;box-shadow:0 8px 18px rgba(26,43,35,.06);transition:.22s ease}.mission-node.active{background:linear-gradient(135deg,#173F33,#2E6B55);color:#fff;transform:translateY(-3px);box-shadow:0 14px 30px rgba(23,63,51,.22)}.mission-node.done{border-color:#95C9A9;background:#F2FBF5}.mission-node b{display:block;font-size:13px}.mission-node span{display:block;font-size:12px;color:var(--muted)}.mission-node.active span{color:#F8ECD1}.mission-node .node-icon{font-size:23px;margin-bottom:3px}.mission-node.done:after{content:'✓';position:absolute;right:9px;top:7px;width:22px;height:22px;border-radius:50%;background:#2F9C70;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:1000}
+    .quest-intro{--quest-main:#173F33;--quest-soft:#EEF8F1;--quest-accent:#B8872E;--quest-card:#FFFFFF;position:relative;overflow:hidden;border-radius:28px;padding:30px;margin:0 0 22px;border:2px solid color-mix(in srgb,var(--quest-accent) 28%,#fff);border-left:8px solid var(--quest-accent);box-shadow:0 14px 30px rgba(42,62,49,.10);background:linear-gradient(135deg,var(--quest-soft),#FFFDF8)}.quest-intro:after{content:'✦';position:absolute;right:22px;top:12px;font-size:48px;color:color-mix(in srgb,var(--quest-accent) 34%,transparent);animation:twinkle 2.6s ease-in-out infinite}.quest-no{display:inline-flex;align-items:center;background:var(--quest-main);color:#FFF1C6;border-radius:999px;padding:8px 15px;font-size:15px;font-weight:1000;letter-spacing:.04em}.quest-intro h2{margin:14px 0 10px;color:var(--quest-main);font-size:34px;line-height:1.22}.quest-intro p{margin:0;color:#263F36;font-size:19px;font-weight:780;line-height:1.85;max-width:920px}.quest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.quest-card{background:var(--quest-card);border:1px solid color-mix(in srgb,var(--quest-accent) 30%,#fff);border-left:5px solid var(--quest-accent);border-radius:18px;padding:16px;min-height:108px}.quest-card b{display:block;color:var(--quest-main);font-size:18px;margin-bottom:7px}.quest-card span{font-size:16px;color:#4E6258;line-height:1.72}.quest-intro.profile{--quest-main:#174A3D;--quest-soft:#EAF7EE;--quest-accent:#2F9C70}.quest-intro.interest{--quest-main:#244B7A;--quest-soft:#EEF5FF;--quest-accent:#4C79B8}.quest-intro.valley{--quest-main:#563B83;--quest-soft:#F4EEFF;--quest-accent:#8B6CD6}.quest-intro.super{--quest-main:#6B4A0B;--quest-soft:#FFF4D8;--quest-accent:#B8872E}.quest-intro.result{--quest-main:#3E4F2B;--quest-soft:#EEF8E7;--quest-accent:#799B48}
+    .energy-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0 18px}.energy-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 6px 16px rgba(42,62,49,.06);min-height:90px}.energy-card b{font-size:20px;color:#173F33}.energy-card span{display:block;font-size:13px;color:#68776F;margin-top:2px}
+    .q-row{min-height:86px;align-items:stretch}.q-text{display:flex;align-items:center}.choice{align-items:center}.rating-row{min-height:78px}.type-card .q-list{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(86px,auto)}.super-card .rating-row{min-height:78px}.sub-mission-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 10px;padding:14px 16px;border-radius:18px;background:#F7F1E2;border:1px solid #E4D5B9}.sub-mission-title h3{margin:0;color:#173F33}.sub-mission-title span{font-size:13px;color:#6C7A72;font-weight:900}.locked-tip{background:#FFF6DD;border:1px solid #EED393;color:#6B501E;border-radius:18px;padding:14px 16px;font-weight:800}
+    .mission-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(10,30,24,.42);backdrop-filter:blur(7px);padding:18px}.mission-overlay.show{display:flex}.mission-pop{position:relative;width:min(480px,100%);background:#FFFDF8;border:1px solid #F1D18A;border-radius:34px;padding:30px;text-align:center;box-shadow:0 28px 70px rgba(0,0,0,.28);animation:popWin .34s ease both}.mission-pop:before,.mission-pop:after{content:'✨';position:absolute;font-size:32px;animation:fireSpin 1.4s ease-in-out infinite}.mission-pop:before{left:22px;top:20px}.mission-pop:after{right:22px;top:22px;animation-delay:.35s}.mission-pop h2{font-size:32px;color:#173F33;margin:8px 0}.mission-pop p{color:#52645B;margin:0 0 16px}.firework{font-size:38px;color:#B8872E;animation:twinkle 1s ease-in-out infinite}.reward-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#173F33;color:#FFE8AC;padding:10px 16px;font-weight:1000;margin:4px 0 18px}@keyframes popWin{from{opacity:0;transform:scale(.86) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes fireSpin{0%,100%{transform:scale(.85) rotate(-8deg);opacity:.55}50%{transform:scale(1.25) rotate(10deg);opacity:1}}
+    .role-title{font-size:34px;line-height:1.15;margin:10px 0 6px;color:#FFE7A8}.result-card .role-title{color:#173F33}.treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.treasure-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:0 8px 18px rgba(42,62,49,.06)}.treasure-card h3{margin:0 0 8px;color:#173F33}.treasure-card ul{padding-left:20px;margin:8px 0}.gem-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.gem{background:#FFF8E8;border:1px solid #E8D19A;border-radius:16px;padding:10px;text-align:center;font-weight:900;color:#5B4012}.case-link{font-size:12px;color:#6C7A72;margin-top:6px}
+    @media(max-width:900px){.mission-map,.quest-grid,.energy-row,.treasure-grid,.gem-list{grid-template-columns:1fr}.q-row,.rating-row{min-height:auto}.type-card .q-list{grid-auto-rows:auto}.quest-intro{padding:22px 18px;border-left-width:6px}.quest-intro h2{font-size:28px}.quest-intro p{font-size:17px}.quest-card span{font-size:15px}}
+    @media(max-width:560px){body{line-height:1.55}.app{padding:10px 8px 42px}.hero{border-radius:22px;padding:18px}.hero:before,.hero:after{display:none}h1{font-size:30px;line-height:1.12;margin:12px 0 8px}.hero p{font-size:15px}.badge{max-width:100%;white-space:normal;border-radius:16px;padding:7px 10px}.hero-card{min-height:auto;border-radius:20px;padding:14px}.hero-card strong{font-size:38px}.hero-stat{grid-template-columns:1fr;gap:8px}.topbar{top:6px;gap:8px;margin:10px 0 10px;padding:12px;border-radius:18px;background:rgba(255,253,248,.94);border:1px solid rgba(224,211,189,.9);box-shadow:var(--shadow2)}.progress-wrap{height:13px;min-width:100%}.layout{gap:10px;margin-top:8px}.nav{display:flex;overflow-x:auto;gap:8px;padding:8px;border-radius:18px;box-shadow:var(--shadow2);scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}.nav:before{display:none}.nav button{flex:0 0 auto;width:auto;min-width:118px;min-height:44px;margin:0;padding:10px 12px;border-radius:14px;scroll-snap-align:start;white-space:nowrap}.nav button:hover{transform:none}.nav button span:first-child{overflow:hidden;text-overflow:ellipsis}.nav .dot{display:none}.panel{border-radius:22px;padding:14px;min-height:auto}.section-head{gap:10px;margin-bottom:12px;padding-bottom:12px}.section-head h2{font-size:23px;line-height:1.2}.section-head p{font-size:14px}.pill{white-space:normal;border-radius:14px;padding:7px 10px}.mission-tip,.warning,.email-send-box,.contact-card{border-radius:16px;padding:12px}.field{gap:6px}.field input,.field textarea,.field select{border-radius:14px;min-height:46px;padding:12px;font-size:16px}.section-intro,.quest-intro{border-radius:20px;padding:18px 14px;margin-bottom:14px}.section-intro h3,.quest-intro h2{font-size:23px;line-height:1.28}.section-intro p,.quest-intro p{font-size:16px;line-height:1.75}.quest-card{min-height:auto;padding:13px}.quest-card b{font-size:16px}.super-card,details.type-card,.sub-card,.rank-item,.treasure-card{border-radius:18px}.super-card{padding:14px}.super-head{align-items:flex-start;flex-direction:column}.super-head h3{font-size:17px}summary{padding:14px;align-items:flex-start}.type-title{font-size:16px;line-height:1.35}.count-chip{font-size:12px;padding:5px 8px}.q-list{padding:0 12px 12px}.q-row,.rating-row{gap:10px;padding:14px 0}.q-text,.rating-title{font-size:15px;line-height:1.55}.choice{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}.choice button{width:100%;min-width:0;min-height:46px;padding:10px 8px}.rating-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;gap:8px}.rating-buttons button{width:100%;height:44px}.actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:18px}.actions .left,.actions .right{display:grid;grid-template-columns:1fr;gap:8px;width:100%}.btn{width:100%;border-radius:16px;padding:12px 14px;min-height:46px}.access-grid{grid-template-columns:1fr}.result-card{border-radius:20px;padding:18px}.result-card h2{font-size:24px}.code{font-size:42px;letter-spacing:.08em}.bar-row{grid-template-columns:72px 1fr 42px;gap:8px}.report-box{border-radius:16px;max-height:300px;font-size:13px;padding:14px}.hex-svg{width:100%;max-width:330px}.toast{width:calc(100% - 28px);text-align:center;border-radius:16px;bottom:14px}.toast.show{bottom:18px}.mission-pop{border-radius:24px;padding:24px 18px}.mission-pop h2{font-size:26px}}
+    @media print{.pdf-safe{width:170mm!important;max-width:170mm!important;padding:0!important;margin:0 auto!important;overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-safe *{overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-avoid{break-inside:avoid!important;page-break-inside:avoid!important}}
+
+</style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -65,13 +79,13 @@
   <header class="hero">
     <div class="hero-inner">
       <div>
-        <span class="badge">🎮 職涯冒險島 · 線上遊戲版</span>
-        <h1>荷倫興趣 × SUPER 工作價值觀</h1>
-        <p>完成 6 個任務星球，收集興趣、能力、職業偏好與工作價值觀能量，最後解鎖你的職涯冒險角色、何倫碼六角型圖與職涯決策雷達。</p>
+        <span class="badge">🎮 知己知途｜職涯探索冒險遊戲</span>
+        <h1>職涯冒險島｜正式營運版</h1>
+        <p>完成 5 個職涯任務關卡，收集興趣能量、能力寶石與價值羅盤，最後解鎖你的職涯角色稱號、何倫碼六角型圖與專屬 PDF 報告。</p>
         <div class="hero-stats">
-          <div class="hero-stat"><b>262 題</b><span>完整量表題數</span></div>
-          <div class="hero-stat"><b>7 個模組</b><span>從建檔到報告輸出</span></div>
-          <div class="hero-stat"><b>PDF 報告</b><span>可下載、列印、寄送 Email</span></div>
+          <div class="hero-stat"><b>5 關</b><span>正式冒險流程</span></div>
+          <div class="hero-stat"><b>262 題</b><span>完整專業題庫</span></div>
+          <div class="hero-stat"><b>PDF 報告</b><span>完成後可下載與寄送</span></div>
         </div>
       </div>
       <div class="hero-card">
@@ -83,7 +97,7 @@
   </header>
 
   <div class="topbar">
-    <div class="topbar-meta"><div><div class="topbar-title">測驗進度</div><div class="topbar-sub">目前作答僅在本頁有效，不讀取上一位資料</div></div><div class="small" id="progressText">0 / 262 題</div></div>
+    <div class="topbar-meta"><div><div class="topbar-title">職涯能量值</div><div class="topbar-sub">作答期間請保持本頁開啟，完成後即可產生專屬報告</div></div><div class="small" id="progressText">0 / 262 題</div></div>
     <div class="progress-wrap" aria-label="填答進度"><div id="progress" class="progress"></div></div>
   </div>
 
@@ -92,45 +106,45 @@
     <section class="panel" id="view"></section>
   </main>
 </div>
-<div class="toast" id="toast">已儲存</div>
-<div class="celebration" id="celebration" aria-hidden="true">
-  <div class="celebration-card">
-    <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
-    <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
-    <strong id="celebrationTitle">恭喜進入下一關</strong>
-    <span id="celebrationText">你又完成一段探索，繼續往前走。</span>
-  </div>
-</div>
+<div class="toast" id="toast">任務進度已更新</div>
+<div id="missionOverlay" class="mission-overlay" aria-hidden="true"><div class="mission-pop"><div class="firework">✦ ✨ ✦</div><h2 id="missionTitle">任務完成</h2><p id="missionText">你已解鎖新的職涯能量。</p><div id="missionBadge" class="reward-badge">🏅 能量徽章</div><button class="btn primary" onclick="hideMissionOverlay()">繼續冒險 →</button></div></div>
 
 <script>
-const DATA = {"riasec":{"R":{"name":"現實型","emoji":"🛠️","role":"實作技術家","desc":"喜歡動手操作、工具設備、技術實作、戶外或現場任務，重視具體成果。","advice":"用實作作品、證照技術、現場任務來累積自信；適合先從操作型、工程型、設備型、技術服務型任務探索。"},"I":{"name":"調查研究型","emoji":"🔬","role":"問題研究員","desc":"喜歡觀察、分析、研究、解題與探索原因，重視知識與邏輯。","advice":"用研究題目、資料分析、問題解決專案來探索；適合技術研究、分析、科普、數據與專業知識型工作。"},"A":{"name":"藝術型","emoji":"🎨","role":"創意表達者","desc":"喜歡創作、表達、美感、設計、文字、影像或表演，重視自由與原創。","advice":"用作品集、內容創作、設計任務與個人風格累積能見度；適合創意、設計、文字、影音與品牌表達相關工作。"},"S":{"name":"社會型","emoji":"🤝","role":"助人連結者","desc":"喜歡幫助人、陪伴、教學、溝通、服務與建立關係，重視人際互動。","advice":"用服務經驗、帶領活動、諮詢輔導或教學任務來累積專業；適合教育、諮詢、社福、服務與人際協作型工作。"},"E":{"name":"企業/事業型","emoji":"🚀","role":"影響推動者","desc":"喜歡說服、領導、企劃、推動目標、經營資源與面對挑戰，重視影響力與成果。","advice":"用企劃提案、業務開發、活動主持、專案管理來展現優勢；適合行銷業務、管理、創業、企劃與領導型工作。"},"C":{"name":"常規/傳統型","emoji":"📋","role":"秩序管理者","desc":"喜歡清楚規則、資料整理、行政流程、數字表格與穩定執行，重視正確與效率。","advice":"用流程管理、文件整理、財務行政、品質控管來展現價值；適合行政、會計、資料管理、品質與流程型工作。"}},"hollandSections":[{"id":"interest","title":"任務 1｜興趣活動星球","question":"你喜歡做下列事情嗎？","yes":"喜歡","no":"不喜歡","scoreLabel":"興趣活動","types":{"R":["裝配修理電器","修理自行車","裝修機器或機器零件","做木工活","駕駛卡車或拖拉機","開機床","騎摩托車","上金屬工藝課","上機械製圖課","上木工手藝課","上電氣自動化技術課"],"I":["閱讀科技書刊","在實驗室工作","研究某個科研項目","製作飛機、汽車模型","做化學實驗","閱讀專業性論文","解一道數學或棋藝難題","上物理課","上化學課","上幾何課","上生物課"],"A":["素描、製圖或繪畫","表演戲劇、小品或相聲節目","設計傢俱或房屋","在舞臺上演唱或跳舞","演奏一種樂器","閱讀流行小說","聽音樂會","從事攝影創作","閱讀電影、電視劇本","讀詩寫詩","上書法美術課"],"S":["給朋友們寫信","參加學校、單位組織的正式活動","加入某個社會團體或俱樂部","幫助別人解決困難","照看小孩","參加宴會、茶話會或聯歡晚會","跳交誼舞","參加討論會或辯論會","觀看運動會或體育比賽","尋親訪友","閱讀與人際交往有關的書刊"],"E":["對他人做勸說工作","買東西與人討價還價","討論政治問題","從事個體或獨立的經營活動","出席正式會議","做演講","在社會團體中做一名理事","檢查與評價別人的工作","結識名流","帶領一群人去完成某項任務","參與政治活動"],"C":["保持桌子和房間整潔","抄寫文章或信件","開發票、寫收據或打回條","打算盤或用電腦計算","記流水賬或備忘錄","上打字課或學速記法","上會計課","上商業統計課，將檔案、報告、記錄分類","分類與歸檔","為主管寫公務信函與報告","檢查個人收支情況"]}},{"id":"ability","title":"任務 2｜能力寶石星球","question":"你擅長或勝任下列事情嗎？","yes":"擅長","no":"不擅長","scoreLabel":"勝任能力","types":{"R":["使用鋸子、鉗子、車床、砂輪等工具","使用萬能電錶","給自行車或機器加油使它們正常運轉","使用鑽床、研磨機、縫紉機等","修整木器傢俱表面","看機械、建築設計圖紙","修理結構簡單的家用電器","製作簡單的傢俱","繪製機械設計圖紙","修理收答錄機的簡單部件","疏通、修理自來水管或下水道"],"I":["瞭解真空管的工作原理","知道三種以上蛋白質含量高的食物","知道一種放射性元素的半衰期","使用對數表","使用計算器、量具或計算尺","使用顯微鏡","辨認三個星座","說明白血球的功能","解釋簡單的化學分子式","理解人造衛星不會落地的道理","參加科技競賽或科研成果交流會"],"A":["演奏一種樂器","參加二重唱或四重唱","表演獨奏或獨唱","扮演劇中角色","說書或講故事","表演現代舞或芭蕾舞","人物素描","油畫或雕塑","製造陶器、捏泥塑或剪紙","設計服裝、海報或傢俱","寫得一手好文章"],"S":["善於向別人解釋問題","參加慰問或救濟活動","善與人合作、配合默契","殷勤待客","能深入淺出地教育兒童","為一次宴會安排娛樂活動","幫助他人解決困難","幫助護理病人或傷患","安排學校或社團組織的各種集體事務","善察人心或善於判斷人的性格","善與年長者相處"],"E":["在學校裏當過班幹部並且幹得不錯","善於督促他人工作","善於使他人按你的習慣做事","做事具有超常的精力和熱情","能做一個稱職的推銷員","代表某個團體向有關部門提出建議或反映意見","擔任某種領導職務期間獲過獎或受表揚","說服別人加入你所在的團體","創辦一家商店或企業","知道如何做一位成功的領導人","有很好的口才"],"C":["一天能寫或抄近一萬字","能熟練地使用算盤或電腦","能夠熟練地使用中文輸入","善於將書信、檔案迅速歸檔","做過行政工作且做得不錯","核對資料或文章時既快又準確","會使用外文打字或影印機","善於在短時間內分類和處理大量檔案","記賬或開發票時既快又準確","善於為自己或集體作財務預算表","能迅速謄清貸方和借方的賬目"]}},{"id":"career","title":"任務 3｜職業探索星球","question":"你喜歡或想了解下列職業嗎？","yes":"想做/喜歡","no":"沒興趣","scoreLabel":"職業偏好","types":{"R":["航空設備維修技術人員／無人機","魚類和野生動物專家／生態保育","自動化工程技術人員","木工／裝潢","機床安裝工或鉗工","電工／設備維護／機電整合／精密機械","通訊工程師／網管或資安工程師","長途汽車司機","火車／高鐵／捷運司機","機械工程師／設備維護工程師","水文技術人員／地理資訊分析"],"I":["氣象研究人員","生物學研究人員","天文學研究人員","藥劑師","人類學研究人員","化學研究人員","科學雜誌編輯","植物學研究人員","物理學研究人員","科普工作者","地質學研究人員"],"A":["詩人","文學藝術評論家","作家","記者","歌唱家或歌手","作曲家","劇本寫作人員","畫家","相聲演員","樂團指揮","電影演員"],"S":["街道、工會或婦聯負責人","中學教師","青少年犯罪問題專家","中學校長","心理諮詢人員","精神病醫生","職業介紹所工作人員","導遊","社團負責人","福利機構負責人","婚姻介紹所工作人員"],"E":["業務經理","業務、行銷專員","旅館經理","門市經理","廠長、工廠經理","律師或法官、法務顧問","電視劇製作人","飯店經理、連鎖品牌店長","民意代表","服裝批發商","企業管理諮詢人員"],"C":["會計","會計師","銀行出納","法庭書記員、法務行政人員","人口普查員、數據調查、市調研究","成本管理師、財務分析師","稅務顧問、租稅規劃師","編輯、文字審校","行政助理","秘書、行政專員","品質管理、品保專員、品質稽核"]}}],"abilityA":{"R":"機械操作","I":"科學研究","A":"藝術創造","S":"解釋表達","E":"商業洽談","C":"事務執行"},"abilityB":{"R":"體力技能","I":"數學技能","A":"音樂技能","S":"交際技能","E":"領導技能","C":"辦公技能"},"superGroups":[{"id":"V1","name":"利他主義","emoji":"🌱","desc":"工作的目的和價值，在於直接為大眾的幸福和利益盡一份力。","items":["工作能為社會福利帶來看得見的效果","工作使您能常常幫助人","您為他人服務，他人滿意，您自己也很高興","由於您的工作或服務，經常有許多人來感謝您"]},{"id":"V2","name":"美感","emoji":"✨","desc":"工作的目的和價值，在於能不斷追求美的東西，得到美感的享受。","items":["工作帶有藝術性","工作能使世界更美麗","工作結果不是一般產品而是藝術品","工作需要同電影、音樂、美術、文學等藝術打交道"]},{"id":"V3","name":"智力刺激","emoji":"🧠","desc":"工作的目的和價值，在於持續動腦、學習、探索新事物並解決新問題。","items":["工作必須經常解決新的問題","工作是一項對智力的挑戰","工作需要敏銳的思考","在工作中常常要您提出許多新的想法"]},{"id":"V4","name":"成就感","emoji":"🏆","desc":"工作的目的和價值，在於不斷取得成果、被肯定，並實現自己想做的事。","items":["工作使您有不斷取得成功的感覺","您能從工作的成果中知道自己做得不錯","您可以預見自己努力工作的成果","工作成果常常能得到別人的肯定"]},{"id":"V5","name":"獨立性","emoji":"🧭","desc":"工作的目的和價值，在於能按自己的方式、步調或想法做事，不受過多干擾。","items":["您能在工作範圍內自由發揮","您能在工作中試行自己的新想法","您在工作中不會有人常來打擾您","您在工作中是不受別人差遣的"]},{"id":"V6","name":"社會地位","emoji":"🌟","desc":"工作的目的和價值，在於職業受到重視與尊敬，具有較高社會形象。","items":["工作能使朋友和同事非常羨慕","在別人眼裡，您的工作是非常重要的","您的工作作風使您被別人尊重","您從事的工作經常被報刊、電視提到，因而在人們心目中很有地位"]},{"id":"V7","name":"管理","emoji":"🧩","desc":"工作的目的和價值，在於獲得管理權，能指揮、組織與調遣一定範圍內的人或事。","items":["工作賦予您高於別人的權力","工作要求您把一些事物管理得井井有條","工作需要計劃和組織別人的工作","在工作中，您可能做一個負責人，並偏好主導任務"]},{"id":"V8","name":"經濟報酬","emoji":"💰","desc":"工作的目的和價值，在於獲得優厚報酬，使生活更富足。","items":["工作獎金很高","只要努力，工資會高於同齡人或升級加薪可能性更大","工作可以使您獲得較多額外收入","工作有可觀的中夜班費、加班費、保健費或營養費等"]},{"id":"V9","name":"社會交際","emoji":"🌐","desc":"工作的目的和價值，在於能與各種人交往，建立廣泛社會聯繫。","items":["在工作中能接觸到各種不同的人","工作經常要外出，參加各種集會和活動","工作有可能結識各行各業的知名人物","工作會使許多人認識您"]},{"id":"V10","name":"安全感","emoji":"🛡️","desc":"重視工作局面的安穩，不希望因獎金、加薪、調動或主管訓斥而常感不安。","items":["不論怎樣做，您總能和大多數人一樣晉級和加薪","在工作中不會因身體或體力等因素被人瞧不起","只要做這份工作，就不會再被調到其他意想不到的單位或崗位","不必擔心因領導不滿意而受到訓斥或經濟處罰"]},{"id":"V11","name":"舒適","emoji":"☕","desc":"希望工作條件輕鬆、自由、舒適，能降低體力與精神壓力。","items":["工作上下班時間比較隨便、自由","工作單位有舒適的休息室、更衣室、浴室及其他設備","工作場所環境整潔、燈光適度、空間寬敞、溫度適宜","工作體力上比較輕鬆，精神上也不緊張"]},{"id":"V12","name":"人際關係","emoji":"💬","desc":"重視同事與主管人品、關係融洽，工作時感到愉快自然。","items":["工作能使人感覺到您是團體中的一分子","工作中能和同事建立良好的關係","工作單位的同事和領導人品較好，相處比較隨便","在工作中能與領導有融洽的關係"]},{"id":"V13","name":"變異性","emoji":"🎲","desc":"希望工作內容、地點、方式或職務有變化，讓生活豐富不單調。","items":["工作內容經常變換","工作使您有可能經常變換工作地點、工作場所或工作方式","您在工作中經常接觸到新鮮的事物","您在工作單位中，有可能經常變換職務"]}]};
+const DATA = {"riasec":{"R":{"name":"現實型","emoji":"🛠️","role":"實作技術家","desc":"喜歡動手操作、工具設備、技術實作、戶外或現場任務，重視具體成果。","advice":"用實作作品、證照技術、現場任務來累積自信；適合先從操作型、工程型、設備型、技術服務型任務探索。"},"I":{"name":"調查研究型","emoji":"🔬","role":"問題研究員","desc":"喜歡觀察、分析、研究、解題與探索原因，重視知識與邏輯。","advice":"用研究題目、資料分析、問題解決專案來探索；適合技術研究、分析、科普、數據與專業知識型工作。"},"A":{"name":"藝術型","emoji":"🎨","role":"創意表達者","desc":"喜歡創作、表達、美感、設計、文字、影像或表演，重視自由與原創。","advice":"用作品集、內容創作、設計任務與個人風格累積能見度；適合創意、設計、文字、影音與品牌表達相關工作。"},"S":{"name":"社會型","emoji":"🤝","role":"助人連結者","desc":"喜歡幫助人、陪伴、教學、溝通、服務與建立關係，重視人際互動。","advice":"用服務經驗、帶領活動、諮詢輔導或教學任務來累積專業；適合教育、諮詢、社福、服務與人際協作型工作。"},"E":{"name":"企業/事業型","emoji":"🚀","role":"影響推動者","desc":"喜歡說服、領導、企劃、推動目標、經營資源與面對挑戰，重視影響力與成果。","advice":"用企劃提案、業務開發、活動主持、專案管理來展現優勢；適合行銷業務、管理、創業、企劃與領導型工作。"},"C":{"name":"常規/傳統型","emoji":"📋","role":"秩序管理者","desc":"喜歡清楚規則、資料整理、行政流程、數字表格與穩定執行，重視正確與效率。","advice":"用流程管理、文件整理、財務行政、品質控管來展現價值；適合行政、會計、資料管理、品質與流程型工作。"}},"hollandSections":[{"id":"interest","title":"任務 1｜興趣活動星球","question":"你喜歡做下列事情嗎？","yes":"喜歡","no":"不喜歡","scoreLabel":"興趣活動","types":{"R":["組裝或維修電子設備、智慧家電或感測器","修理自行車、機車、電動車或簡易交通工具","維護機器、機器零件或自動化設備","做木作、模型製作、3D列印或手作修繕","操作物流車、農機、無人搬運車或其他大型設備","操作 CNC、雷射切割機或自動化機台","騎乘或維護機車、電動車等交通工具","學習金屬工藝、機械加工或智慧製造技術","學習機械製圖、3D建模或工程繪圖","學習木工、室內裝修或空間施工技術","學習電機、機電整合或智慧設備維護技術"],"I":["閱讀科技、AI、資料科學或科普文章","在實驗室、研究室或資料分析環境工作","研究一個科學、資料或社會議題專案","製作模型、原型、機器人或模擬系統","做科學實驗、資料實驗或AI工具測試","閱讀專業論文、技術文件或研究報告","解數學、邏輯、程式或策略型難題","學習物理、工程或科技應用課程","學習化學、材料或生醫相關課程","學習幾何、統計、資料分析或演算法基礎","學習生物、環境、醫療科技或永續議題"],"A":["素描、製圖、繪畫或數位插畫","表演戲劇、短影音、Podcast 或舞台節目","設計家具、空間、介面或生活產品","在舞台、鏡頭或社群平台上表演、演唱或跳舞","演奏樂器、編曲或使用數位音樂工具創作","閱讀小說、劇本、漫畫或故事型內容","參加音樂會、展覽、影展或創意市集","從事攝影、影像拍攝或AI影像創作","閱讀電影、影集、短影音或遊戲劇本","寫詩、寫文案、寫故事或經營個人內容","學習書法、美術、設計或視覺傳達課程"],"S":["主動用訊息、社群或電話關心朋友","參加學校、社區、公司或公協會活動","加入社團、社群、志工隊或專業交流團體","幫助別人解決困難或陪伴他人面對問題","照顧小孩、高齡者或需要支持的人","參加聚會、交流活動、分享會或聯誼活動","參與團體活動、桌遊、舞蹈或互動型課程","參加討論會、讀書會、辯論或共學活動","觀看運動會、競賽、展演或大型活動","拜訪親友、客戶、會員或服務對象","閱讀與溝通、心理、人際關係或助人服務有關的內容"],"E":["說服他人支持一個想法、方案或產品","與人協商價格、合作條件或資源分配","討論公共議題、產業趨勢或商業策略","從事個人品牌、電商、接案或獨立經營活動","出席正式會議、提案簡報或商務場合","做簡報、主持、直播或公開演說","在社團、社群、公協會或專案中擔任幹部","檢視、評估或回饋別人的工作成果","結識產業人士、專家、創作者或意見領袖","帶領一群人完成任務、活動或專案目標","參與公共事務、倡議活動或組織推動"],"C":["保持桌面、檔案、雲端資料夾或工作區整潔","整理文字、表單、會議紀錄或行政資料","處理電子發票、收據、請款或行政紀錄","使用 Excel、Google 試算表或系統進行計算","記錄流水帳、待辦事項、備忘錄或專案進度","學習文書處理、資料輸入或會議紀錄技巧","學習會計、財務、稅務或基礎商業管理","學習商業統計、資料整理或報表分類","分類、歸檔、命名與管理文件資料","為主管或團隊撰寫公文、信函、報告或公告","檢查個人、專案或組織的收支與資料正確性"]}},{"id":"ability","title":"任務 2｜能力寶石星球","question":"你擅長或勝任下列事情嗎？","yes":"擅長","no":"不擅長","scoreLabel":"勝任能力","types":{"R":["能使用基本手工具、電動工具或簡易維修設備","能使用萬用電表或簡易檢測工具","能為自行車、機車或設備做基礎保養","能操作鑽床、研磨機、縫紉機或其他加工設備","能修整木器、家具或簡易生活用品表面","能看懂機械、建築、空間或工程設計圖","能排除簡單家電、電腦周邊或智慧設備故障","能製作簡單家具、模型、原型或實作作品","能繪製機械圖、空間圖或3D建模草圖","能修理簡易影音、通訊或電子設備零件","能處理簡易管線、設備安裝或現場修繕問題"],"I":["了解電子元件、感測器或基本電路的運作原理","知道幾種營養、健康或生物科技相關基礎知識","理解半衰期、風險指標或科學測量概念","能使用公式、表格或工具查找資料並進行推算","能使用計算器、量測工具、試算表或資料分析工具","能使用顯微鏡、檢測工具或資料觀察工具","能辨認星座、自然現象或環境觀測資料","能說明人體、健康或生物功能的基本概念","能解釋簡單化學式、材料特性或科學模型","能理解衛星、導航、雲端或科技系統的基本原理","曾參加科學、資訊、資料分析或研究成果交流"],"A":["能演奏樂器或使用數位音樂工具創作","能參與合唱、配音、Podcast或多人表演","能表演獨奏、獨唱、口語表達或鏡頭前演出","能扮演劇中角色、錄製短影音或設計角色表演","能說故事、寫腳本或進行口語敘事","能表演舞蹈、肢體創作或舞台演出","能畫人物、角色或視覺草圖","能進行油畫、雕塑、插畫或數位藝術創作","能製作陶藝、手作、模型、剪紙或創意作品","能設計服裝、海報、家具、網頁或社群素材","能寫出清楚、有風格或有感染力的文章"],"S":["善於向別人解釋問題或教會別人一件事","曾參加慰問、救濟、志工或公益服務活動","善於與人合作，能配合團隊完成任務","待人親切，能讓服務對象感到被照顧","能用容易理解的方式教育兒童、青年或成人","能為聚會、課程或團體活動安排互動內容","能幫助他人釐清問題並找到解決方法","能協助照護病人、傷患、高齡者或弱勢族群","能安排學校、社團、社區或團隊的集體事務","善於觀察人的情緒、需求或性格特質","善於與年長者、服務對象或不同背景的人相處"],"E":["曾擔任班級、社團、專案或活動幹部並表現良好","善於督促他人完成工作或推動進度","能影響他人採納你的想法、流程或做法","做事有明顯的精力、熱情與目標感","能勝任銷售、募款、招生或推廣工作","能代表團體向外部單位提出建議或溝通需求","曾在領導、主持或專案推動中獲得肯定","能說服別人加入團隊、活動、社群或計畫","能規劃並嘗試創辦商店、品牌、社群或專案","知道如何成為有效的領導者或專案負責人","具備良好的口語表達、簡報或談判能力"],"C":["能快速整理大量文字、資料或文件內容","能熟練使用電腦、試算表或雲端系統","能熟練使用中文輸入、文件編輯與資料輸入工具","善於將信件、文件與雲端檔案迅速分類歸檔","曾做過行政、營運、財務或資料管理工作且表現不錯","核對資料、文章或報表時既快又準確","會使用辦公軟體、雲端文件、掃描或數位設備","善於在短時間內分類和處理大量文件或資料","記帳、開發票、請款或整理報表時既快又準確","善於為自己、團隊或專案製作預算與收支表","能快速整理帳務、收支、借貸或財務資料"]}},{"id":"career","title":"任務 3｜AI時代職業探索星球","question":"你喜歡或想了解下列現代職業與新興工作嗎？","yes":"想做/喜歡","no":"沒興趣","scoreLabel":"職業偏好","types":{"R":["AI伺服器／資料中心設備維護工程師","無人機操作與維修技術人員","自動化產線／智慧製造技術員","機器人維修與整合技術人員","CNC精密機械／智慧機台技術員","電動車維修／充電設備技術人員","物聯網設備安裝與維護人員","半導體設備工程師／製程助理工程師","綠能設備維護人員／太陽能系統技術員","智慧農業設備操作人員","地理資訊／環境監測技術人員"],"I":["AI／機器學習工程師","資料科學家／資料分析師","大數據分析專家","自然語言處理 NLP 工程師","生成式AI應用研究員","生物資訊分析師","氣候風險／永續數據分析師","金融科技 FinTech 數據工程師","資安分析師／威脅情資研究員","科學傳播／科普內容研究員","使用者研究員 UX Researcher"],"A":["AI影像生成設計師","生成式AI內容創作者","品牌視覺設計師","UI／UX介面設計師","短影音企劃與剪輯師","Podcast／影音節目製作人","遊戲美術／角色設定設計師","動畫／動態設計師","文案企劃／品牌故事寫作者","社群內容創作者","沉浸式體驗／AR／VR內容設計師"],"S":["AI輔助職涯諮詢師","就業服務／職涯發展顧問","心理健康支持專員","社工師／社區服務工作者","高齡照顧服務／個案管理師","數位學習講師／線上課程教練","企業培訓師／人才發展專員","醫療個案管理師","多元族群服務專員","青少年輔導員","社群經營與會員關係管理人員"],"E":["AI產品經理","AI專案經理","數位轉型顧問","電商品牌經營者","社群行銷策略師","成長駭客／數位行銷經理","客戶成功經理","創業家／新創營運負責人","永續商業發展經理","企業顧問／營運策略顧問","AI解決方案業務顧問"],"C":["AI資料標註／資料品質管理員","資料治理專員","雲端系統行政／SaaS系統管理員","財務分析助理／會計數位化專員","法遵／個資保護專員","AI風險治理助理","資安合規／稽核助理","營運流程管理專員","文件管理／知識庫管理員","品質管理／流程稽核人員","行政專員／專案行政"]}}],"abilityA":{"R":"機械操作","I":"科學研究","A":"藝術創造","S":"解釋表達","E":"商業洽談","C":"事務執行"},"abilityB":{"R":"體力技能","I":"數學技能","A":"音樂技能","S":"交際技能","E":"領導技能","C":"辦公技能"},"superGroups":[{"id":"V1","name":"利他主義","emoji":"🌱","desc":"工作的目的和價值，在於直接為大眾的幸福和利益盡一份力。","items":["工作能為社會福利帶來看得見的效果","工作使您能常常幫助人","您為他人服務，他人滿意，您自己也很高興","由於您的工作或服務，經常有許多人來感謝您"]},{"id":"V2","name":"美感","emoji":"✨","desc":"工作的目的和價值，在於能不斷追求美的東西，得到美感的享受。","items":["工作帶有藝術性","工作能使世界更美麗","工作結果不是一般產品而是藝術品","工作需要同電影、音樂、美術、文學等藝術打交道"]},{"id":"V3","name":"智力刺激","emoji":"🧠","desc":"工作的目的和價值，在於持續動腦、學習、探索新事物並解決新問題。","items":["工作必須經常解決新的問題","工作是一項對智力的挑戰","工作需要敏銳的思考","在工作中常常要您提出許多新的想法"]},{"id":"V4","name":"成就感","emoji":"🏆","desc":"工作的目的和價值，在於不斷取得成果、被肯定，並實現自己想做的事。","items":["工作使您有不斷取得成功的感覺","您能從工作的成果中知道自己做得不錯","您可以預見自己努力工作的成果","工作成果常常能得到別人的肯定"]},{"id":"V5","name":"獨立性","emoji":"🧭","desc":"工作的目的和價值，在於能按自己的方式、步調或想法做事，不受過多干擾。","items":["您能在工作範圍內自由發揮","您能在工作中試行自己的新想法","您在工作中不會有人常來打擾您","您在工作中是不受別人差遣的"]},{"id":"V6","name":"社會地位","emoji":"🌟","desc":"工作的目的和價值，在於職業受到重視與尊敬，具有較高社會形象。","items":["工作能使朋友和同事非常羨慕","在別人眼裡，您的工作是非常重要的","您的工作作風使您被別人尊重","您從事的工作經常被報刊、電視提到，因而在人們心目中很有地位"]},{"id":"V7","name":"管理","emoji":"🧩","desc":"工作的目的和價值，在於獲得管理權，能指揮、組織與調遣一定範圍內的人或事。","items":["工作賦予您高於別人的權力","工作要求您把一些事物管理得井井有條","工作需要計劃和組織別人的工作","在工作中，您可能做一個負責人，並偏好主導任務"]},{"id":"V8","name":"經濟報酬","emoji":"💰","desc":"工作的目的和價值，在於獲得優厚報酬，使生活更富足。","items":["工作獎金很高","只要努力，工資會高於同齡人或升級加薪可能性更大","工作可以使您獲得較多額外收入","工作有可觀的中夜班費、加班費、保健費或營養費等"]},{"id":"V9","name":"社會交際","emoji":"🌐","desc":"工作的目的和價值，在於能與各種人交往，建立廣泛社會聯繫。","items":["在工作中能接觸到各種不同的人","工作經常要外出，參加各種集會和活動","工作有可能結識各行各業的知名人物","工作會使許多人認識您"]},{"id":"V10","name":"安全感","emoji":"🛡️","desc":"重視工作局面的安穩，不希望因獎金、加薪、調動或主管訓斥而常感不安。","items":["不論怎樣做，您總能和大多數人一樣晉級和加薪","在工作中不會因身體或體力等因素被人瞧不起","只要做這份工作，就不會再被調到其他意想不到的單位或崗位","不必擔心因領導不滿意而受到訓斥或經濟處罰"]},{"id":"V11","name":"舒適","emoji":"☕","desc":"希望工作條件輕鬆、自由、舒適，能降低體力與精神壓力。","items":["工作上下班時間比較隨便、自由","工作單位有舒適的休息室、更衣室、浴室及其他設備","工作場所環境整潔、燈光適度、空間寬敞、溫度適宜","工作體力上比較輕鬆，精神上也不緊張"]},{"id":"V12","name":"人際關係","emoji":"💬","desc":"重視同事與主管人品、關係融洽，工作時感到愉快自然。","items":["工作能使人感覺到您是團體中的一分子","工作中能和同事建立良好的關係","工作單位的同事和領導人品較好，相處比較隨便","在工作中能與領導有融洽的關係"]},{"id":"V13","name":"變異性","emoji":"🎲","desc":"希望工作內容、地點、方式或職務有變化，讓生活豐富不單調。","items":["工作內容經常變換","工作使您有可能經常變換工作地點、工作場所或工作方式","您在工作中經常接觸到新鮮的事物","您在工作單位中，有可能經常變換職務"]}]};
 const TYPES = ["R","I","A","S","E","C"];
 const STEPS = [
-  {id:"profile", icon:"🧑", title:"建立角色"},
-  {id:"interest", icon:"🌿", title:"興趣活動"},
-  {id:"ability", icon:"💎", title:"勝任能力"},
-  {id:"career", icon:"🧭", title:"職業偏好"},
-  {id:"rating", icon:"📊", title:"能力簡評"},
-  {id:"super", icon:"🏛️", title:"工作價值觀"},
-  {id:"result", icon:"🏆", title:"結果報告"}
+  {id:"profile", icon:"🚪", title:"第1關｜啟程之門", short:"基本資料"},
+  {id:"interest", icon:"🌿", title:"第2關｜興趣森林", short:"荷倫興趣探索"},
+  {id:"valley", icon:"⛰️", title:"第3關｜能力山谷", short:"興趣與能力自評"},
+  {id:"super", icon:"🧭", title:"第4關｜價值羅盤", short:"SUPER工作價值觀"},
+  {id:"result", icon:"🏛️", title:"第5關｜職涯神殿", short:"結果報告"}
 ];
 const storageKey = "careerAdventureGame_v2_professional";
 const NO_PERSISTENCE = true;
 // 正式多人施測版：每次開啟皆為全新測驗，不讀取、不保留上一位填答者資料。
 // 若要啟用「測驗完成後自動寄送 PDF 到學員 Email」，請將 Google Apps Script Web App URL 貼在下方。
 // 也可以用網址參數帶入：?emailEndpoint=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2Fxxxx%2Fexec
-const EMAIL_SEND_ENDPOINT = "https://script.google.com/macros/s/AKfycbxFAorVaPXj_qoIPtHGG8kK1x8sEc7iGAtKxA8rgSAfKVdrPXBoUT8PeT24bZUWA5lNCQ/exec";
+const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwVPTwxgPEWtOl4Xulq3t0PBoupjJafxixQb7Mf9O_eupAp36XUII9fpP5PqY7bdRJ3XA/exec";
+const EMAIL_SEND_ENDPOINT = API_ENDPOINT;
+const SUPPORT_LINE_URL = "https://lin.ee/PbfeRUU";
+const SUPPORT_EMAIL = "pucezhang@gmail.com";
 const AUTO_SEND_PDF_ON_COMPLETE = true;
-const EMAIL_SEND_ONCE_KEY = "careerAdventureGame_emailPdfSent_v1";
+const QUESTION_BANK_VERSION = "知己知途｜職涯探索冒險遊戲 v6｜正式營運版｜2026";
+const URL_PARAMS = new URLSearchParams(location.search);
+const SHORT_CODE_FROM_URL = String(URL_PARAMS.get('c') || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'');
+const PREVIEW_MODE = URL_PARAMS.get('preview') === '1';
 let current = "profile";
 cleanupPersistentStorage();
 let state = emptyState();
+const SESSION_ID = (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('TEST-' + Date.now() + '-' + Math.random().toString(16).slice(2));
+let accessVerified = false;
+let accessInfo = {shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};
 let emailSendAttempted = false;
-let emailSendState = {kind:"warn", title:"寄信後台尚未設定", text:"完成測驗後可先下載 PDF；部署 Apps Script 並貼上 Web App URL 後，才會自動寄送 PDF。"};
-let hollandAdvancePause = {sec:null, type:null, timer:null};
+let emailSendState = {kind:"warn", title:"尚未寄送報告", text:"完成測驗後，可下載 PDF 或寄送到你的 Email。"};
+let openTypeCardKeys = new Set();
 
 function emptyState(){
-  const s = { profile:{name:"", gender:"", age:"", phone:"", email:"", date:new Date().toISOString().slice(0,10), ideals:["","",""]}, holland:{}, abilityA:{}, abilityB:{}, super:{} };
+  const s = { profile:{name:"", gender:"", age:"", phone:"", email:"", accessCode:SHORT_CODE_FROM_URL, date:new Date().toISOString().slice(0,10), ideals:["","",""]}, holland:{}, abilityA:{}, abilityB:{}, super:{} };
   DATA.hollandSections.forEach(sec=>{s.holland[sec.id]={}; TYPES.forEach(t=>{s.holland[sec.id][t]=Array(sec.types[t].length).fill(null);});});
   DATA.superGroups.forEach(g=>{s.super[g.id]=Array(g.items.length).fill(null);});
   TYPES.forEach(t=>{s.abilityA[t]=null;s.abilityB[t]=null;});
@@ -163,48 +177,99 @@ function answeredCount(){
 }
 function totalCount(){return DATA.hollandSections.reduce((a,sec)=>a+TYPES.reduce((b,t)=>b+sec.types[t].length,0),0)+12+DATA.superGroups.reduce((a,g)=>a+g.items.length,0);}
 function stepDone(id){
-  if(id==="profile") return !!state.profile.name && validEmail(state.profile.email);
-  if(["interest","ability","career"].includes(id)){const sec=DATA.hollandSections.find(s=>s.id===id);return TYPES.every(t=>state.holland[id][t].every(v=>v!==null));}
-  if(id==="rating") return TYPES.every(t=>state.abilityA[t] && state.abilityB[t]);
+  if(id==="profile") return !!state.profile.name && validEmail(state.profile.email) && !!getShortCode() && accessVerified;
+  if(id==="interest"){const sec=DATA.hollandSections.find(s=>s.id==='interest');return TYPES.every(t=>state.holland.interest[t].every(v=>v!==null));}
+  if(id==="valley") return TYPES.every(t=>state.holland.ability[t].every(v=>v!==null)) && TYPES.every(t=>state.holland.career[t].every(v=>v!==null)) && TYPES.every(t=>state.abilityA[t] && state.abilityB[t]);
   if(id==="super") return DATA.superGroups.every(g=>state.super[g.id].every(v=>v!==null));
   if(id==="result") return answeredCount()===totalCount();
   return false;
+}
+function missionProgress(id){
+  if(id==='profile') return stepDone('profile') ? 1 : 0;
+  if(id==='interest') return DATA.hollandSections.find(s=>s.id==='interest') ? TYPES.reduce((a,t)=>a+state.holland.interest[t].filter(v=>v!==null).length,0) / 66 : 0;
+  if(id==='valley'){
+    const done=TYPES.reduce((a,t)=>a+state.holland.ability[t].filter(v=>v!==null).length+state.holland.career[t].filter(v=>v!==null).length,0)+TYPES.filter(t=>state.abilityA[t]).length+TYPES.filter(t=>state.abilityB[t]).length;
+    return done / (66+66+12);
+  }
+  if(id==='super') return DATA.superGroups.reduce((a,g)=>a+state.super[g.id].filter(v=>v!==null).length,0)/52;
+  if(id==='result') return answeredCount()===totalCount()?1:0;
+  return 0;
 }
 function updateAll(){renderNav();updateProgress();}
 function updateProgress(){
   const total=totalCount(), ans=answeredCount(), pct=Math.round(ans/total*100);
   document.getElementById("progress").style.width=pct+"%";
-  document.getElementById("progressText").textContent=`${ans} / ${total} 題`;
+  document.getElementById("progressText").textContent=`職涯能量 ${pct}%｜已蒐集 ${ans} / ${total} 個探索點`;
   document.getElementById("heroPercent").textContent=pct+"%";
-  document.getElementById("heroHint").textContent=pct>=100?"已解鎖完整報告，可以下載PDF、寄送Email或列印。":"完整專業版題數較多；本頁不讀取上一位測驗資料。";
+  document.getElementById("heroHint").textContent=pct>=100?"恭喜破關！已解鎖職涯神殿與專屬 PDF 報告。":"完成 5 關任務，解鎖你的職涯角色、價值羅盤與專屬報告。";
+}
+function renderMissionMap(){
+  return `<div class="mission-map">${STEPS.map(st=>`<div class="mission-node ${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><div class="node-icon">${st.icon}</div><b>${st.title}</b><span>${st.short}</span></div>`).join('')}</div>`;
 }
 function renderNav(){
   const nav=document.getElementById("nav");
   const doneCount=STEPS.filter(st=>stepDone(st.id)).length;
-  nav.innerHTML=`<div class="nav-head"><strong>測驗任務導覽</strong><span>已完成 ${doneCount} / ${STEPS.length} 個主要步驟</span></div>` + STEPS.map(st=>`<button class="${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><span><span class="dot"></span> ${st.icon} ${st.title}</span><span>${stepDone(st.id)?'✓':''}</span></button>`).join('') + `<button onclick="resetGame()"><span><span class="dot"></span> ♻️ 重新開始</span></button>`;
+  nav.innerHTML=`<div class="nav-head"><strong>職涯冒險地圖</strong><span>已完成 ${doneCount} / 5 關</span></div>` + STEPS.map(st=>`<button class="${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><span><span class="dot"></span> ${st.icon} ${st.title}</span><span>${stepDone(st.id)?'✓':Math.round(missionProgress(st.id)*100)+'%'}</span></button>`).join('') + `<button onclick="resetGame()"><span><span class="dot"></span> ♻️ 重新開始</span></button>`;
 }
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||'').trim());}
-function normalizedEmail(){return String(state.profile.email||'').trim().toLowerCase();}
-function getSentEmailMap(){
-  try{return JSON.parse(localStorage.getItem(EMAIL_SEND_ONCE_KEY)||'{}') || {};}catch(e){return {};}
+function getApiEndpoint(){
+  const fromQuery = new URLSearchParams(location.search).get('apiEndpoint') || new URLSearchParams(location.search).get('emailEndpoint') || '';
+  return String(fromQuery || API_ENDPOINT || API_ENDPOINT || '').trim();
 }
-function hasEmailPdfBeenSent(email=normalizedEmail()){
-  if(!email) return false;
-  return !!getSentEmailMap()[email];
+function getEmailEndpoint(){return getApiEndpoint();}
+function isEmailEndpointReady(){return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(getApiEndpoint());}
+function getShortCode(){return String(state.profile.accessCode || SHORT_CODE_FROM_URL || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,12);}
+function apiJsonp(action, params={}, timeout=15000){
+  return new Promise((resolve,reject)=>{
+    const endpoint=getApiEndpoint();
+    if(!isEmailEndpointReady()) return reject(new Error('系統尚未完成寄送設定'));
+    const cb='careerCb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const u=new URL(endpoint);
+    u.searchParams.set('action',action);
+    u.searchParams.set('callback',cb);
+    Object.entries(params||{}).forEach(([k,v])=>u.searchParams.set(k,String(v??'')));
+    const s=document.createElement('script');
+    const timer=setTimeout(()=>{cleanup();reject(new Error('系統連線逾時，請稍後再試'));},timeout);
+    function cleanup(){clearTimeout(timer);delete window[cb];s.remove();}
+    window[cb]=(data)=>{cleanup();resolve(data||{});};
+    s.onerror=()=>{cleanup();reject(new Error('目前無法連線，請稍後再試'));};
+    s.src=u.toString();document.body.appendChild(s);
+  });
 }
-function markEmailPdfSent(email=normalizedEmail()){
-  if(!email) return;
+function accessStatusHtml(){
+  const kind=accessVerified?'ok':(accessInfo.status==='驗證失敗'?'bad':'warn');
+  const code=getShortCode() || '尚未取得';
+  const msg=accessVerified?`任務通行證有效：${accessInfo.batchName || '本次任務'}｜序號 ${accessInfo.serial || '-'}`:(accessInfo.message || '請輸入收到的任務短碼');
+  return `<div class="access-status ${kind}"><span class="code-chip">任務短碼 ${escapeHtml(code)}</span><div style="margin-top:8px">${escapeHtml(msg)}</div></div>`;
+}
+async function verifyAccessCode(showAlert=false){
+  const code=getShortCode();
+  if(!code){if(showAlert) alert('請輸入或使用專屬短碼連結，例如 ?c=K8P2QX');return false;}
+  state.profile.accessCode=code;
+  if(PREVIEW_MODE){accessVerified=true;accessInfo={shortCode:code,batchCode:'PREVIEW',batchName:'預覽模式',serial:'000',consultantEmail:'',status:'已驗證',message:'預覽模式已允許進入'};render();return true;}
+  if(!isEmailEndpointReady()){
+    accessInfo={shortCode:code,status:'驗證失敗',message:'系統尚未完成短碼驗證設定，請稍後再試'};
+    render();
+    if(showAlert) alert('系統尚未完成短碼驗證設定，請稍後再試。');
+    return false;
+  }
   try{
-    const sent=getSentEmailMap();
-    sent[email]=new Date().toISOString();
-    localStorage.setItem(EMAIL_SEND_ONCE_KEY,JSON.stringify(sent));
-  }catch(e){}
+    accessInfo={shortCode:code,status:'驗證中',message:'正在確認短碼與可測驗時間...'};render();
+    const res=await apiJsonp('validateBatchCode',{c:code, email:state.profile.email || '', name:state.profile.name || ''});
+    if(!res.ok) throw new Error(res.message || '短碼無效');
+    const batch=res.batch || {};
+    accessVerified=true;
+    accessInfo={shortCode:batch.shortCode||code,batchCode:batch.batchCode||'',batchName:batch.batchName||'',serial:String((Number(batch.completedCount)||0)+1).padStart(3,'0'),consultantEmail:batch.counselorEmail||'',status:'已驗證',message:'短碼已通過驗證'};
+    render();
+    return true;
+  }catch(err){
+    accessVerified=false;
+    accessInfo={shortCode:code,status:'驗證失敗',message:err.message || '短碼驗證失敗'};
+    render();
+    if(showAlert) alert('短碼驗證失敗：' + (err.message || '請確認連結或聯絡服務人員'));
+    return false;
+  }
 }
-function getEmailEndpoint(){
-  const fromQuery = new URLSearchParams(location.search).get('emailEndpoint') || '';
-  return String(fromQuery || EMAIL_SEND_ENDPOINT || '').trim();
-}
-function isEmailEndpointReady(){return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(getEmailEndpoint());}
 function setEmailSendState(kind,title,text){
   emailSendState={kind,title,text};
   const box=document.getElementById('emailSendStatus');
@@ -213,13 +278,9 @@ function setEmailSendState(kind,title,text){
 function emailSendStatusHtml(){return `<strong>${escapeHtml(emailSendState.title)}</strong><span>${escapeHtml(emailSendState.text)}</span><span class="mini">收件信箱：${escapeHtml(state.profile.email || '尚未填寫')}</span>`;}
 function scheduleAutoEmailSend(complete){
   if(!AUTO_SEND_PDF_ON_COMPLETE || !complete || emailSendAttempted) return;
-  if(hasEmailPdfBeenSent()){
-    emailSendAttempted=true;
-    setEmailSendState('ok','PDF 已寄送過','這個 Email 已經寄送過一次，系統不會重複寄送；如需備份可直接下載 PDF。');
-    return;
-  }
+  if(!accessVerified){setEmailSendState('warn','尚未驗證短碼','短碼尚未驗證，不會自動寄送正式 PDF。');return;}
   if(!isEmailEndpointReady()){
-    setEmailSendState('warn','寄信後台尚未設定','目前尚未貼上 Apps Script Web App URL，因此不會寄信；可先下載 PDF。');
+    setEmailSendState('warn','尚未寄送報告','目前無法自動寄送 Email，可先下載 PDF。');
     return;
   }
   emailSendAttempted=true;
@@ -228,115 +289,180 @@ function scheduleAutoEmailSend(complete){
 function validateProfile(showAlert=false){
   const nameOk=!!String(state.profile.name||'').trim();
   const emailOk=validEmail(state.profile.email);
-  if(nameOk && emailOk) return true;
-  const msg=!nameOk?'請先填寫姓名或暱稱。':'請填寫正確的 Email，完成後才能進入完整專業版測驗與寄送 PDF。';
+  const codeOk=!!getShortCode();
+  if(nameOk && emailOk && codeOk) return true;
+  const msg=!nameOk?'請先填寫姓名或暱稱。':(!emailOk?'請填寫正確的 Email，完成後才能進入完整專業版測驗與寄送 PDF。':'請輸入收到的任務短碼，例如 ZC2606-001。');
   if(showAlert) alert(msg);
   return false;
 }
-function showLevelCelebration(step){
-  const overlay=document.getElementById('celebration');
-  if(!overlay) return;
-  const title=document.getElementById('celebrationTitle');
-  const text=document.getElementById('celebrationText');
-  if(title) title.textContent=step?.id==='result'?'恭喜解鎖完整報告':'恭喜進入下一關';
-  if(text) text.textContent=step?.title?`下一站：${step.title}`:'你又完成一段探索，繼續往前走。';
-  overlay.classList.remove('show');
-  void overlay.offsetWidth;
-  overlay.classList.add('show');
-  clearTimeout(showLevelCelebration.timer);
-  showLevelCelebration.timer=setTimeout(()=>overlay.classList.remove('show'),1150);
+async function go(id){
+  if(id!=="profile"){
+    if(!validateProfile(true)) return;
+    if(!accessVerified && !(await verifyAccessCode(true))) return;
+  }
+  current=id;render();window.scrollTo({top:0,behavior:'smooth'});
 }
-function go(id,celebrate=false){if(id!=="profile" && !validateProfile(true)) return; current=id;render();window.scrollTo({top:0,behavior:'smooth'});if(celebrate) showLevelCelebration(STEPS.find(s=>s.id===id));}
-function render(){updateAll(); const view=document.getElementById("view"); if(current==="profile") renderProfile(view); else if(["interest","ability","career"].includes(current)) renderHolland(view,current); else if(current==="rating") renderRating(view); else if(current==="super") renderSuper(view); else renderResult(view);}
-function nextStep(){if(current==="profile" && !validateProfile(true)) return; const i=STEPS.findIndex(s=>s.id===current); if(i<STEPS.length-1) go(STEPS[i+1].id,true);}
+function render(){updateAll(); const view=document.getElementById("view"); if(current==="profile") renderProfile(view); else if(current==="interest") renderHolland(view,'interest'); else if(current==="valley") renderValley(view); else if(current==="super") renderSuper(view); else renderResult(view);}
+function typeCardKey(secId,t){return `${secId}:${t}`;}
+function captureOpenTypeCards(){
+  openTypeCardKeys = new Set([...document.querySelectorAll('details.type-card[data-type-key]')].filter(el=>el.open).map(el=>el.dataset.typeKey));
+  return new Set(openTypeCardKeys);
+}
+function restoreOpenTypeCards(keys){
+  document.querySelectorAll('details.type-card[data-type-key]').forEach(el=>{ if(keys.has(el.dataset.typeKey)) el.open=true; });
+}
+function renderAfterHollandAnswer(secId,t){
+  const scrollY=window.scrollY;
+  const keys=captureOpenTypeCards();
+  keys.add(typeCardKey(secId,t));
+  render();
+  restoreOpenTypeCards(keys);
+  window.scrollTo({top:scrollY,behavior:'auto'});
+}
+async function nextStep(){
+  if(current==="profile"){
+    if(!validateProfile(true)) return;
+    if(!accessVerified && !(await verifyAccessCode(true))) return;
+  }
+  const i=STEPS.findIndex(s=>s.id===current);
+  if(i<STEPS.length-1) go(STEPS[i+1].id);
+}
 function prevStep(){const i=STEPS.findIndex(s=>s.id===current); if(i>0) go(STEPS[i-1].id);}
+const missionCelebrated=new Set();
+function showMissionComplete(title,text,badge){
+  const overlay=document.getElementById('missionOverlay');
+  document.getElementById('missionTitle').textContent=title;
+  document.getElementById('missionText').textContent=text;
+  document.getElementById('missionBadge').textContent=badge || '🏅 職涯能量徽章';
+  overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
+  setTimeout(()=>{ if(overlay.classList.contains('show')) hideMissionOverlay(); },2600);
+}
+function hideMissionOverlay(){const overlay=document.getElementById('missionOverlay'); overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true');}
+function celebrateMissionIfDone(id,beforeDone){
+  if(beforeDone || !stepDone(id) || missionCelebrated.has(id)) return;
+  missionCelebrated.add(id);
+  const data={
+    interest:['🌿 興趣森林完成！','你已蒐集完成興趣能量，職涯地圖開始發光。','🌿 興趣能量徽章'],
+    valley:['⛰️ 能力山谷完成！','能力寶石、未來職業通行證與天賦雷達已完成校準。','💎 能力寶石徽章'],
+    super:['🧭 價值羅盤完成！','你已找出影響工作滿意度的核心價值。','🧭 價值羅盤徽章'],
+    result:['🏛️ 職涯神殿解鎖！','你的職涯角色與正式個案報告已經產生。','🏛️ 職涯神殿徽章']
+  }[id];
+  if(data) showMissionComplete(data[0],data[1],data[2]);
+}
 function quickStats(items){return `<div class="quick-stats">${items.map(it=>`<div class="quick-stat"><b>${it.value}</b><span>${it.label}</span></div>`).join('')}</div>`;}
-function actions(){return `<div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 上一關</button></div><div class="right"><button class="btn ghost" onclick="toast('本次作答只存在目前頁面，關閉後不保留')">本次作答狀態</button><button class="btn primary" onclick="nextStep()">下一關 →</button></div></div>`;}
+function sectionIntro(kind,title,desc,cards){
+  return `<div class="section-intro ${kind}"><div class="intro-tag">閱讀指引</div><h3>${title}</h3><p>${desc}</p><div class="intro-grid">${cards.map(card=>`<div class="intro-card"><b>${card.title}</b><span>${card.text}</span></div>`).join('')}</div></div>`;
+}
+function actions(){return `<div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回到上一關</button></div><div class="right"><button class="btn ghost" onclick="toast('請保持本頁開啟，完成後即可產生專屬報告')">查看冒險狀態</button><button class="btn primary" onclick="nextStep()">繼續冒險 →</button></div></div>`;}
+function questIntro(kind,no,title,desc,cards){
+  return `<div class="quest-intro ${kind}"><span class="quest-no">${no}</span><h2>${title}</h2><p>${desc}</p><div class="quest-grid">${cards.map(c=>`<div class="quest-card"><b>${c.title}</b><span>${c.text}</span></div>`).join('')}</div></div>`;
+}
+function supportContactHtml(){
+  return `<div class="contact-card"><div><strong>需要協助嗎？</strong><span>若短碼、信箱或報告寄送遇到問題，請聯絡知己知途官方。</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="${SUPPORT_LINE_URL}" target="_blank" rel="noopener">加入官方 LINE</a><a class="mail" href="mailto:${SUPPORT_EMAIL}">Email 聯絡</a></div></div>`;
+}
 function renderProfile(view){
-  view.innerHTML=`
-  <div class="section-head"><div><h2>🧑 建立完整專業版測驗資料</h2><p>Email 為必填；完成後可下載 PDF，或串接寄信後台寄送正式結果報告。</p></div><span class="pill">第 0 關｜完整專業版</span></div>
+  view.innerHTML=`${renderMissionMap()}
+  ${questIntro('profile','第 1 關｜啟程之門','建立你的冒險者資料','請先完成基本資料與任務短碼驗證。短碼確認後，就可以開始這次職涯冒險。',[
+    {title:'必填資料',text:'姓名／暱稱、Email、任務短碼為必填。Email 會收到正式 PDF 報告。'},
+    {title:'任務短碼',text:'請輸入收到的專屬短碼，系統會確認是否可開始測驗。'},
+    {title:'完成報告',text:'完成所有任務後，會產生你的專屬 PDF 職涯報告。'}
+  ])}
+  <div class="access-card"><h3>🎟️ 任務通行證驗證</h3><div class="access-grid"><div class="field"><label>任務短碼 <span class="required">*</span></label><input value="${escapeHtml(state.profile.accessCode)}" oninput="state.profile.accessCode=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'');accessVerified=false;save()" placeholder="例如：ZC2606-001"></div><button class="btn primary" onclick="verifyAccessCode(true)">驗證短碼</button></div>${accessStatusHtml()}</div>
+  ${supportContactHtml()}
   <div class="grid3">
     <div class="field"><label>姓名或暱稱 <span class="required">*</span></label><input value="${escapeHtml(state.profile.name)}" oninput="state.profile.name=this.value;save()" placeholder="例如：珍珠"></div>
-    <div class="field"><label>性別</label><input value="${escapeHtml(state.profile.gender)}" oninput="state.profile.gender=this.value;save()" placeholder="可不填"></div>
+    <div class="field"><label>性別</label><select onchange="state.profile.gender=this.value;save()"><option value="" ${!state.profile.gender?'selected':''}>不透露／不填寫</option><option value="女性" ${state.profile.gender==='女性'?'selected':''}>女性</option><option value="男性" ${state.profile.gender==='男性'?'selected':''}>男性</option><option value="非二元／多元性別" ${state.profile.gender==='非二元／多元性別'?'selected':''}>非二元／多元性別</option></select></div>
     <div class="field"><label>年齡</label><input value="${escapeHtml(state.profile.age)}" oninput="state.profile.age=this.value;save()" placeholder="可不填"></div>
     <div class="field"><label>測試日期</label><input type="date" value="${escapeHtml(state.profile.date)}" oninput="state.profile.date=this.value;save()"></div>
     <div class="field"><label>電話</label><input value="${escapeHtml(state.profile.phone)}" oninput="state.profile.phone=this.value;save()" placeholder="可不填"></div>
-    <div class="field"><label>Email <span class="required">*</span></label><input type="email" required value="${escapeHtml(state.profile.email)}" oninput="state.profile.email=this.value.trim();save()" placeholder="請填寫可收信的 Email"><span class="help">完成測驗後，PDF 報告會以此信箱寄送。</span></div>
+    <div class="field"><label>Email <span class="required">*</span></label><input type="email" required value="${escapeHtml(state.profile.email)}" oninput="state.profile.email=this.value.trim();save()" placeholder="請填寫可收信的 Email"><span class="help">PDF 報告會寄送到此信箱。</span></div>
   </div>
-  ${validEmail(state.profile.email)?'':`<div class="warning">📩 Email 為必填，請填寫正確信箱後再開始完整專業版測驗。</div>`}
-  <div class="mission-tip"><strong>🎯 完整專業版說明：</strong>本版本保留 262 題完整量表，適合正式課程、團體施測與個別諮詢。正式多人施測版不讀取上一位資料；請學員一次完成，避免關閉或重新整理頁面後作答消失。</div>
+  ${validEmail(state.profile.email)?'':`<div class="warning">📩 Email 為必填，請填寫正確信箱後再開始冒險。</div>`}
   <h3>你心目中的理想職業／專業</h3>
-  <div class="grid3">
-    ${[0,1,2].map(i=>`<div class="field"><label>理想職業 ${i+1}</label><input value="${escapeHtml(state.profile.ideals[i]||'')}" oninput="state.profile.ideals[${i}]=this.value;save()" placeholder="例如：職涯顧問、行銷企劃"></div>`).join('')}
-  </div>
+  <div class="grid3">${[0,1,2].map(i=>`<div class="field"><label>理想職業 ${i+1}</label><input value="${escapeHtml(state.profile.ideals[i]||'')}" oninput="state.profile.ideals[${i}]=this.value;save()" placeholder="例如：職涯顧問、AI產品經理"></div>`).join('')}</div>
   ${actions()}`;
 }
 function renderHolland(view, id){
   const sec=DATA.hollandSections.find(s=>s.id===id);
+  const before=stepDone(id);
   const answered=TYPES.reduce((a,t)=>a+state.holland[id][t].filter(v=>v!==null).length,0);
   const total=TYPES.reduce((a,t)=>a+sec.types[t].length,0);
-  view.innerHTML=`<div class="section-head"><div><h2>${sec.title}</h2><p>${sec.question} 每題選一個答案，系統會自動計入 RIASEC 六型分數。</p></div><span class="pill">${answered}/${total}</span></div>
-  ${quickStats([{value:`${answered}/${total}`,label:'本關已完成題數'},{value:'6 類型',label:'R / I / A / S / E / C 同步統計'},{value:id==='ability'?'看擅長程度':'看直覺偏好',label:'本關作答重點'}])}
-  <div class="mission-tip"><strong>玩法：</strong>${id==='ability'?'只看你目前是否擅長或勝任，不用管喜不喜歡。':'依照第一直覺點選。'} 點完六個類型，即可進入下一關。</div>
-  ${TYPES.map(t=>typeBlock(sec,t,activeHollandType(sec))).join('')}
+  view.innerHTML=`${renderMissionMap()}
+  ${questIntro('interest','第 2 關｜興趣森林','荷倫興趣探索','這一關看的是你自然會被哪些活動吸引。請照第一直覺作答，不需要用現實條件或別人的期待來修正答案。',[
+    {title:'這關在看什麼',text:'你喜不喜歡做這些事情，找出你的自然興趣能量。'},
+    {title:'作答方式',text:`每題在「${sec.yes}」與「${sec.no}」之間選一個。`},
+    {title:'完成獎勵',text:'完成後獲得「興趣能量徽章」，解鎖能力山谷。'}
+  ])}
+  ${quickStats([{value:`${answered}/${total}`,label:'興趣探索點'},{value:'6 類型',label:'RIASEC 六型能量'},{value:'第一直覺',label:'本關作答重點'}])}
+  ${TYPES.map(t=>typeBlock(sec,t)).join('')}
   ${actions()}`;
 }
-function activeHollandType(sec){
-  if(hollandAdvancePause.sec===sec.id && hollandAdvancePause.type) return hollandAdvancePause.type;
-  return TYPES.find(t=>state.holland[sec.id][t].some(v=>v===null)) || null;
+function renderSubHollandSection(id,title,desc){
+  const sec=DATA.hollandSections.find(s=>s.id===id);
+  const answered=TYPES.reduce((a,t)=>a+state.holland[id][t].filter(v=>v!==null).length,0);
+  const total=TYPES.reduce((a,t)=>a+sec.types[t].length,0);
+  return `<div class="sub-mission-title"><div><h3>${title}</h3><span>${desc}</span></div><span class="count-chip">${answered}/${total}</span></div>${TYPES.map(t=>typeBlock(sec,t)).join('')}`;
 }
-function typeBlock(sec,t,activeType){
+function renderValley(view){
+  const abilityDone=TYPES.reduce((a,t)=>a+state.holland.ability[t].filter(v=>v!==null).length,0);
+  const careerDone=TYPES.reduce((a,t)=>a+state.holland.career[t].filter(v=>v!==null).length,0);
+  const ratingDone=TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2;
+  view.innerHTML=`${renderMissionMap()}
+  ${questIntro('valley','第 3 關｜能力山谷','興趣與能力自評','這一關會整合三種資訊：你覺得自己擅長什麼、你對 AI 時代職業是否有興趣，以及你對能力的自我評估。完成後，系統會讓何倫碼判讀更完整。',[
+    {title:'能力寶石',text:'判斷你目前擅長或能勝任的任務。'},
+    {title:'未來職業通行證',text:'探索 AI、新興職業與現代工作角色的吸引力。'},
+    {title:'天賦雷達',text:'用 1～7 分校準你的能力自評。'}
+  ])}
+  <div class="energy-row"><div class="energy-card"><b>${abilityDone}/66</b><span>能力寶石探索點</span></div><div class="energy-card"><b>${careerDone}/66</b><span>未來職業探索點</span></div><div class="energy-card"><b>${ratingDone}/12</b><span>天賦雷達校準點</span></div></div>
+  ${renderSubHollandSection('ability','💎 能力寶石區｜勝任能力','只看你目前是否擅長或能勝任，不用管喜不喜歡。')}
+  ${renderSubHollandSection('career','🛰️ 未來職業宇宙港｜AI新興職業偏好','請判斷你是否想做、想了解或對此職涯方向有興趣。')}
+  ${renderRatingPanel()}
+  ${actions()}`;
+}
+function typeBlock(sec,t){
   const meta=DATA.riasec[t], arr=sec.types[t], vals=state.holland[sec.id][t];
   const score=vals.filter(v=>v===true).length, done=vals.filter(v=>v!==null).length;
-  return `<details class="type-card" ${t===activeType?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
+  const key=typeCardKey(sec.id,t);
+  const shouldOpen=done<arr.length || openTypeCardKeys.has(key);
+  return `<details class="type-card" data-type-key="${key}" ${shouldOpen?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
     ${arr.map((q,i)=>`<div class="q-row"><div class="q-text">${i+1}. ${escapeHtml(q)}</div><div class="choice"><button class="${vals[i]===true?'selected yes':''}" onclick="setHolland('${sec.id}','${t}',${i},true)">${sec.yes}</button><button class="${vals[i]===false?'selected no':''}" onclick="setHolland('${sec.id}','${t}',${i},false)">${sec.no}</button></div></div>`).join('')}
   </div></details>`;
 }
-function setHolland(sec,t,i,val){
-  const vals=state.holland[sec][t];
-  const wasDone=vals.every(v=>v!==null);
-  vals[i]=val;
-  const isDone=vals.every(v=>v!==null);
-  if(!wasDone && isDone){
-    if(hollandAdvancePause.timer) clearTimeout(hollandAdvancePause.timer);
-    hollandAdvancePause={sec,type:t,timer:null};
-    hollandAdvancePause.timer=setTimeout(()=>{
-      if(hollandAdvancePause.sec===sec && hollandAdvancePause.type===t){
-        hollandAdvancePause={sec:null,type:null,timer:null};
-        render();
-      }
-    },800);
-  }
-  save();
-  render();
-}
-function renderRating(view){
-  view.innerHTML=`<div class="section-head"><div><h2>📊 任務 4｜能力類型簡評</h2><p>請與同齡人比較，評估自己在六個面向的能力。1 代表低，7 代表高。</p></div><span class="pill">${TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2}/12</span></div>
-  ${quickStats([{value:'表 A',label:'工作能力向度'},{value:'表 B',label:'技能能力向度'},{value:'1～7 分',label:'請依自我評估作答'}])}
+function setHolland(sec,t,i,val){const before=stepDone(sec==='interest'?'interest':'valley');state.holland[sec][t][i]=val;save();renderAfterHollandAnswer(sec,t);celebrateMissionIfDone(sec==='interest'?'interest':'valley',before);}
+function renderRatingPanel(){
+  return `<div class="sub-mission-title"><div><h3>📡 天賦雷達校準艙｜能力類型簡評</h3><span>請和同齡人相比，使用 1～7 分進行自我評估。</span></div><span class="count-chip">${TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2}/12</span></div>
   <div class="grid2"><div class="super-card"><div class="super-head"><h3>表 A｜工作能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityA',t,DATA.abilityA[t],DATA.riasec[t].name)).join('')}</div>
-  <div class="super-card"><div class="super-head"><h3>表 B｜技能能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityB',t,DATA.abilityB[t],DATA.riasec[t].name)).join('')}</div></div>
-  ${actions()}`;
+  <div class="super-card"><div class="super-head"><h3>表 B｜技能能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityB',t,DATA.abilityB[t],DATA.riasec[t].name)).join('')}</div></div>`;
 }
+function renderRating(view){view.innerHTML=renderRatingPanel()+actions();}
 function ratingRow(bucket,t,label,sub){
   const val=state[bucket][t];
   return `<div class="rating-row"><div><div class="rating-title">${DATA.riasec[t].emoji} ${t} 型｜${label}</div><div class="rating-sub">${sub}</div></div><div class="rating-buttons">${[1,2,3,4,5,6,7].map(n=>`<button class="${val===n?'active':''}" onclick="setRating('${bucket}','${t}',${n})">${n}</button>`).join('')}</div></div>`;
 }
-function setRating(bucket,t,n){state[bucket][t]=n;save();render();}
+function setRating(bucket,t,n){const before=stepDone('valley');state[bucket][t]=n;save();render();celebrateMissionIfDone('valley',before);}
+function superGroupLabel(g){
+  const idx=DATA.superGroups.findIndex(x=>x.id===g.id);
+  return `第 ${idx+1} 組`;
+}
 function renderSuper(view){
   const ans=DATA.superGroups.reduce((a,g)=>a+state.super[g.id].filter(v=>v!==null).length,0), total=DATA.superGroups.reduce((a,g)=>a+g.items.length,0);
-  view.innerHTML=`<div class="section-head"><div><h2>🏛️ 任務 5｜SUPER 工作價值觀神殿</h2><p>請依照「這件事對你有多重要」評分。5 非常重要，1 不重要。</p></div><span class="pill">${ans}/${total}</span></div>
-  ${quickStats([{value:`${ans}/${total}`,label:'本關已完成題數'},{value:'13 組',label:'工作價值觀面向'},{value:'1～5 分',label:'分數越高代表越重視'}])}
-  <div class="mission-tip"><strong>玩法：</strong>不是問你現在有沒有，而是問「未來工作中，你重不重視」。請選出真正會影響你工作滿意度的因素。</div>
+  view.innerHTML=`${renderMissionMap()}
+  ${questIntro('super','第 4 關｜價值羅盤','SUPER 工作價值觀探索','這一關請依照每一題對你的重要程度作答。請不要猜測題組代表什麼，只需要回到自己的真實感受。',[
+    {title:'這關在看什麼',text:'每一組題目都代表一種工作條件，系統會在完成後交由報告進行判讀。'},
+    {title:'作答方式',text:'5 分＝非常重要；1 分＝不重要。請避免全部選同一分數。'},
+    {title:'完成獎勵',text:'完成後獲得「價值羅盤徽章」，前往職涯神殿產生報告。'}
+  ])}
+  ${quickStats([{value:`${ans}/${total}`,label:'價值探索點'},{value:'13 組',label:'匿名題組'},{value:'1～5 分',label:'分數越高越重要'}])}
   ${DATA.superGroups.map(g=>superBlock(g)).join('')}
-  ${actions().replace('下一關 →','查看結果 →')}`;
+  ${actions().replace('繼續冒險 →','前往職涯神殿 →')}`;
 }
 function superBlock(g){
   const vals=state.super[g.id]; const score=vals.reduce((a,v)=>a+(v||0),0); const done=vals.filter(v=>v!==null).length;
-  return `<div class="super-card"><div class="super-head"><h3>${g.emoji} ${g.name}</h3><span class="count-chip">${done}/${g.items.length}　${score} 分</span></div><p class="super-desc">${escapeHtml(g.desc)}</p>
+  return `<div class="super-card"><div class="super-head"><h3>${superGroupLabel(g)}</h3><span class="count-chip">${done}/${g.items.length}　已作答</span></div>
   ${g.items.map((q,i)=>`<div class="rating-row"><div class="rating-title">${i+1}. ${escapeHtml(q)}</div><div class="rating-buttons">${[1,2,3,4,5].map(n=>`<button class="${vals[i]===n?'active':''}" onclick="setSuper('${g.id}',${i},${n})">${n}</button>`).join('')}</div></div>`).join('')}
   </div>`;
 }
-function setSuper(gid,i,n){state.super[gid][i]=n;save();render();}
+function setSuper(gid,i,n){const before=stepDone('super');state.super[gid][i]=n;save();render();celebrateMissionIfDone('super',before);}
 function calcHolland(){
   const scores={}, breakdown={}; TYPES.forEach(t=>{scores[t]=0;breakdown[t]={};});
   DATA.hollandSections.forEach(sec=>TYPES.forEach(t=>{const n=state.holland[sec.id][t].filter(v=>v===true).length; breakdown[t][sec.id]=n; scores[t]+=n;}));
@@ -374,44 +500,187 @@ function counselorHints(h,s){
     '判讀技巧：六角型上相鄰類型通常較容易整合；若對角類型同時很高，代表可能需要兼具兩種不同工作情境，建議做職務拆解。'
   ];
 }
+
+function careerRoleTitle(h,s){
+  const top=h.ranking[0]||{type:'',meta:{role:'職涯探索者'}};
+  const second=(h.ranking[1]||{type:''}).type;
+  const pair=top.type+second;
+  const map={RI:'實作研究型問題解決者',IR:'科技分析型實踐者',IA:'資料洞察型創意家',AI:'創意研究型設計師',AS:'內容陪伴型創作者',SA:'溫暖表達型引導者',SE:'助人影響型培訓者',ES:'社群策略型推動者',EC:'營運策略型管理者',CE:'流程治理型推進者',CI:'資料治理型分析者',IC:'系統分析型規劃者'};
+  return map[pair] || top.meta.role || '職涯探索者';
+}
+function suitedEnvironment(h,s){
+  const top=h.ranking.slice(0,3).map(x=>x.type), vals=s.ranking.slice(0,5).map(v=>v.name);
+  const env=[];
+  if(top.includes('R')) env.push('有清楚設備、工具、實作任務與看得見成果的環境');
+  if(top.includes('I')) env.push('能研究問題、分析資料、持續學習與深入思考的環境');
+  if(top.includes('A')) env.push('允許創作、表達風格、設計內容與嘗試新點子的環境');
+  if(top.includes('S')) env.push('重視人際互動、教學陪伴、服務支持與團隊溝通的環境');
+  if(top.includes('E')) env.push('能提案、推動目標、整合資源並看見績效成果的環境');
+  if(top.includes('C')) env.push('流程清楚、資料完整、規則穩定且能提升效率的環境');
+  if(vals.includes('獨立性')) env.push('需要保留一定自主度與決策空間');
+  if(vals.includes('成就感')) env.push('適合有階段成果、回饋與成長里程碑的任務');
+  return env.slice(0,6);
+}
+function possibleBlocks(h,s){
+  const lows=s.low.slice(0,3).map(v=>v.name), top=h.ranking[0]?.type;
+  const blocks=[];
+  if(lows.includes('安全感')) blocks.push('可能不喜歡過度穩定但缺乏挑戰的環境，但也要注意風險管理。');
+  if(lows.includes('社會交際')) blocks.push('若工作需要大量陌生互動或頻繁應酬，可能會消耗能量。');
+  if(lows.includes('舒適')) blocks.push('可能願意為成果承受壓力，但需避免長期過勞。');
+  if(top==='A') blocks.push('若環境規則過多、創意空間不足，容易覺得被限制。');
+  if(top==='I') blocks.push('若工作缺乏學習深度或只剩例行操作，容易失去投入感。');
+  if(top==='S') blocks.push('若服務對象需求過多但支持不足，需注意情緒耗竭。');
+  if(!blocks.length) blocks.push('可進一步觀察高分興趣與高分價值觀是否能在同一份工作中被滿足。');
+  return blocks.slice(0,5);
+}
+function nextActionAdvice(h,s){
+  const top3=h.ranking.slice(0,3);
+  return [
+    `先挑選 2～3 個與 ${top3.map(x=>x.type+'型').join('、')} 相關的職務，做職缺關鍵字搜尋。`,
+    `用 SUPER 前五高價值觀檢查工作條件，確認這份工作是否能長期維持動力。`,
+    '安排一次職涯諮詢，把興趣、能力、價值觀與現實條件放在同一張決策表中比較。',
+    '選一個小型實作任務或課程，先用 2 週驗證自己是否真的有興趣與可持續投入。'
+  ];
+}
+function counselorFocus(h,s){
+  return counselorHints(h,s).concat([
+    '確認學員高分職涯類型是「有經驗」還是「只是嚮往」，避免把想像誤判成能力。',
+    '將高分價值觀與實際工作條件對照，協助學員辨識適配與落差。'
+  ]);
+}
+function counselorCaseSummary(h,s){
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,3);
+  const role=careerRoleTitle(h,s);
+  const primary=top3[0] || {type:'-', meta:{name:'-', role:'-'}, score:0};
+  const secondary=top3[1] || {type:'-', meta:{name:'-'}, score:0};
+  const valueNames=values.slice(0,3).map(v=>v.name).join('、');
+  const lowNames=lows.map(v=>v.name).join('、');
+  return [
+    `本個案目前呈現「${role}」傾向，何倫碼前三高為 ${top3.map(x=>`${x.type}型${x.meta.name}（${x.score}）`).join('、')}。`,
+    `主型 ${primary.type} 型顯示其在「${primary.meta.role}」相關任務上較容易產生投入感；次型 ${secondary.type} 型則可視為輔助興趣或第二探索方向。`,
+    `SUPER 價值觀以 ${valueNames} 為優先，代表工作選擇不宜只看職稱，需同步檢核任務內容、回饋方式與工作條件是否能支持這些價值。`,
+    `低優先價值觀為 ${lowNames || '暫無明顯低分項'}，諮詢時可確認這些分數較低是「真的不在意」，或是目前經驗不足、理解不足所致。`
+  ];
+}
+function counselorWritingDirections(h,s){
+  const top=h.ranking[0]?.type, top3=h.ranking.slice(0,3).map(x=>x.type);
+  const values=s.ranking.slice(0,5).map(v=>v.name), directions=[];
+  directions.push('報告撰寫可先以「興趣主軸＋價值觀需求＋現實條件」三段式呈現，避免只用單一代碼下結論。');
+  directions.push(`建議描述 ${top3.join('、')} 三型如何交會：主型作為主要動機，第二、第三型作為任務偏好、工作場域或學習方式的補充。`);
+  if(top==='S') directions.push('若 S 型居前，撰寫時可特別觀察助人動機、界線感與情緒耗竭風險，並區分「喜歡互動」與「適合高壓服務」。');
+  if(top==='I') directions.push('若 I 型居前，撰寫時可強調問題研究、資料分析與深度學習需求，並檢核其對例行性工作的耐受度。');
+  if(top==='A') directions.push('若 A 型居前，撰寫時可描述創作表達、自主度與美感需求，同時確認其是否具備作品、技能或可行的職涯路徑。');
+  if(top==='E') directions.push('若 E 型居前，撰寫時可聚焦影響力、推動成果與資源整合，也需確認抗壓、倫理界線與長期動機。');
+  if(top==='R') directions.push('若 R 型居前，撰寫時可強調實作、工具、設備與具體成果，並確認其偏好室內/戶外、個人/團隊、穩定/變動的工作條件。');
+  if(top==='C') directions.push('若 C 型居前，撰寫時可強調秩序、資料、流程與準確性，也需留意是否因追求穩定而壓抑其他探索需求。');
+  if(values.includes('安全感')) directions.push('價值觀若重視安全感，報告中需補充工作穩定性、制度透明度、風險管理與支持系統。');
+  if(values.includes('成就感')) directions.push('價值觀若重視成就感，報告中可加入階段目標、可見成果、回饋機制與能力升級路徑。');
+  if(values.includes('獨立性')) directions.push('價值觀若重視獨立性，報告中需描述自主決策、彈性安排與個人責任之間的平衡。');
+  return directions.slice(0,8);
+}
+function counselorInterviewQuestions(h,s){
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,3);
+  const questions=[
+    `在 ${top3.map(x=>x.type+'型').join('、')} 相關活動中，哪些是你曾經做過並感到有成就的？哪些只是目前覺得嚮往？`,
+    `如果一份工作能滿足 ${values.slice(0,3).map(v=>v.name).join('、')}，但薪資、工時或學習壓力不完全理想，你會怎麼排序？`,
+    `你過去最投入的一次學習、活動或工作經驗是什麼？當時滿足了哪些工作價值觀？`,
+    `你希望未來工作中「一定要有」與「可以妥協」的條件各是什麼？`,
+    `低分的 ${lows.map(v=>v.name).join('、') || '價值觀'} 是真的不重要，還是目前還沒有足夠經驗判斷？`,
+    '若要用兩週做一次小型職涯驗證，你願意嘗試哪一個任務、課程、訪談或作品？'
+  ];
+  return questions;
+}
+function counselorProfessionalPhrases(h,s){
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,3), role=careerRoleTitle(h,s);
+  return [
+    `本個案測驗結果顯示其職涯興趣以「${top3.map(x=>x.type+'型'+x.meta.name).join('、')}」為主要組合，可初步理解為「${role}」傾向。`,
+    `其工作價值觀前段落在「${values.map(v=>v.name).join('、')}」，顯示未來職涯選擇需同時考量任務內容與工作條件的心理滿足度。`,
+    '建議後續諮詢不宜直接以單一職業作為結論，而應透過經驗盤點、職務比較與短期驗證任務，協助個案形成可執行的探索路徑。',
+    '若個案對高分類型缺乏實際經驗，建議安排訪談、課程、見習或小型作品任務，以區辨興趣想像與真實投入。'
+  ];
+}
+function makeCounselorReport(h,s){
+  const lines=[];
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,3);
+  lines.push('知己知途｜諮詢師專用個案分析建議');
+  lines.push('');
+  lines.push(`個案：${state.profile.name || '未填'}｜Email：${state.profile.email || '未填'}｜測試日期：${state.profile.date || '未填'}`);
+  lines.push(`何倫碼：${h.code || '---'}｜前三高：${top3.map(x=>`${x.type}型${x.meta.name} ${x.score}分`).join('、')}`);
+  lines.push(`SUPER 前五高：${values.map(v=>`${v.name} ${v.score}分`).join('、')}`);
+  lines.push(`低優先價值觀：${lows.map(v=>`${v.name} ${v.score}分`).join('、')}`);
+  lines.push('');
+  lines.push('一、個案摘要');
+  counselorCaseSummary(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  lines.push('');
+  lines.push('二、專業報告撰寫方向');
+  counselorWritingDirections(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  lines.push('');
+  lines.push('三、晤談切入與追問問題');
+  counselorInterviewQuestions(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  lines.push('');
+  lines.push('四、可放入正式諮詢報告的句型');
+  counselorProfessionalPhrases(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  lines.push('');
+  lines.push('五、提醒');
+  lines.push('1. 本分析供諮詢師撰寫職涯諮詢紀錄、個案摘要與晤談方向參考。');
+  lines.push('2. 報告撰寫時仍需結合個案背景、教育/工作經驗、家庭期待、身心狀態與現實資源。');
+  lines.push('3. 若測驗結果與晤談內容不一致，建議以晤談脈絡與實際經驗為主要判斷依據。');
+  return lines.join('\n');
+}
 function renderResult(view){
   const h=calcHolland(), s=calcSuper(), complete=answeredCount()===totalCount();
-  const top=h.ranking[0], top3=h.ranking.slice(0,3), values=s.ranking.slice(0,2), lows=s.low.slice(0,2);
-  const report=makeReport(h,s), hints=counselorHints(h,s);
-  view.innerHTML=`<div class="section-head"><div><h2>🏆 完整專業版結果報告</h2><p>含何倫碼六角型圖、RIASEC 六型分數、SUPER 價值觀排序與諮詢師快速判讀。</p></div><span class="pill">${complete?'完整報告':'尚有未答題'}</span></div>
-  ${complete?'':`<div class="warning">⚠️ 目前還有 ${totalCount()-answeredCount()} 題未完成，系統已依現有答案試算。建議補完後再列印正式報告。</div>`}
-  <div class="result-hero"><div class="result-card"><h2>${state.profile.name?escapeHtml(state.profile.name)+' 的':''}職涯角色</h2><div class="code">${h.code || '---'}</div><p>${top.meta.emoji} 主型：${top.type} 型｜${top.meta.name}｜${top.meta.role}</p><p style="margin-top:10px">工作價值觀優先：${values.map(v=>v.emoji+' '+v.name).join('、')}</p></div>
-  <div class="sub-card"><h3>報告摘要</h3><p><strong>興趣/能力主軸：</strong>${top3.map(x=>`${x.type}型${x.meta.name}`).join(' → ')}</p><p><strong>決策關鍵：</strong>${values.map(v=>v.name).join('、')}</p><p><strong>低優先提醒：</strong>${lows.map(v=>v.name).join('、')} 目前可能不是你最在意的工作條件。</p></div></div>
-  <div class="rank-list"><div class="sub-card hex-card"><h3>何倫碼六角型圖</h3><p class="small">依 R→I→A→S→E→C 排列；越外圈代表分數越高，越容易成為自然偏好的工作風格。</p><div class="hex-wrap">${renderHollandHexSvg(h.scores,{size:400})}</div><div class="hex-legend">${top3.map((x,i)=>`<div class="legend-item"><span class="legend-badge">${i+1}</span><div><strong>${x.type} 型｜${x.meta.name}</strong><br><span>${x.meta.role}</span></div></div>`).join('')}</div></div>
-  <div class="sub-card"><h3>諮詢師快速判讀</h3><div class="counselor-list">${hints.map((txt,i)=>`<div class="counselor-note"><strong>${i+1}.</strong> ${escapeHtml(txt)}</div>`).join('')}</div></div></div>
-  <div class="rank-list"><div class="sub-card"><h3>RIASEC 六型分數</h3>${TYPES.map(t=>barRow(t,DATA.riasec[t].emoji+' '+t+' '+DATA.riasec[t].name,h.scores[t],hollandTypeMax(t))).join('')}</div>
-  <div class="sub-card"><h3>SUPER 價值觀分數</h3>${s.ranking.map(v=>barRow(v.id,v.emoji+' '+v.name,v.score,20)).join('')}</div></div>
-  <div class="rank-list">${top3.map((x,i)=>`<div class="rank-item"><h3>${i+1}. ${x.meta.emoji} ${x.type} 型｜${x.meta.name}</h3><p>${escapeHtml(x.meta.desc)}</p><p style="margin-top:8px"><strong>行動建議：</strong>${escapeHtml(x.meta.advice)}</p></div>`).join('')}${values.map((v,i)=>`<div class="rank-item"><h3>${i+1}. ${v.emoji} 價值觀｜${v.name}</h3><p>${escapeHtml(v.desc)}</p></div>`).join('')}</div>
-  <h3>可複製報告</h3><div class="report-box" id="reportText">${escapeHtml(report)}</div>
-  <div id="emailSendStatus" class="email-send-box ${emailSendState.kind}">${emailSendStatusHtml()}</div>
-  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回上一關</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this)">下載 PDF</button><button class="btn primary" onclick="sendPdfToEmail(this,false)">寄送 PDF 到 Email</button><button class="btn danger" onclick="resetGame()">重新測驗</button></div></div>`;
+  const top=h.ranking[0], top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,2);
+  const role=careerRoleTitle(h,s), report=makeReport(h,s);
+  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), actionsList=nextActionAdvice(h,s), focus=counselorFocus(h,s);
+  view.innerHTML=`${renderMissionMap()}
+  ${questIntro('result','第 5 關｜職涯神殿','產生職涯角色與正式報告','你已完成職涯探索冒險。職涯神殿會把荷倫興趣、能力自評與 SUPER 工作價值觀轉換成可理解、可討論、可行動的專屬報告。',[
+    {title:'角色總覽',text:'以主型與前三高組合產生職涯角色稱號。'},
+    {title:'探索摘要',text:'整理適合的工作環境、可能卡住的地方與下一步方向。'},
+    {title:'PDF 報告',text:'可下載或寄送到你填寫的 Email，方便日後回顧。'}
+  ])}
+  ${complete?'':`<div class="warning">⚠️ 目前還有 ${totalCount()-answeredCount()} 個探索點未完成，系統已依現有答案試算。建議補完後再產生正式報告。</div>`}
+  <div class="result-hero"><div class="result-card"><h2>🎉 恭喜完成冒險</h2><div class="role-title">${escapeHtml(role)}</div><div class="code">${h.code || '---'}</div><p>${top.meta.emoji} 主型：${top.type} 型｜${top.meta.name}｜${top.meta.role}</p><p style="margin-top:10px">核心價值羅盤：${values.slice(0,3).map(v=>v.emoji+' '+v.name).join('、')}</p></div>
+  <div class="sub-card"><h3>職涯角色總覽</h3><p>你的結果顯示，你的職涯能量以 <strong>${top3.map(x=>x.type+'型'+x.meta.name).join('、')}</strong> 為主軸。</p><p>在選擇工作時，最需要留意 <strong>${values.slice(0,5).map(v=>v.name).join('、')}</strong> 是否被滿足。</p></div></div>
+  <div class="rank-list"><div class="sub-card hex-card"><h3>何倫碼職涯能量圖</h3><p class="small">越外圈代表該型能量越高；前三高是你目前最值得探索的方向。</p><div class="hex-wrap">${renderHollandHexSvg(h.scores,{size:400})}</div><div class="hex-legend">${top3.map((x,i)=>`<div class="legend-item"><span class="legend-badge">${i+1}</span><div><strong>${x.type} 型｜${x.meta.name}</strong><br><span>${x.meta.role}</span></div></div>`).join('')}</div></div>
+  <div class="sub-card"><h3>SUPER 工作價值觀前五高</h3><div class="gem-list">${values.map((v,i)=>`<div class="gem">${v.emoji}<br>${i+1}. ${v.name}<br>${v.score}分</div>`).join('')}</div><p class="small">這些是影響你工作滿意度與投入度的關鍵條件。</p></div></div>
+  <div class="treasure-grid"><div class="treasure-card"><h3>適合的工作環境</h3><ul>${env.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>可能卡住的地方</h3><ul>${blocks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>延伸探索重點</h3><ul>${focus.slice(0,5).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>下一步行動建議</h3><ul>${actionsList.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div></div>
+  <div class="rank-list" style="margin-top:14px"><div class="sub-card"><h3>RIASEC 六型能量值</h3>${TYPES.map(t=>barRow(t,DATA.riasec[t].emoji+' '+t+' '+DATA.riasec[t].name,h.scores[t],hollandTypeMax(t))).join('')}</div><div class="sub-card"><h3>SUPER 價值羅盤完整排序</h3>${s.ranking.map(v=>barRow(v.id,v.emoji+' '+v.name,v.score,20)).join('')}</div></div>
+  <h3>可複製文字報告</h3><div class="report-box" id="reportText">${escapeHtml(report)}</div>
+  <div id="emailSendStatus" class="email-send-box ${emailSendState.kind}">${emailSendStatusHtml()}<div class="case-link">完成寄送後，請到信箱查看專屬 PDF 報告；若未收到，請先檢查垃圾信件。</div></div>
+  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回價值羅盤</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this)">下載 PDF 報告</button><button class="btn primary" onclick="sendPdfToEmail(this,false)">寄送 PDF 到 Email</button><button class="btn danger" onclick="resetGame()">重新冒險</button></div></div>`;
+  if(complete) celebrateMissionIfDone('result',false);
   scheduleAutoEmailSend(complete);
 }
 function barRow(key,label,score,max){return `<div class="bar-row"><div class="bar-label">${escapeHtml(label)}</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,Math.round(score/max*100))}%"></div></div><div class="score-num">${score}</div></div>`;}
 function makeReport(h,s){
+  const role=careerRoleTitle(h,s), top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
   const lines=[];
-  lines.push('職涯冒險島｜荷倫興趣 × SUPER 工作價值觀結果報告');
+  lines.push('知己知途｜職涯探索冒險遊戲｜正式個案報告');
   lines.push('');
   lines.push(`姓名/暱稱：${state.profile.name || '未填'}`);
   lines.push(`Email：${state.profile.email || '未填'}`);
   lines.push(`測試日期：${state.profile.date || '未填'}`);
+  lines.push(`任務序號：${accessInfo.serial || '未提供'}`);
   const ideals=state.profile.ideals.filter(Boolean); if(ideals.length) lines.push(`理想職業：${ideals.join('、')}`);
   lines.push('');
-  lines.push(`一、荷倫 RIASEC 職業傾向代碼：${h.code}`);
-  h.ranking.forEach((r,i)=>lines.push(`${i+1}. ${r.type}型 ${r.meta.name}：${r.score}分`));
+  lines.push(`一、職涯角色總覽：${role}`);
+  lines.push(`何倫 RIASEC 代碼：${h.code}`);
+  lines.push(`前三高：${top3.map(x=>x.type+'型'+x.meta.name+'（'+x.score+'分）').join('、')}`);
   lines.push('');
-  lines.push('二、SUPER 工作價值觀排序');
-  s.ranking.forEach((v,i)=>lines.push(`${i+1}. ${v.name}：${v.score}分`));
+  lines.push('二、SUPER 工作價值觀前五高');
+  values.forEach((v,i)=>lines.push(`${i+1}. ${v.name}：${v.score}分｜${v.desc}`));
   lines.push('');
-  lines.push(`三、初步解讀：你的職涯探索可優先從「${h.ranking.slice(0,3).map(x=>x.meta.name).join('、')}」相關任務開始，並在選工作時優先檢查「${s.ranking.slice(0,2).map(v=>v.name).join('、')}」是否被滿足。`);
+  lines.push('三、適合的工作環境');
+  suitedEnvironment(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
   lines.push('');
-  lines.push('四、諮詢師快速判讀');
-  counselorHints(h,s).forEach((txt,i)=>lines.push(`${i+1}. ${txt}`));
+  lines.push('四、可能卡住的地方');
+  possibleBlocks(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  lines.push('');
+  lines.push('五、延伸探索重點');
+  counselorFocus(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  lines.push('');
+  lines.push('六、下一步行動建議');
+  nextActionAdvice(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
   lines.push('');
   lines.push('提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。');
   return lines.join('\n');
@@ -419,64 +688,51 @@ function makeReport(h,s){
 
 function pdfReportHtml(){
   const h=calcHolland(), s=calcSuper();
-  const report=makeReport(h,s);
-  const top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-'}};
-  const top3=h.ranking.slice(0,3);
-  const hints=counselorHints(h,s);
-  return `<div style="font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#1F2F29;padding:24px;line-height:1.62;background:#fff;">
-    <div style="border-bottom:4px solid #173F33;padding-bottom:12px;margin-bottom:16px;">
-      <div style="font-size:14px;color:#7A6A4D;font-weight:800;">職涯冒險島｜完整專業版｜荷倫興趣 × SUPER 工作價值觀</div>
-      <h1 style="margin:6px 0 4px;font-size:28px;color:#173F33;">${escapeHtml(state.profile.name || '學員')} 的測驗結果報告</h1>
-      <div style="font-size:13px;color:#6C7A72;">Email：${escapeHtml(state.profile.email || '')}　｜　測試日期：${escapeHtml(state.profile.date || '')}</div>
+  const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-'}};
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
+  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=counselorFocus(h,s), actionsList=nextActionAdvice(h,s);
+  return `<div class="pdf-safe" style="font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#1F2F29;width:170mm;max-width:170mm;margin:0 auto;padding:0;line-height:1.58;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word;">
+    <div style="border-bottom:4px solid #173F33;padding-bottom:12px;margin-bottom:14px;max-width:100%;">
+      <div style="font-size:13px;color:#7A6A4D;font-weight:800;">知己知途｜職涯探索冒險遊戲｜正式個案報告</div>
+      <h1 style="margin:6px 0 4px;font-size:23px;color:#173F33;line-height:1.25;overflow-wrap:anywhere;">${escapeHtml(state.profile.name || '學員')} 的職涯神殿報告</h1>
+      <div style="font-size:12px;color:#6C7A72;">Email：${escapeHtml(state.profile.email || '')}｜日期：${escapeHtml(state.profile.date || '')}<br>任務序號：${escapeHtml(accessInfo.serial || '未提供')}</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;">
-      <div style="background:#F6F1E5;border:1px solid #DED2B8;border-radius:16px;padding:16px;">
-        <div style="font-size:15px;color:#6C7A72;font-weight:800;">RIASEC 職涯代碼</div>
-        <div style="font-size:52px;font-weight:1000;color:#173F33;letter-spacing:.12em;">${escapeHtml(h.code || '---')}</div>
-        <div style="font-weight:800;">主型：${escapeHtml(top.type)} 型｜${escapeHtml(top.meta.name)}｜${escapeHtml(top.meta.role)}</div>
-        <div style="margin-top:8px;font-size:14px;">工作價值觀優先：${escapeHtml(s.ranking.slice(0,2).map(v=>v.name).join('、'))}</div>
-      </div>
-      <div style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;">
-        <div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">何倫碼六角型圖</div>
-        <div style="display:flex;justify-content:center;">${renderHollandHexSvg(h.scores,{size:320})}</div>
-      </div>
+    <div class="pdf-avoid" style="background:#F6F1E5;border:1px solid #DED2B8;border-radius:16px;padding:14px;max-width:100%;margin-bottom:12px;">
+      <div style="font-size:14px;color:#6C7A72;font-weight:800;">職涯角色總覽</div>
+      <div style="font-size:26px;font-weight:1000;color:#173F33;line-height:1.2;margin:5px 0;">${escapeHtml(role)}</div>
+      <div style="font-size:38px;font-weight:1000;color:#B8872E;letter-spacing:.1em;">${escapeHtml(h.code || '---')}</div>
+      <div style="font-weight:800;">主型：${escapeHtml(top.type)} 型｜${escapeHtml(top.meta.name)}｜${escapeHtml(top.meta.role)}</div>
     </div>
-    <div style="margin-top:16px;background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:14px;">
-      <div style="font-size:18px;font-weight:900;color:#173F33;margin-bottom:8px;">諮詢師快速判讀</div>
-      ${hints.map((txt,i)=>`<div style="margin:6px 0;padding:8px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}.</strong> ${escapeHtml(txt)}</div>`).join('')}
+    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
+      <div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">何倫興趣前三高</div>
+      ${top3.map((x,i)=>`<div style="margin:7px 0;padding:9px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}. ${x.type} 型｜${x.meta.name}｜${x.score}分</strong><br><span style="font-size:12px;color:#5D6D66;">${escapeHtml(x.meta.desc)}</span></div>`).join('')}
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;align-items:start;">
-      <div style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:14px;">
-        <div style="font-size:18px;font-weight:900;color:#173F33;margin-bottom:8px;">RIASEC 前三型</div>
-        ${top3.map((x,i)=>`<div style="margin:8px 0;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}. ${x.type} 型｜${x.meta.name}</strong><br><span style="font-size:13px;color:#5D6D66;">${escapeHtml(x.meta.desc)}</span></div>`).join('')}
-      </div>
-      <div style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:14px;">
-        <div style="font-size:18px;font-weight:900;color:#173F33;margin-bottom:8px;">完整分數摘要</div>
-        <pre style="white-space:pre-wrap;font-family:'Microsoft JhengHei',Arial,sans-serif;background:#fff;border:1px solid #E5D8C2;border-radius:12px;padding:12px;font-size:12px;line-height:1.55;">${escapeHtml(report)}</pre>
-      </div>
+    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
+      <div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">SUPER 工作價值觀前五高</div>
+      ${values.map((v,i)=>`<div style="margin:7px 0;padding:9px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}. ${v.name}｜${v.score}分</strong><br><span style="font-size:12px;color:#5D6D66;">${escapeHtml(v.desc)}</span></div>`).join('')}
     </div>
-    <div style="margin-top:16px;font-size:12px;color:#6C7A72;border-top:1px solid #E4DAC7;padding-top:12px;">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>
+    ${pdfListBlock('適合的工作環境',env)}
+    ${pdfListBlock('可能卡住的地方',blocks)}
+    ${pdfListBlock('延伸探索重點',focus.slice(0,6))}
+    ${pdfListBlock('下一步行動建議',actionsList)}
+    <div class="pdf-avoid" style="margin-top:12px;background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;max-width:100%;"><div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">何倫碼六角型圖</div><div style="display:flex;justify-content:center;max-width:100%;">${renderHollandHexSvg(h.scores,{size:260})}</div></div>
+    <div style="margin-top:14px;font-size:11px;color:#6C7A72;border-top:1px solid #E4DAC7;padding-top:10px;">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>
   </div>`;
 }
+function pdfListBlock(title,items){return `<div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;"><div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">${escapeHtml(title)}</div>${items.map((x,i)=>`<div style="margin:6px 0;padding:8px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;font-size:12px;"><strong>${i+1}.</strong> ${escapeHtml(x)}</div>`).join('')}</div>`;}
 function pdfFileName(){
   const name=String(state.profile.name||'學員').trim().replace(/[\\/:*?"<>|\s]+/g,'_');
   const date=String(state.profile.date||new Date().toISOString().slice(0,10));
-  return `職涯冒險島完整專業版測驗結果_${name}_${date}.pdf`;
-}
-function createVisualPdfElement(){
-  const source=document.getElementById('view');
-  const el=document.createElement('div');
-  el.className='pdf-export';
-  el.innerHTML=source?.innerHTML || pdfReportHtml();
-  el.querySelectorAll('.actions,#emailSendStatus,.email-send-box').forEach(node=>node.remove());
-  return el;
+  return `知己知途_職涯探索冒險遊戲_個案報告_${name}_${date}.pdf`;
 }
 async function createPdfBlob(){
-  if(!window.html2pdf) throw new Error('PDF套件尚未載入，請確認網路連線或改用列印另存PDF。');
-  const el=createVisualPdfElement();
+  if(!window.html2pdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
+  const el=document.createElement('div');
+  el.innerHTML=pdfReportHtml();
+  el.style.position='fixed';el.style.left='-99999px';el.style.top='0';el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
   document.body.appendChild(el);
   try{
-    const opt={margin:8,filename:pdfFileName(),image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#FFFDF8',windowWidth:1100,scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.result-card','.sub-card','.rank-item','.counselor-note']}};
+    const opt={margin:[12,12,12,12],filename:pdfFileName(),image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     return await html2pdf().set(opt).from(el).outputPdf('blob');
   }finally{el.remove();}
 }
@@ -485,20 +741,26 @@ async function downloadPdf(btn){
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF產生中...';}
   try{
     if(!window.html2pdf){window.print();return;}
-    const el=createVisualPdfElement();document.body.appendChild(el);
-    const opt={margin:8,filename:pdfFileName(),image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#FFFDF8',windowWidth:1100,scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.result-card','.sub-card','.rank-item','.counselor-note']}};
+    const el=document.createElement('div');el.innerHTML=pdfReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';document.body.appendChild(el);
+    const opt={margin:[12,12,12,12],filename:pdfFileName(),image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     await html2pdf().set(opt).from(el).save();el.remove();toast('PDF 已產生');
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
   finally{if(btn){btn.disabled=false;btn.textContent=old;}}
 }
 function buildResultRecord(h,s,fileName,status){
-  const top3=h.ranking.slice(0,3);
+  const record={};
+  const pct=Math.round(answeredCount()/totalCount()*100)+'%';
+  const ideals=state.profile.ideals || [];
+  const top3=h.ranking.slice(0,3).map(x=>x.type);
   const valueTop=s.ranking.slice(0,2);
   const valueLow=s.low.slice(0,2);
-  const ideals=state.profile.ideals || [];
-  const ans=answeredCount(), total=totalCount();
-  const record={};
-  record['送出時間']=new Date().toISOString();
+  record['時間戳記']=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'});
+  record['測驗批次ID']=accessInfo.batchCode || getShortCode() || SESSION_ID;
+  record['填答序號']=accessInfo.serial || ''; 
+  record['批次碼']=accessInfo.batchCode || '';
+  record['批次名稱']=accessInfo.batchName || '';
+  record['短碼']=getShortCode() || '';
+  record['諮詢師Email']=accessInfo.consultantEmail || '';
   record['姓名/暱稱']=state.profile.name || '';
   record['性別']=state.profile.gender || '';
   record['年齡']=state.profile.age || '';
@@ -508,72 +770,71 @@ function buildResultRecord(h,s,fileName,status){
   record['理想職業1']=ideals[0] || '';
   record['理想職業2']=ideals[1] || '';
   record['理想職業3']=ideals[2] || '';
-  record['完成題數']=ans;
-  record['總題數']=total;
-  record['完成率']=total ? Math.round(ans/total*100) : 0;
+  record['完成題數']=answeredCount();
+  record['總題數']=totalCount();
+  record['完成率']=pct;
   record['荷倫代碼']=h.code || '';
-  record['主型']=top3[0] ? `${top3[0].type} ${top3[0].meta.name}` : '';
-  record['次型']=top3[1] ? `${top3[1].type} ${top3[1].meta.name}` : '';
-  record['第三型']=top3[2] ? `${top3[2].type} ${top3[2].meta.name}` : '';
-  TYPES.forEach(t=>{record[`${t}總分`]=h.scores[t] || 0;});
-  TYPES.forEach(t=>{record[`${t}興趣活動分數`]=(h.breakdown[t]&&h.breakdown[t].interest)||0;});
-  TYPES.forEach(t=>{record[`${t}勝任能力分數`]=(h.breakdown[t]&&h.breakdown[t].ability)||0;});
-  TYPES.forEach(t=>{record[`${t}職業偏好分數`]=(h.breakdown[t]&&h.breakdown[t].career)||0;});
-  TYPES.forEach(t=>{record[`${t}能力簡評A分數`]=(h.breakdown[t]&&h.breakdown[t].abilityA)||0;});
-  TYPES.forEach(t=>{record[`${t}能力簡評B分數`]=(h.breakdown[t]&&h.breakdown[t].abilityB)||0;});
-  s.rows.forEach(v=>{record[`${v.id}${v.name}`]=v.score;});
-  record['價值觀第1名']=valueTop[0] ? `${valueTop[0].name}：${valueTop[0].score}` : '';
-  record['價值觀第2名']=valueTop[1] ? `${valueTop[1].name}：${valueTop[1].score}` : '';
-  record['低優先第1名']=valueLow[0] ? `${valueLow[0].name}：${valueLow[0].score}` : '';
-  record['低優先第2名']=valueLow[1] ? `${valueLow[1].name}：${valueLow[1].score}` : '';
+  record['主型']=top3[0] || '';
+  record['次型']=top3[1] || '';
+  record['第三型']=top3[2] || '';
+  TYPES.forEach(t=>{record[t+'總分']=h.scores[t] || 0;});
+  TYPES.forEach(t=>{record[t+'興趣活動分數']=(h.breakdown[t]&&h.breakdown[t].interest)||0;});
+  TYPES.forEach(t=>{record[t+'勝任能力分數']=(h.breakdown[t]&&h.breakdown[t].ability)||0;});
+  TYPES.forEach(t=>{record[t+'職業偏好分數']=(h.breakdown[t]&&h.breakdown[t].career)||0;});
+  TYPES.forEach(t=>{record[t+'能力簡評A分數']=(h.breakdown[t]&&h.breakdown[t].abilityA)||0;});
+  TYPES.forEach(t=>{record[t+'能力簡評B分數']=(h.breakdown[t]&&h.breakdown[t].abilityB)||0;});
+  s.rows.forEach(v=>{record[v.id+v.name]=v.score;});
+  record['價值觀第1名']=valueTop[0] ? `${valueTop[0].name}（${valueTop[0].score}分）` : '';
+  record['價值觀第2名']=valueTop[1] ? `${valueTop[1].name}（${valueTop[1].score}分）` : '';
+  record['低優先第1名']=valueLow[0] ? `${valueLow[0].name}（${valueLow[0].score}分）` : '';
+  record['低優先第2名']=valueLow[1] ? `${valueLow[1].name}（${valueLow[1].score}分）` : '';
+  const counselorReport=makeCounselorReport(h,s);
+  record['諮詢師專用分析']=counselorReport;
+  record['諮詢師個案摘要']=counselorCaseSummary(h,s).join('\n');
+  record['諮詢師報告撰寫方向']=counselorWritingDirections(h,s).join('\n');
+  record['諮詢師晤談追問']=counselorInterviewQuestions(h,s).join('\n');
+  record['諮詢師報告句型']=counselorProfessionalPhrases(h,s).join('\n');
   record['PDF檔名']=fileName || pdfFileName();
+  record['個案報告連結']='後台產生中';
   record['PDF寄送狀態']=status || '待寄送';
   record['PDF寄送時間']='';
   record['PDF錯誤訊息']='';
   record['測驗來源網址']=location.href;
   record['使用裝置/瀏覽器']=navigator.userAgent;
-  record['原始答案JSON']=JSON.stringify({profile:state.profile,holland:state.holland,abilityA:state.abilityA,abilityB:state.abilityB,super:state.super});
-  record['諮詢師備註']='';
+  record['原始答案JSON']=JSON.stringify({questionBankVersion:QUESTION_BANK_VERSION,shortCode:getShortCode(),accessInfo,profile:state.profile,holland:state.holland,abilityA:state.abilityA,abilityB:state.abilityB,super:state.super});
+  record['諮詢師備註']=QUESTION_BANK_VERSION + '｜短碼：' + (getShortCode() || '') + '｜諮詢師：' + (accessInfo.consultantEmail || '');
   return record;
 }
 async function sendPdfToEmail(btn,silent=false){
   if(!validateProfile(!silent)) return false;
-  const recipient=normalizedEmail();
-  if(hasEmailPdfBeenSent(recipient)){
-    emailSendAttempted=true;
-    setEmailSendState('ok','PDF 已寄送過',`系統已經寄送過一次到 ${recipient}，為避免重複寄信，本次不會再送出；可直接下載 PDF 備份。`);
-    if(!silent) alert(`這個 Email 已經寄送過一次：${recipient}\n\n為避免重複寄信，系統不會再送出第二封。`);
-    return false;
-  }
   const endpoint=getEmailEndpoint();
   if(!isEmailEndpointReady()){
-    setEmailSendState('warn','寄信後台尚未設定','請先部署 Google Apps Script，並把 Web App URL 貼到 HTML 的 EMAIL_SEND_ENDPOINT，或用網址參數 emailEndpoint 帶入。');
-    if(!silent) alert('尚未設定寄信後台。請先部署 Google Apps Script，並把 Web App URL 貼到 HTML 裡的 EMAIL_SEND_ENDPOINT。');
+    setEmailSendState('warn','尚未寄送報告','目前無法自動寄送 Email，可先下載 PDF。');
+    if(!silent) alert('目前無法自動寄送 Email，可先下載 PDF。');
     return false;
   }
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF寄送中...';}
   try{
-    setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，並送出寄信請求，請不要關閉頁面。');
+    setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，請不要關閉頁面。');
     const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
     const fileName=pdfFileName();
-    const payload={email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'職涯冒險島｜完整專業版測驗結果 PDF',pdfBase64,reportText:makeReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
+    const payload={action:'submitResult',shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
     await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    markEmailPdfSent(recipient);
-    setEmailSendState('ok','PDF 寄送請求已送出',`系統已送出寄送請求到 ${payload.email}。若幾分鐘內沒有收到，請檢查垃圾信件或 Apps Script 部署權限。`);
+    setEmailSendState('ok','PDF 寄送請求已送出',`系統已送出寄送請求到 ${payload.email}。若幾分鐘內沒有收到，請先檢查垃圾信件。`);
     toast('已送出寄送請求');
     if(!silent) alert(`已送出 PDF 寄送請求到：${payload.email}
-若沒有收到，請確認 Apps Script 是否部署成功，或檢查垃圾信件。`);
+若沒有收到，請先檢查垃圾信件。`);
     return true;
   }catch(err){
     console.error(err);
-    setEmailSendState('bad','PDF 寄送失敗',err.message || '請確認網路、PDF 套件與 Apps Script Web App URL。');
-    if(!silent) alert('PDF 寄送失敗：' + (err.message || '請確認網路、PDF套件與 Apps Script Web App URL。'));
+    setEmailSendState('bad','PDF 寄送失敗',err.message || '請確認網路連線，稍後再試。');
+    if(!silent) alert('PDF 寄送失敗：' + (err.message || '請確認網路連線，稍後再試。'));
     return false;
   }finally{if(btn){btn.disabled=false;btn.textContent=old;}}
 }
 
 function copyReport(){const text=document.getElementById('reportText')?.innerText || makeReport(calcHolland(),calcSuper());navigator.clipboard.writeText(text).then(()=>toast('報告已複製')).catch(()=>toast('無法複製，請手動選取'));}
-function resetGame(){if(confirm('確定要清除目前填答並重新開始嗎？')){cleanupPersistentStorage();state=emptyState();current='profile';emailSendAttempted=false;emailSendState={kind:'warn',title:'寄信後台尚未設定',text:'完成測驗後可先下載 PDF；部署 Apps Script 並貼上 Web App URL 後，才會自動寄送 PDF。'};render();toast('已清空並重新開始');}}
+function resetGame(){if(confirm('確定要清除目前填答並重新開始嗎？')){cleanupPersistentStorage();state=emptyState();current='profile';accessVerified=false;accessInfo={shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};emailSendAttempted=false;emailSendState={kind:'warn',title:'尚未寄送報告',text:'完成測驗後，可下載 PDF 或寄送到你的 Email。'};render();toast('已清空並重新開始');}}
 function escapeHtml(s){return String(s ?? '').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 render();
 </script>

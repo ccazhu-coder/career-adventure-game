@@ -69,6 +69,8 @@
     .role-title{font-size:34px;line-height:1.15;margin:10px 0 6px;color:#FFE7A8}.result-card .role-title{color:#173F33}.treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.treasure-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:0 8px 18px rgba(42,62,49,.06)}.treasure-card h3{margin:0 0 8px;color:#173F33}.treasure-card ul{padding-left:20px;margin:8px 0}.gem-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.gem{background:#FFF8E8;border:1px solid #E8D19A;border-radius:16px;padding:10px;text-align:center;font-weight:900;color:#5B4012}.case-link{font-size:12px;color:#6C7A72;margin-top:6px}
     @media(max-width:900px){.mission-map,.quest-grid,.energy-row,.treasure-grid,.gem-list{grid-template-columns:1fr}.q-row,.rating-row{min-height:auto}.type-card .q-list{grid-auto-rows:auto}.quest-intro{padding:22px 18px;border-left-width:6px}.quest-intro h2{font-size:28px}.quest-intro p{font-size:17px}.quest-card span{font-size:15px}}
     @media print{.pdf-safe{width:170mm!important;max-width:170mm!important;padding:0!important;margin:0 auto!important;overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-safe *{overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-avoid{break-inside:avoid!important;page-break-inside:avoid!important}}
+    details.type-card.just-done{border-color:#2F9C70;box-shadow:0 0 0 3px rgba(47,156,112,.18),0 14px 30px rgba(48,77,62,.10);background:linear-gradient(180deg,#F2FBF5,#fff)}details.type-card.just-done .count-chip{background:#E3F6EA;border-color:#9FDDB7;color:#1E6B47}
+    @media(max-width:900px){.access-grid{grid-template-columns:1fr}.mission-map{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -111,6 +113,7 @@
 <script>
 const DATA = {"riasec":{"R":{"name":"現實型","emoji":"🛠️","role":"實作技術家","desc":"喜歡動手操作、工具設備、技術實作、戶外或現場任務，重視具體成果。","advice":"用實作作品、證照技術、現場任務來累積自信；適合先從操作型、工程型、設備型、技術服務型任務探索。"},"I":{"name":"調查研究型","emoji":"🔬","role":"問題研究員","desc":"喜歡觀察、分析、研究、解題與探索原因，重視知識與邏輯。","advice":"用研究題目、資料分析、問題解決專案來探索；適合技術研究、分析、科普、數據與專業知識型工作。"},"A":{"name":"藝術型","emoji":"🎨","role":"創意表達者","desc":"喜歡創作、表達、美感、設計、文字、影像或表演，重視自由與原創。","advice":"用作品集、內容創作、設計任務與個人風格累積能見度；適合創意、設計、文字、影音與品牌表達相關工作。"},"S":{"name":"社會型","emoji":"🤝","role":"助人連結者","desc":"喜歡幫助人、陪伴、教學、溝通、服務與建立關係，重視人際互動。","advice":"用服務經驗、帶領活動、諮詢輔導或教學任務來累積專業；適合教育、諮詢、社福、服務與人際協作型工作。"},"E":{"name":"企業/事業型","emoji":"🚀","role":"影響推動者","desc":"喜歡說服、領導、企劃、推動目標、經營資源與面對挑戰，重視影響力與成果。","advice":"用企劃提案、業務開發、活動主持、專案管理來展現優勢；適合行銷業務、管理、創業、企劃與領導型工作。"},"C":{"name":"常規/傳統型","emoji":"📋","role":"秩序管理者","desc":"喜歡清楚規則、資料整理、行政流程、數字表格與穩定執行，重視正確與效率。","advice":"用流程管理、文件整理、財務行政、品質控管來展現價值；適合行政、會計、資料管理、品質與流程型工作。"}},"hollandSections":[{"id":"interest","title":"任務 1｜興趣活動星球","question":"你喜歡做下列事情嗎？","yes":"喜歡","no":"不喜歡","scoreLabel":"興趣活動","types":{"R":["組裝或維修電子設備、智慧家電或感測器","修理自行車、機車、電動車或簡易交通工具","維護機器、機器零件或自動化設備","做木作、模型製作、3D列印或手作修繕","操作物流車、農機、無人搬運車或其他大型設備","操作 CNC、雷射切割機或自動化機台","騎乘或維護機車、電動車等交通工具","學習金屬工藝、機械加工或智慧製造技術","學習機械製圖、3D建模或工程繪圖","學習木工、室內裝修或空間施工技術","學習電機、機電整合或智慧設備維護技術"],"I":["閱讀科技、AI、資料科學或科普文章","在實驗室、研究室或資料分析環境工作","研究一個科學、資料或社會議題專案","製作模型、原型、機器人或模擬系統","做科學實驗、資料實驗或AI工具測試","閱讀專業論文、技術文件或研究報告","解數學、邏輯、程式或策略型難題","學習物理、工程或科技應用課程","學習化學、材料或生醫相關課程","學習幾何、統計、資料分析或演算法基礎","學習生物、環境、醫療科技或永續議題"],"A":["素描、製圖、繪畫或數位插畫","表演戲劇、短影音、Podcast 或舞台節目","設計家具、空間、介面或生活產品","在舞台、鏡頭或社群平台上表演、演唱或跳舞","演奏樂器、編曲或使用數位音樂工具創作","閱讀小說、劇本、漫畫或故事型內容","參加音樂會、展覽、影展或創意市集","從事攝影、影像拍攝或AI影像創作","閱讀電影、影集、短影音或遊戲劇本","寫詩、寫文案、寫故事或經營個人內容","學習書法、美術、設計或視覺傳達課程"],"S":["主動用訊息、社群或電話關心朋友","參加學校、社區、公司或公協會活動","加入社團、社群、志工隊或專業交流團體","幫助別人解決困難或陪伴他人面對問題","照顧小孩、高齡者或需要支持的人","參加聚會、交流活動、分享會或聯誼活動","參與團體活動、桌遊、舞蹈或互動型課程","參加討論會、讀書會、辯論或共學活動","觀看運動會、競賽、展演或大型活動","拜訪親友、客戶、會員或服務對象","閱讀與溝通、心理、人際關係或助人服務有關的內容"],"E":["說服他人支持一個想法、方案或產品","與人協商價格、合作條件或資源分配","討論公共議題、產業趨勢或商業策略","從事個人品牌、電商、接案或獨立經營活動","出席正式會議、提案簡報或商務場合","做簡報、主持、直播或公開演說","在社團、社群、公協會或專案中擔任幹部","檢視、評估或回饋別人的工作成果","結識產業人士、專家、創作者或意見領袖","帶領一群人完成任務、活動或專案目標","參與公共事務、倡議活動或組織推動"],"C":["保持桌面、檔案、雲端資料夾或工作區整潔","整理文字、表單、會議紀錄或行政資料","處理電子發票、收據、請款或行政紀錄","使用 Excel、Google 試算表或系統進行計算","記錄流水帳、待辦事項、備忘錄或專案進度","學習文書處理、資料輸入或會議紀錄技巧","學習會計、財務、稅務或基礎商業管理","學習商業統計、資料整理或報表分類","分類、歸檔、命名與管理文件資料","為主管或團隊撰寫公文、信函、報告或公告","檢查個人、專案或組織的收支與資料正確性"]}},{"id":"ability","title":"任務 2｜能力寶石星球","question":"你擅長或勝任下列事情嗎？","yes":"擅長","no":"不擅長","scoreLabel":"勝任能力","types":{"R":["能使用基本手工具、電動工具或簡易維修設備","能使用萬用電表或簡易檢測工具","能為自行車、機車或設備做基礎保養","能操作鑽床、研磨機、縫紉機或其他加工設備","能修整木器、家具或簡易生活用品表面","能看懂機械、建築、空間或工程設計圖","能排除簡單家電、電腦周邊或智慧設備故障","能製作簡單家具、模型、原型或實作作品","能繪製機械圖、空間圖或3D建模草圖","能修理簡易影音、通訊或電子設備零件","能處理簡易管線、設備安裝或現場修繕問題"],"I":["了解電子元件、感測器或基本電路的運作原理","知道幾種營養、健康或生物科技相關基礎知識","理解半衰期、風險指標或科學測量概念","能使用公式、表格或工具查找資料並進行推算","能使用計算器、量測工具、試算表或資料分析工具","能使用顯微鏡、檢測工具或資料觀察工具","能辨認星座、自然現象或環境觀測資料","能說明人體、健康或生物功能的基本概念","能解釋簡單化學式、材料特性或科學模型","能理解衛星、導航、雲端或科技系統的基本原理","曾參加科學、資訊、資料分析或研究成果交流"],"A":["能演奏樂器或使用數位音樂工具創作","能參與合唱、配音、Podcast或多人表演","能表演獨奏、獨唱、口語表達或鏡頭前演出","能扮演劇中角色、錄製短影音或設計角色表演","能說故事、寫腳本或進行口語敘事","能表演舞蹈、肢體創作或舞台演出","能畫人物、角色或視覺草圖","能進行油畫、雕塑、插畫或數位藝術創作","能製作陶藝、手作、模型、剪紙或創意作品","能設計服裝、海報、家具、網頁或社群素材","能寫出清楚、有風格或有感染力的文章"],"S":["善於向別人解釋問題或教會別人一件事","曾參加慰問、救濟、志工或公益服務活動","善於與人合作，能配合團隊完成任務","待人親切，能讓服務對象感到被照顧","能用容易理解的方式教育兒童、青年或成人","能為聚會、課程或團體活動安排互動內容","能幫助他人釐清問題並找到解決方法","能協助照護病人、傷患、高齡者或弱勢族群","能安排學校、社團、社區或團隊的集體事務","善於觀察人的情緒、需求或性格特質","善於與年長者、服務對象或不同背景的人相處"],"E":["曾擔任班級、社團、專案或活動幹部並表現良好","善於督促他人完成工作或推動進度","能影響他人採納你的想法、流程或做法","做事有明顯的精力、熱情與目標感","能勝任銷售、募款、招生或推廣工作","能代表團體向外部單位提出建議或溝通需求","曾在領導、主持或專案推動中獲得肯定","能說服別人加入團隊、活動、社群或計畫","能規劃並嘗試創辦商店、品牌、社群或專案","知道如何成為有效的領導者或專案負責人","具備良好的口語表達、簡報或談判能力"],"C":["能快速整理大量文字、資料或文件內容","能熟練使用電腦、試算表或雲端系統","能熟練使用中文輸入、文件編輯與資料輸入工具","善於將信件、文件與雲端檔案迅速分類歸檔","曾做過行政、營運、財務或資料管理工作且表現不錯","核對資料、文章或報表時既快又準確","會使用辦公軟體、雲端文件、掃描或數位設備","善於在短時間內分類和處理大量文件或資料","記帳、開發票、請款或整理報表時既快又準確","善於為自己、團隊或專案製作預算與收支表","能快速整理帳務、收支、借貸或財務資料"]}},{"id":"career","title":"任務 3｜AI時代職業探索星球","question":"你喜歡或想了解下列現代職業與新興工作嗎？","yes":"想做/喜歡","no":"沒興趣","scoreLabel":"職業偏好","types":{"R":["AI伺服器／資料中心設備維護工程師","無人機操作與維修技術人員","自動化產線／智慧製造技術員","機器人維修與整合技術人員","CNC精密機械／智慧機台技術員","電動車維修／充電設備技術人員","物聯網設備安裝與維護人員","半導體設備工程師／製程助理工程師","綠能設備維護人員／太陽能系統技術員","智慧農業設備操作人員","地理資訊／環境監測技術人員"],"I":["AI／機器學習工程師","資料科學家／資料分析師","大數據分析專家","自然語言處理 NLP 工程師","生成式AI應用研究員","生物資訊分析師","氣候風險／永續數據分析師","金融科技 FinTech 數據工程師","資安分析師／威脅情資研究員","科學傳播／科普內容研究員","使用者研究員 UX Researcher"],"A":["AI影像生成設計師","生成式AI內容創作者","品牌視覺設計師","UI／UX介面設計師","短影音企劃與剪輯師","Podcast／影音節目製作人","遊戲美術／角色設定設計師","動畫／動態設計師","文案企劃／品牌故事寫作者","社群內容創作者","沉浸式體驗／AR／VR內容設計師"],"S":["AI輔助職涯諮詢師","就業服務／職涯發展顧問","心理健康支持專員","社工師／社區服務工作者","高齡照顧服務／個案管理師","數位學習講師／線上課程教練","企業培訓師／人才發展專員","醫療個案管理師","多元族群服務專員","青少年輔導員","社群經營與會員關係管理人員"],"E":["AI產品經理","AI專案經理","數位轉型顧問","電商品牌經營者","社群行銷策略師","成長駭客／數位行銷經理","客戶成功經理","創業家／新創營運負責人","永續商業發展經理","企業顧問／營運策略顧問","AI解決方案業務顧問"],"C":["AI資料標註／資料品質管理員","資料治理專員","雲端系統行政／SaaS系統管理員","財務分析助理／會計數位化專員","法遵／個資保護專員","AI風險治理助理","資安合規／稽核助理","營運流程管理專員","文件管理／知識庫管理員","品質管理／流程稽核人員","行政專員／專案行政"]}}],"abilityA":{"R":"機械操作","I":"科學研究","A":"藝術創造","S":"解釋表達","E":"商業洽談","C":"事務執行"},"abilityB":{"R":"體力技能","I":"數學技能","A":"音樂技能","S":"交際技能","E":"領導技能","C":"辦公技能"},"superGroups":[{"id":"V1","name":"利他主義","emoji":"🌱","desc":"工作的目的和價值，在於直接為大眾的幸福和利益盡一份力。","items":["工作能為社會福利帶來看得見的效果","工作使您能常常幫助人","您為他人服務，他人滿意，您自己也很高興","由於您的工作或服務，經常有許多人來感謝您"]},{"id":"V2","name":"美感","emoji":"✨","desc":"工作的目的和價值，在於能不斷追求美的東西，得到美感的享受。","items":["工作帶有藝術性","工作能使世界更美麗","工作結果不是一般產品而是藝術品","工作需要同電影、音樂、美術、文學等藝術打交道"]},{"id":"V3","name":"智力刺激","emoji":"🧠","desc":"工作的目的和價值，在於持續動腦、學習、探索新事物並解決新問題。","items":["工作必須經常解決新的問題","工作是一項對智力的挑戰","工作需要敏銳的思考","在工作中常常要您提出許多新的想法"]},{"id":"V4","name":"成就感","emoji":"🏆","desc":"工作的目的和價值，在於不斷取得成果、被肯定，並實現自己想做的事。","items":["工作使您有不斷取得成功的感覺","您能從工作的成果中知道自己做得不錯","您可以預見自己努力工作的成果","工作成果常常能得到別人的肯定"]},{"id":"V5","name":"獨立性","emoji":"🧭","desc":"工作的目的和價值，在於能按自己的方式、步調或想法做事，不受過多干擾。","items":["您能在工作範圍內自由發揮","您能在工作中試行自己的新想法","您在工作中不會有人常來打擾您","您在工作中是不受別人差遣的"]},{"id":"V6","name":"社會地位","emoji":"🌟","desc":"工作的目的和價值，在於職業受到重視與尊敬，具有較高社會形象。","items":["工作能使朋友和同事非常羨慕","在別人眼裡，您的工作是非常重要的","您的工作作風使您被別人尊重","您從事的工作經常被報刊、電視提到，因而在人們心目中很有地位"]},{"id":"V7","name":"管理","emoji":"🧩","desc":"工作的目的和價值，在於獲得管理權，能指揮、組織與調遣一定範圍內的人或事。","items":["工作賦予您高於別人的權力","工作要求您把一些事物管理得井井有條","工作需要計劃和組織別人的工作","在工作中，您可能做一個負責人，並偏好主導任務"]},{"id":"V8","name":"經濟報酬","emoji":"💰","desc":"工作的目的和價值，在於獲得優厚報酬，使生活更富足。","items":["工作獎金很高","只要努力，工資會高於同齡人或升級加薪可能性更大","工作可以使您獲得較多額外收入","工作有可觀的中夜班費、加班費、保健費或營養費等"]},{"id":"V9","name":"社會交際","emoji":"🌐","desc":"工作的目的和價值，在於能與各種人交往，建立廣泛社會聯繫。","items":["在工作中能接觸到各種不同的人","工作經常要外出，參加各種集會和活動","工作有可能結識各行各業的知名人物","工作會使許多人認識您"]},{"id":"V10","name":"安全感","emoji":"🛡️","desc":"重視工作局面的安穩，不希望因獎金、加薪、調動或主管訓斥而常感不安。","items":["不論怎樣做，您總能和大多數人一樣晉級和加薪","在工作中不會因身體或體力等因素被人瞧不起","只要做這份工作，就不會再被調到其他意想不到的單位或崗位","不必擔心因領導不滿意而受到訓斥或經濟處罰"]},{"id":"V11","name":"舒適","emoji":"☕","desc":"希望工作條件輕鬆、自由、舒適，能降低體力與精神壓力。","items":["工作上下班時間比較隨便、自由","工作單位有舒適的休息室、更衣室、浴室及其他設備","工作場所環境整潔、燈光適度、空間寬敞、溫度適宜","工作體力上比較輕鬆，精神上也不緊張"]},{"id":"V12","name":"人際關係","emoji":"💬","desc":"重視同事與主管人品、關係融洽，工作時感到愉快自然。","items":["工作能使人感覺到您是團體中的一分子","工作中能和同事建立良好的關係","工作單位的同事和領導人品較好，相處比較隨便","在工作中能與領導有融洽的關係"]},{"id":"V13","name":"變異性","emoji":"🎲","desc":"希望工作內容、地點、方式或職務有變化，讓生活豐富不單調。","items":["工作內容經常變換","工作使您有可能經常變換工作地點、工作場所或工作方式","您在工作中經常接觸到新鮮的事物","您在工作單位中，有可能經常變換職務"]}]};
 const TYPES = ["R","I","A","S","E","C"];
+const SUPER_GROUP_LABELS=['','一','二','三','四','五','六','七','八','九','十','十一','十二','十三'];
 const STEPS = [
   {id:"profile", icon:"🚪", title:"第1關｜啟程之門", short:"基本資料"},
   {id:"interest", icon:"🌿", title:"第2關｜興趣森林", short:"荷倫興趣探索"},
@@ -133,6 +136,7 @@ const URL_PARAMS = new URLSearchParams(location.search);
 const SHORT_CODE_FROM_URL = String(URL_PARAMS.get('c') || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'');
 const PREVIEW_MODE = URL_PARAMS.get('preview') === '1';
 let current = "profile";
+let forceOpenType=null;
 cleanupPersistentStorage();
 let state = emptyState();
 const SESSION_ID = (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('TEST-' + Date.now() + '-' + Math.random().toString(16).slice(2));
@@ -296,7 +300,17 @@ async function go(id){
   }
   current=id;render();window.scrollTo({top:0,behavior:'smooth'});
 }
-function render(){updateAll(); const view=document.getElementById("view"); if(current==="profile") renderProfile(view); else if(current==="interest") renderHolland(view,'interest'); else if(current==="valley") renderValley(view); else if(current==="super") renderSuper(view); else renderResult(view);}
+function render(){
+  const view=document.getElementById("view");
+  const scrollY=window.scrollY;
+  updateAll();
+  if(current==="profile") renderProfile(view);
+  else if(current==="interest") renderHolland(view,'interest');
+  else if(current==="valley") renderValley(view);
+  else if(current==="super") renderSuper(view);
+  else renderResult(view);
+  window.scrollTo(0,scrollY);
+}
 async function nextStep(){
   if(current==="profile"){
     if(!validateProfile(true)) return;
@@ -400,11 +414,30 @@ function renderValley(view){
 function typeBlock(sec,t){
   const meta=DATA.riasec[t], arr=sec.types[t], vals=state.holland[sec.id][t];
   const score=vals.filter(v=>v===true).length, done=vals.filter(v=>v!==null).length;
-  return `<details class="type-card" ${done<arr.length?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
+  const justDone=done>=arr.length && forceOpenType && forceOpenType.sec===sec.id && forceOpenType.t===t;
+  const isOpen=done<arr.length || justDone;
+  return `<details class="type-card ${justDone?'just-done':''}" ${isOpen?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done>=arr.length?'✓ ':''}${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
     ${arr.map((q,i)=>`<div class="q-row"><div class="q-text">${i+1}. ${escapeHtml(q)}</div><div class="choice"><button class="${vals[i]===true?'selected yes':''}" onclick="setHolland('${sec.id}','${t}',${i},true)">${sec.yes}</button><button class="${vals[i]===false?'selected no':''}" onclick="setHolland('${sec.id}','${t}',${i},false)">${sec.no}</button></div></div>`).join('')}
   </div></details>`;
 }
-function setHolland(sec,t,i,val){const before=stepDone(sec==='interest'?'interest':'valley');state.holland[sec][t][i]=val;save();render();celebrateMissionIfDone(sec==='interest'?'interest':'valley',before);}
+function setHolland(sec,t,i,val){
+  const before=stepDone(sec==='interest'?'interest':'valley');
+  const wasComplete=state.holland[sec][t].every(v=>v!==null);
+  state.holland[sec][t][i]=val;
+  save();
+  const justCompleted=!wasComplete && state.holland[sec][t].every(v=>v!==null);
+  if(justCompleted) forceOpenType={sec,t};
+  render();
+  celebrateMissionIfDone(sec==='interest'?'interest':'valley',before);
+  if(justCompleted){
+    setTimeout(()=>{
+      if(forceOpenType && forceOpenType.sec===sec && forceOpenType.t===t){
+        forceOpenType=null;
+        render();
+      }
+    },700);
+  }
+}
 function renderRatingPanel(){
   return `<div class="sub-mission-title"><div><h3>📡 天賦雷達校準艙｜能力類型簡評</h3><span>請和同齡人相比，使用 1～7 分進行自我評估。</span></div><span class="count-chip">${TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2}/12</span></div>
   <div class="grid2"><div class="super-card"><div class="super-head"><h3>表 A｜工作能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityA',t,DATA.abilityA[t],DATA.riasec[t].name)).join('')}</div>
@@ -430,7 +463,8 @@ function renderSuper(view){
 }
 function superBlock(g){
   const vals=state.super[g.id]; const score=vals.reduce((a,v)=>a+(v||0),0); const done=vals.filter(v=>v!==null).length;
-  return `<div class="super-card"><div class="super-head"><h3>${g.emoji} ${g.name}</h3><span class="count-chip">${done}/${g.items.length}　${score} 分</span></div><p class="super-desc">${escapeHtml(g.desc)}</p>
+  const groupNo=SUPER_GROUP_LABELS[parseInt(g.id.slice(1),10)]||g.id;
+  return `<div class="super-card"><div class="super-head"><h3>第${groupNo}組</h3><span class="count-chip">${done}/${g.items.length}　${score} 分</span></div>
   ${g.items.map((q,i)=>`<div class="rating-row"><div class="rating-title">${i+1}. ${escapeHtml(q)}</div><div class="rating-buttons">${[1,2,3,4,5].map(n=>`<button class="${vals[i]===n?'active':''}" onclick="setSuper('${g.id}',${i},${n})">${n}</button>`).join('')}</div></div>`).join('')}
   </div>`;
 }

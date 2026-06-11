@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>知己知途｜職涯探索冒險遊戲｜正式營運版</title>
+  <title>知己知途｜職涯探索冒險遊戲</title>
   <style>
     :root{
       --bg:#F3EFE4;
@@ -66,7 +66,7 @@
     .energy-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0 18px}.energy-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 6px 16px rgba(42,62,49,.06);min-height:90px}.energy-card b{font-size:20px;color:#173F33}.energy-card span{display:block;font-size:13px;color:#68776F;margin-top:2px}
     .q-row{min-height:86px;align-items:stretch}.q-text{display:flex;align-items:center}.choice{align-items:center}.rating-row{min-height:78px}.type-card .q-list{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(86px,auto)}.super-card .rating-row{min-height:78px}.sub-mission-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 10px;padding:14px 16px;border-radius:18px;background:#F7F1E2;border:1px solid #E4D5B9}.sub-mission-title h3{margin:0;color:#173F33}.sub-mission-title span{font-size:13px;color:#6C7A72;font-weight:900}.locked-tip{background:#FFF6DD;border:1px solid #EED393;color:#6B501E;border-radius:18px;padding:14px 16px;font-weight:800}
     .mission-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(10,30,24,.42);backdrop-filter:blur(7px);padding:18px}.mission-overlay.show{display:flex}.mission-pop{position:relative;width:min(480px,100%);background:#FFFDF8;border:1px solid #F1D18A;border-radius:34px;padding:30px;text-align:center;box-shadow:0 28px 70px rgba(0,0,0,.28);animation:popWin .34s ease both}.mission-pop:before,.mission-pop:after{content:'✨';position:absolute;font-size:32px;animation:fireSpin 1.4s ease-in-out infinite}.mission-pop:before{left:22px;top:20px}.mission-pop:after{right:22px;top:22px;animation-delay:.35s}.mission-pop h2{font-size:32px;color:#173F33;margin:8px 0}.mission-pop p{color:#52645B;margin:0 0 16px}.firework{font-size:38px;color:#B8872E;animation:twinkle 1s ease-in-out infinite}.reward-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#173F33;color:#FFE8AC;padding:10px 16px;font-weight:1000;margin:4px 0 18px}@keyframes popWin{from{opacity:0;transform:scale(.86) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes fireSpin{0%,100%{transform:scale(.85) rotate(-8deg);opacity:.55}50%{transform:scale(1.25) rotate(10deg);opacity:1}}
-    .role-title{font-size:34px;line-height:1.15;margin:10px 0 6px;color:#FFE7A8}.treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.treasure-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:0 8px 18px rgba(42,62,49,.06)}.treasure-card h3{margin:0 0 8px;color:#173F33}.treasure-card ul{padding-left:20px;margin:8px 0}.gem-list{display:grid;grid-template-columns:1fr;gap:8px}.gem{background:#FFF8E8;border:1px solid #E8D19A;border-radius:14px;padding:10px 14px;font-weight:900;color:#5B4012;display:flex;align-items:center;gap:12px}.gem b{flex:0 0 auto;width:26px;text-align:center;color:#B8872E;font-size:16px}.gem span{flex:1 1 auto}.gem em{flex:0 0 auto;font-style:normal;color:#B8872E}.case-link{font-size:12px;color:#6C7A72;margin-top:6px}.desc-list{display:grid;gap:10px;margin:10px 0}.desc-item{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px 14px}.desc-item strong{display:block;color:#173F33;margin-bottom:4px}.desc-item p{margin:0;color:#5D6D66;font-size:13px;line-height:1.6}.counselor-quickread{background:linear-gradient(135deg,#F4EEFF,#FFFDF8);border:1px solid #D8C8F0}.counselor-quickread h3{color:#563B83}.counselor-quickread ul{margin:8px 0 0;padding-left:20px;color:#4B5B53;line-height:1.85}.report-section{margin-top:16px}
+    .role-title{font-size:34px;line-height:1.15;margin:10px 0 6px;color:#FFE7A8}.treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.treasure-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:0 8px 18px rgba(42,62,49,.06)}.treasure-card h3{margin:0 0 8px;color:#173F33}.treasure-card ul{padding-left:20px;margin:8px 0}.gem-list{display:grid;grid-template-columns:1fr;gap:8px}.gem{background:#FFF8E8;border:1px solid #E8D19A;border-radius:14px;padding:10px 14px;font-weight:900;color:#5B4012;display:flex;align-items:center;gap:12px}.gem b{flex:0 0 auto;width:26px;text-align:center;color:#B8872E;font-size:16px}.gem span{flex:1 1 auto}.gem em{flex:0 0 auto;font-style:normal;color:#B8872E}.case-link{font-size:12px;color:#6C7A72;margin-top:6px}.desc-list{display:grid;gap:10px;margin:10px 0}.desc-item{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px 14px}.desc-item strong{display:block;color:#173F33;margin-bottom:4px}.desc-item p{margin:0;color:#5D6D66;font-size:13px;line-height:1.6}.report-section{margin-top:16px}
     @media(max-width:900px){.mission-map,.quest-grid,.energy-row,.treasure-grid,.gem-list{grid-template-columns:1fr}.q-row,.rating-row{min-height:auto}.type-card .q-list{grid-auto-rows:auto}.quest-intro{padding:22px 18px;border-left-width:6px}.quest-intro h2{font-size:28px}.quest-intro p{font-size:17px}.quest-card span{font-size:15px}}
     @media print{.pdf-safe{width:170mm!important;max-width:170mm!important;padding:0!important;margin:0 auto!important;overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-safe *{overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-avoid{break-inside:avoid!important;page-break-inside:avoid!important}}
     details.type-card.just-done{border-color:#2F9C70;box-shadow:0 0 0 3px rgba(47,156,112,.18),0 14px 30px rgba(48,77,62,.10);background:linear-gradient(180deg,#F2FBF5,#fff)}details.type-card.just-done .count-chip{background:#E3F6EA;border-color:#9FDDB7;color:#1E6B47}
@@ -81,7 +81,7 @@
     <div class="hero-inner">
       <div>
         <span class="badge">🎮 知己知途｜職涯探索冒險遊戲</span>
-        <h1>職涯冒險島｜正式營運版</h1>
+        <h1>職涯冒險島</h1>
         <p>完成 5 個職涯任務關卡，收集興趣能量、能力寶石與價值羅盤，最後解鎖你的職涯角色稱號、何倫碼六角型圖與專屬 PDF 報告。</p>
         <div class="hero-stats">
           <div class="hero-stat"><b>5 關</b><span>正式冒險流程</span></div>
@@ -499,16 +499,6 @@ function renderHollandHexSvg(scores,opt={}){
   const ticks=levels.map(level=>`<text x="${(cx+6).toFixed(1)}" y="${(cy-r*level+14).toFixed(1)}" font-size="10" fill="#8A826F">${Math.round(level*100)}%</text>`).join('');
   return `<svg class="hex-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-label="荷倫六角型圖"><rect x="0" y="0" width="${size}" height="${size}" rx="26" fill="#FCFAF4"/>${grid}${axes}${ticks}${dataPoly}${dots}<circle cx="${cx}" cy="${cy}" r="4" fill="#173F33"/>${labels}</svg>`;
 }
-function counselorHints(h,s){
-  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,2), lows=s.low.slice(0,2);
-  return [
-    `優勢主軸：${top3.map(x=>`${x.type}型 ${x.meta.name}`).join(' → ')}。可優先往這三型交會的任務、職務或學習方向探索。`,
-    `工作動機：${values.map(v=>v.name).join('、')} 分數最高，代表選工作時最容易影響投入度與滿意度。`,
-    `低優先提醒：${lows.map(v=>v.name).join('、')} 目前分數較低，諮詢時可追問是否真的不重要，或只是現階段尚未被滿足。`,
-    '判讀技巧：六角型上相鄰類型通常較容易整合；若對角類型同時很高，代表可能需要兼具兩種不同工作情境，建議做職務拆解。'
-  ];
-}
-
 function careerRoleTitle(h,s){
   const top=h.ranking[0]||{type:'',meta:{role:'職涯探索者'}};
   const second=(h.ranking[1]||{type:''}).type;
@@ -552,12 +542,9 @@ function nextActionAdvice(h,s){
 }
 function explorationFocus(h,s){
   return [
-    '確認學員高分職涯類型是「有經驗」還是「只是嚮往」，避免把想像誤判成能力。',
-    '將高分價值觀與實際工作條件對照，協助學員辨識適配與落差。'
+    '想想你的高分職涯類型，目前是「真的做過、有成就感」，還是「只是聽起來很嚮往」，避免把想像誤判成已具備的能力。',
+    '把你的高分工作價值觀拿來對照未來想投入的工作條件，找出適合與可能落差的地方。'
   ];
-}
-function counselorFocus(h,s){
-  return counselorHints(h,s).concat(explorationFocus(h,s));
 }
 function counselorCaseSummary(h,s){
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,3);
@@ -642,7 +629,7 @@ function renderResult(view){
   const h=calcHolland(), s=calcSuper(), complete=answeredCount()===totalCount();
   const top=h.ranking[0], top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,2);
   const role=careerRoleTitle(h,s), report=makeReport(h,s);
-  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), actionsList=nextActionAdvice(h,s), focus=explorationFocus(h,s), hints=counselorHints(h,s);
+  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), actionsList=nextActionAdvice(h,s), focus=explorationFocus(h,s);
   view.innerHTML=`${renderMissionMap()}
   ${questIntro('result','第 5 關｜職涯神殿','產生職涯角色與正式報告','你已完成職涯探索冒險。職涯神殿會把荷倫興趣、能力自評與 SUPER 工作價值觀轉換成可理解、可討論、可行動的專屬報告。',[
     {title:'角色總覽',text:'以主型與前三高組合產生職涯角色稱號。'},
@@ -653,7 +640,6 @@ function renderResult(view){
   <div class="result-card report-section"><h2>🎉 恭喜完成冒險</h2><div class="role-title">${escapeHtml(role)}</div><div class="code">${h.code || '---'}</div><p>${top.meta.emoji} 主型：${top.type} 型｜${top.meta.name}｜${top.meta.role}</p><p style="margin-top:10px">核心價值羅盤：${values.slice(0,3).map(v=>v.emoji+' '+v.name).join('、')}</p></div>
   <div class="sub-card report-section"><h3>📋 報告摘要</h3><p>你的結果顯示，你的職涯能量以 <strong>${top3.map(x=>x.type+'型'+x.meta.name).join('、')}</strong> 為主軸。</p><p>在選擇工作時，最需要留意 <strong>${values.slice(0,5).map(v=>v.name).join('、')}</strong> 是否被滿足。</p></div>
   <div class="sub-card hex-card report-section"><h3>何倫碼六角型圖</h3><p class="small">越外圈代表該型能量越高；前三高是你目前最值得探索的方向。</p><div class="hex-wrap">${renderHollandHexSvg(h.scores,{size:400})}</div><div class="hex-legend">${top3.map((x,i)=>`<div class="legend-item"><span class="legend-badge">${i+1}</span><div><strong>${x.type} 型｜${x.meta.name}</strong><br><span>${x.meta.role}</span></div></div>`).join('')}</div></div>
-  <div class="sub-card counselor-quickread report-section"><h3>🧭 諮詢師快速判讀</h3><ul>${hints.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>
   <div class="sub-card report-section"><h3>RIASEC 六型分數</h3>${TYPES.map(t=>barRow(t,DATA.riasec[t].emoji+' '+t+' '+DATA.riasec[t].name,h.scores[t],hollandTypeMax(t))).join('')}</div>
   <div class="sub-card report-section"><h3>SUPER 價值觀分數</h3>${s.ranking.map(v=>barRow(v.id,v.emoji+' '+v.name,v.score,20)).join('')}</div>
   <div class="sub-card report-section"><h3>前三型與價值觀說明</h3><p class="small">何倫碼前三高：</p><div class="desc-list">${top3.map((x,i)=>`<div class="desc-item"><strong>${i+1}. ${x.type} 型｜${x.meta.name}（${x.score}分）</strong><p>${escapeHtml(x.meta.desc)}</p></div>`).join('')}</div><p class="small">SUPER 工作價值觀前五高：</p><div class="gem-list">${values.map((v,i)=>`<div class="gem"><b>${i+1}</b><span>${v.emoji} ${v.name}</span><em>${v.score}分</em></div>`).join('')}</div><p class="small">這些是影響你工作滿意度與投入度的關鍵條件。</p></div>
@@ -690,7 +676,7 @@ function makeReport(h,s){
   possibleBlocks(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
   lines.push('');
   lines.push('五、延伸探索重點');
-  counselorFocus(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
+  explorationFocus(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
   lines.push('');
   lines.push('六、下一步行動建議');
   nextActionAdvice(h,s).forEach((x,i)=>lines.push(`${i+1}. ${x}`));
@@ -703,7 +689,7 @@ function pdfReportHtml(){
   const h=calcHolland(), s=calcSuper();
   const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-'}};
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
-  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=explorationFocus(h,s), actionsList=nextActionAdvice(h,s), hints=counselorHints(h,s);
+  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=explorationFocus(h,s), actionsList=nextActionAdvice(h,s);
   const pdfBar=(label,score,max)=>{
     const pct=Math.min(100,Math.round(score/max*100));
     return `<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:12px;"><div style="flex:0 0 130px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(label)}</div><div style="flex:1 1 auto;height:12px;background:#F0E8D8;border-radius:999px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);"></div></div><div style="flex:0 0 36px;text-align:right;font-weight:800;">${score}</div></div>`;
@@ -727,10 +713,6 @@ function pdfReportHtml(){
     <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
       <div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">何倫碼六角型圖</div>
       <div style="display:flex;justify-content:center;max-width:100%;">${renderHollandHexSvg(h.scores,{size:400})}</div>
-    </div>
-    <div class="pdf-avoid" style="background:#F4EEFF;border:1px solid #D8C8F0;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
-      <div style="font-size:16px;font-weight:900;color:#563B83;margin-bottom:6px;">諮詢師快速判讀</div>
-      <ul style="margin:6px 0 0;padding-left:20px;font-size:12px;color:#4B5B53;line-height:1.85;">${hints.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
     </div>
     <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
       <div style="font-size:16px;font-weight:900;color:#173F33;margin-bottom:6px;">RIASEC 六型分數</div>

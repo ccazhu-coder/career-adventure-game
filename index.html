@@ -143,6 +143,8 @@ const SESSION_ID = (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('TEST-
 let accessVerified = false;
 let accessInfo = {shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};
 let emailSendAttempted = false;
+let submissionInFlight = false;
+let submissionDone = false;
 let emailSendState = {kind:"warn", title:"尚未寄送報告", text:"完成測驗後，可下載 PDF 或寄送到你的 Email。"};
 
 function emptyState(){
@@ -653,7 +655,7 @@ function renderResult(view){
   <div class="rank-list" style="margin-top:14px"><div class="sub-card"><h3>RIASEC 六型能量值</h3>${TYPES.map(t=>barRow(t,DATA.riasec[t].emoji+' '+t+' '+DATA.riasec[t].name,h.scores[t],hollandTypeMax(t))).join('')}</div><div class="sub-card"><h3>SUPER 價值羅盤完整排序</h3>${s.ranking.map(v=>barRow(v.id,v.emoji+' '+v.name,v.score,20)).join('')}</div></div>
   <h3>可複製文字報告</h3><div class="report-box" id="reportText">${escapeHtml(report)}</div>
   <div id="emailSendStatus" class="email-send-box ${emailSendState.kind}">${emailSendStatusHtml()}<div class="case-link">完成寄送後，請到信箱查看專屬 PDF 報告；若未收到，請先檢查垃圾信件。</div></div>
-  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回價值羅盤</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this)">下載 PDF 報告</button><button class="btn primary" onclick="sendPdfToEmail(this,false)">寄送 PDF 到 Email</button><button class="btn danger" onclick="resetGame()">重新冒險</button></div></div>`;
+  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回價值羅盤</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this)">下載 PDF 報告</button><button class="btn primary" onclick="sendPdfToEmail(this,false)" ${submissionDone?'disabled':''}>${submissionDone?'PDF 已寄送 ✓':'寄送 PDF 到 Email'}</button><button class="btn danger" onclick="resetGame()">重新冒險</button></div></div>`;
   if(complete) celebrateMissionIfDone('result',false);
   scheduleAutoEmailSend(complete);
 }
@@ -812,12 +814,23 @@ function buildResultRecord(h,s,fileName,status){
   return record;
 }
 async function sendPdfToEmail(btn,silent=false){
+  if(submissionDone){
+    if(btn){btn.disabled=true;btn.textContent='PDF 已寄送 ✓';}
+    if(!silent) alert(`報告已經寄送到：${String(state.profile.email||'').trim()}
+若沒有收到，請先檢查垃圾信件，或聯絡顧問協助查詢。`);
+    return true;
+  }
+  if(submissionInFlight){
+    if(!silent) alert('正在寄送中，請稍候，不要重複點擊。');
+    return false;
+  }
   if(!validateProfile(!silent)) return false;
   if(!isSupabaseReady()){
     setEmailSendState('warn','尚未寄送報告','目前無法自動寄送 Email，可先下載 PDF。');
     if(!silent) alert('目前無法自動寄送 Email，可先下載 PDF。');
     return false;
   }
+  submissionInFlight=true;
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF寄送中...';}
   try{
     setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，請不要關閉頁面。');
@@ -827,8 +840,10 @@ async function sendPdfToEmail(btn,silent=false){
     const res=await fetch(SUBMIT_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(payload)});
     const data=await res.json().catch(()=>({}));
     if(!res.ok || data.ok===false) throw new Error(data.error || '寄送失敗，請稍後再試。');
+    submissionDone=true;
     setEmailSendState('ok','PDF 已寄送',`系統已將報告寄到 ${payload.email}。若幾分鐘內沒有收到，請先檢查垃圾信件。`);
     toast('PDF 已寄送');
+    if(btn){btn.textContent='PDF 已寄送 ✓';}
     if(!silent) alert(`已將 PDF 寄送到：${payload.email}
 若沒有收到，請先檢查垃圾信件。`);
     return true;
@@ -837,11 +852,14 @@ async function sendPdfToEmail(btn,silent=false){
     setEmailSendState('bad','PDF 寄送失敗',err.message || '請確認網路連線，稍後再試。');
     if(!silent) alert('PDF 寄送失敗：' + (err.message || '請確認網路連線，稍後再試。'));
     return false;
-  }finally{if(btn){btn.disabled=false;btn.textContent=old;}}
+  }finally{
+    submissionInFlight=false;
+    if(btn && !submissionDone){btn.disabled=false;btn.textContent=old;}
+  }
 }
 
 function copyReport(){const text=document.getElementById('reportText')?.innerText || makeReport(calcHolland(),calcSuper());navigator.clipboard.writeText(text).then(()=>toast('報告已複製')).catch(()=>toast('無法複製，請手動選取'));}
-function resetGame(){if(confirm('確定要清除目前填答並重新開始嗎？')){cleanupPersistentStorage();state=emptyState();current='profile';accessVerified=false;accessInfo={shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};emailSendAttempted=false;emailSendState={kind:'warn',title:'尚未寄送報告',text:'完成測驗後，可下載 PDF 或寄送到你的 Email。'};render();toast('已清空並重新開始');}}
+function resetGame(){if(confirm('確定要清除目前填答並重新開始嗎？')){cleanupPersistentStorage();state=emptyState();current='profile';accessVerified=false;accessInfo={shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};emailSendAttempted=false;submissionInFlight=false;submissionDone=false;emailSendState={kind:'warn',title:'尚未寄送報告',text:'完成測驗後，可下載 PDF 或寄送到你的 Email。'};render();toast('已清空並重新開始');}}
 function escapeHtml(s){return String(s ?? '').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 render();
 </script>

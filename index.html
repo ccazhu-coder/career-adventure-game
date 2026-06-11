@@ -68,7 +68,6 @@
     .mission-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(10,30,24,.42);backdrop-filter:blur(7px);padding:18px}.mission-overlay.show{display:flex}.mission-pop{position:relative;width:min(480px,100%);background:#FFFDF8;border:1px solid #F1D18A;border-radius:34px;padding:30px;text-align:center;box-shadow:0 28px 70px rgba(0,0,0,.28);animation:popWin .34s ease both}.mission-pop:before,.mission-pop:after{content:'✨';position:absolute;font-size:32px;animation:fireSpin 1.4s ease-in-out infinite}.mission-pop:before{left:22px;top:20px}.mission-pop:after{right:22px;top:22px;animation-delay:.35s}.mission-pop h2{font-size:32px;color:#173F33;margin:8px 0}.mission-pop p{color:#52645B;margin:0 0 16px}.firework{font-size:38px;color:#B8872E;animation:twinkle 1s ease-in-out infinite}.reward-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#173F33;color:#FFE8AC;padding:10px 16px;font-weight:1000;margin:4px 0 18px}@keyframes popWin{from{opacity:0;transform:scale(.86) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes fireSpin{0%,100%{transform:scale(.85) rotate(-8deg);opacity:.55}50%{transform:scale(1.25) rotate(10deg);opacity:1}}
     .role-title{font-size:34px;line-height:1.15;margin:10px 0 6px;color:#FFE7A8}.result-card .role-title{color:#173F33}.treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.treasure-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:17px;box-shadow:0 8px 18px rgba(42,62,49,.06)}.treasure-card h3{margin:0 0 8px;color:#173F33}.treasure-card ul{padding-left:20px;margin:8px 0}.gem-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.gem{background:#FFF8E8;border:1px solid #E8D19A;border-radius:16px;padding:10px;text-align:center;font-weight:900;color:#5B4012}.case-link{font-size:12px;color:#6C7A72;margin-top:6px}
     @media(max-width:900px){.mission-map,.quest-grid,.energy-row,.treasure-grid,.gem-list{grid-template-columns:1fr}.q-row,.rating-row{min-height:auto}.type-card .q-list{grid-auto-rows:auto}.quest-intro{padding:22px 18px;border-left-width:6px}.quest-intro h2{font-size:28px}.quest-intro p{font-size:17px}.quest-card span{font-size:15px}}
-    @media(max-width:560px){body{line-height:1.55}.app{padding:10px 8px 42px}.hero{border-radius:22px;padding:18px}.hero:before,.hero:after{display:none}h1{font-size:30px;line-height:1.12;margin:12px 0 8px}.hero p{font-size:15px}.badge{max-width:100%;white-space:normal;border-radius:16px;padding:7px 10px}.hero-card{min-height:auto;border-radius:20px;padding:14px}.hero-card strong{font-size:38px}.hero-stat{grid-template-columns:1fr;gap:8px}.topbar{top:6px;gap:8px;margin:10px 0 10px;padding:12px;border-radius:18px;background:rgba(255,253,248,.94);border:1px solid rgba(224,211,189,.9);box-shadow:var(--shadow2)}.progress-wrap{height:13px;min-width:100%}.layout{gap:10px;margin-top:8px}.nav{display:flex;overflow-x:auto;gap:8px;padding:8px;border-radius:18px;box-shadow:var(--shadow2);scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}.nav:before{display:none}.nav button{flex:0 0 auto;width:auto;min-width:118px;min-height:44px;margin:0;padding:10px 12px;border-radius:14px;scroll-snap-align:start;white-space:nowrap}.nav button:hover{transform:none}.nav button span:first-child{overflow:hidden;text-overflow:ellipsis}.nav .dot{display:none}.panel{border-radius:22px;padding:14px;min-height:auto}.section-head{gap:10px;margin-bottom:12px;padding-bottom:12px}.section-head h2{font-size:23px;line-height:1.2}.section-head p{font-size:14px}.pill{white-space:normal;border-radius:14px;padding:7px 10px}.mission-tip,.warning,.email-send-box,.contact-card{border-radius:16px;padding:12px}.field{gap:6px}.field input,.field textarea,.field select{border-radius:14px;min-height:46px;padding:12px;font-size:16px}.section-intro,.quest-intro{border-radius:20px;padding:18px 14px;margin-bottom:14px}.section-intro h3,.quest-intro h2{font-size:23px;line-height:1.28}.section-intro p,.quest-intro p{font-size:16px;line-height:1.75}.quest-card{min-height:auto;padding:13px}.quest-card b{font-size:16px}.super-card,details.type-card,.sub-card,.rank-item,.treasure-card{border-radius:18px}.super-card{padding:14px}.super-head{align-items:flex-start;flex-direction:column}.super-head h3{font-size:17px}summary{padding:14px;align-items:flex-start}.type-title{font-size:16px;line-height:1.35}.count-chip{font-size:12px;padding:5px 8px}.q-list{padding:0 12px 12px}.q-row,.rating-row{gap:10px;padding:14px 0}.q-text,.rating-title{font-size:15px;line-height:1.55}.choice{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}.choice button{width:100%;min-width:0;min-height:46px;padding:10px 8px}.rating-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;gap:8px}.rating-buttons button{width:100%;height:44px}.actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:18px}.actions .left,.actions .right{display:grid;grid-template-columns:1fr;gap:8px;width:100%}.btn{width:100%;border-radius:16px;padding:12px 14px;min-height:46px}.access-grid{grid-template-columns:1fr}.result-card{border-radius:20px;padding:18px}.result-card h2{font-size:24px}.code{font-size:42px;letter-spacing:.08em}.bar-row{grid-template-columns:72px 1fr 42px;gap:8px}.report-box{border-radius:16px;max-height:300px;font-size:13px;padding:14px}.hex-svg{width:100%;max-width:330px}.toast{width:calc(100% - 28px);text-align:center;border-radius:16px;bottom:14px}.toast.show{bottom:18px}.mission-pop{border-radius:24px;padding:24px 18px}.mission-pop h2{font-size:26px}}
     @media print{.pdf-safe{width:170mm!important;max-width:170mm!important;padding:0!important;margin:0 auto!important;overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-safe *{overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-avoid{break-inside:avoid!important;page-break-inside:avoid!important}}
 
 </style>
@@ -122,8 +121,10 @@ const STEPS = [
 const storageKey = "careerAdventureGame_v2_professional";
 const NO_PERSISTENCE = true;
 // 正式多人施測版：每次開啟皆為全新測驗，不讀取、不保留上一位填答者資料。
-// 正式營運版不走 Google。Vercel 部署時使用同網域 /api；測試可用 ?apiBase=https://your-domain。
-const API_BASE_URL = "";
+// 後端改用 Supabase：短碼驗證走 PostgREST（anon key），結果送出與 PDF 寄信走 Edge Function submit-result。
+const SUPABASE_URL = "https://bkovbcdqhljrnpyhfqdq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrb3ZiY2RxaGxqcm5weWhmcWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzgwMjAsImV4cCI6MjA5NjcxNDAyMH0.zp5poRNp3f1Dsuehaatkqj4etXA61aNBLoGew57FGY4";
+const SUBMIT_FUNCTION_URL = SUPABASE_URL + "/functions/v1/submit-result";
 const SUPPORT_LINE_URL = "https://lin.ee/PbfeRUU";
 const SUPPORT_EMAIL = "pucezhang@gmail.com";
 const AUTO_SEND_PDF_ON_COMPLETE = true;
@@ -139,7 +140,6 @@ let accessVerified = false;
 let accessInfo = {shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};
 let emailSendAttempted = false;
 let emailSendState = {kind:"warn", title:"尚未寄送報告", text:"完成測驗後，可下載 PDF 或寄送到你的 Email。"};
-let openTypeCardKeys = new Set();
 
 function emptyState(){
   const s = { profile:{name:"", gender:"", age:"", phone:"", email:"", accessCode:SHORT_CODE_FROM_URL, date:new Date().toISOString().slice(0,10), ideals:["","",""]}, holland:{}, abilityA:{}, abilityB:{}, super:{} };
@@ -210,33 +210,26 @@ function renderNav(){
   nav.innerHTML=`<div class="nav-head"><strong>職涯冒險地圖</strong><span>已完成 ${doneCount} / 5 關</span></div>` + STEPS.map(st=>`<button class="${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><span><span class="dot"></span> ${st.icon} ${st.title}</span><span>${stepDone(st.id)?'✓':Math.round(missionProgress(st.id)*100)+'%'}</span></button>`).join('') + `<button onclick="resetGame()"><span><span class="dot"></span> ♻️ 重新開始</span></button>`;
 }
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||'').trim());}
-function getApiEndpoint(){
-  const params = new URLSearchParams(location.search);
-  const fromQuery = params.get('apiBase') || params.get('apiEndpoint') || '';
-  return String(fromQuery || API_BASE_URL || location.origin).replace(/\/$/,'');
-}
-function getEmailEndpoint(){return getApiEndpoint();}
-function isEmailEndpointReady(){return !!getApiEndpoint();}
 function getShortCode(){return String(state.profile.accessCode || SHORT_CODE_FROM_URL || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,12);}
-async function apiFetch(path, body={}, options={}){
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(), options.timeout || 20000);
-  try{
-    const res=await fetch(`${getApiEndpoint()}${path}`,{
-      method:options.method || 'POST',
-      headers:{'Content-Type':'application/json'},
-      body:options.method==='GET'?undefined:JSON.stringify(body||{}),
-      signal:controller.signal
-    });
-    const data=await res.json().catch(()=>({ok:false,message:'系統回應格式錯誤'}));
-    if(!res.ok || data.ok===false) throw new Error(data.message || '系統暫時無法處理');
-    return data;
-  }catch(err){
-    if(err.name==='AbortError') throw new Error('系統連線逾時，請稍後再試');
-    throw err;
-  }finally{
-    clearTimeout(timer);
-  }
+function isSupabaseReady(){
+  return /^https:\/\/.+\.supabase\.co$/.test(String(SUPABASE_URL||'').trim()) && !!String(SUPABASE_ANON_KEY||'').trim() && SUPABASE_ANON_KEY!=='YOUR_ANON_KEY';
+}
+async function fetchBatchByShortCode(code){
+  const url=SUPABASE_URL+'/rest/v1/batches?short_code=eq.'+encodeURIComponent(code)+'&select=*';
+  const res=await fetch(url,{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+  if(!res.ok) throw new Error('系統連線失敗，請稍後再試');
+  const rows=await res.json();
+  if(!rows.length) throw new Error('短碼不存在，請確認連結是否正確');
+  return rows[0];
+}
+function validateBatchForSubmission(batch){
+  if(String(batch.status||'啟用')!=='啟用') throw new Error('此批次目前未啟用');
+  const now=new Date();
+  if(batch.start_time && now < new Date(batch.start_time)) throw new Error('此批次尚未開始');
+  if(batch.end_time && now > new Date(batch.end_time)) throw new Error('此批次已結束');
+  if((batch.quantity||0) > 0 && (batch.completed_count||0) >= batch.quantity) throw new Error('此批次名額已滿');
+  if(!validEmail(batch.counselor_email||'')) throw new Error('批次缺少有效的諮詢師 Email');
+  return batch;
 }
 function accessStatusHtml(){
   const kind=accessVerified?'ok':(accessInfo.status==='驗證失敗'?'bad':'warn');
@@ -249,7 +242,7 @@ async function verifyAccessCode(showAlert=false){
   if(!code){if(showAlert) alert('請輸入或使用專屬短碼連結，例如 ?c=K8P2QX');return false;}
   state.profile.accessCode=code;
   if(PREVIEW_MODE){accessVerified=true;accessInfo={shortCode:code,batchCode:'PREVIEW',batchName:'預覽模式',serial:'000',consultantEmail:'',status:'已驗證',message:'預覽模式已允許進入'};render();return true;}
-  if(!isEmailEndpointReady()){
+  if(!isSupabaseReady()){
     accessInfo={shortCode:code,status:'驗證失敗',message:'系統尚未完成短碼驗證設定，請稍後再試'};
     render();
     if(showAlert) alert('系統尚未完成短碼驗證設定，請稍後再試。');
@@ -257,11 +250,10 @@ async function verifyAccessCode(showAlert=false){
   }
   try{
     accessInfo={shortCode:code,status:'驗證中',message:'正在確認短碼與可測驗時間...'};render();
-    const res=await apiFetch('/api/public/validate-pass',{code, email:state.profile.email || '', name:state.profile.name || ''});
-    if(!res.ok) throw new Error(res.message || '短碼無效');
-    const batch=res.batch || {};
+    const batch=await fetchBatchByShortCode(code);
+    validateBatchForSubmission(batch);
     accessVerified=true;
-    accessInfo={shortCode:batch.shortCode||code,batchCode:batch.batchCode||'',batchName:batch.batchName||'',serial:String((Number(batch.completedCount)||0)+1).padStart(3,'0'),consultantEmail:batch.counselorEmail||'',status:'已驗證',message:'短碼已通過驗證'};
+    accessInfo={shortCode:batch.short_code||code,batchCode:batch.batch_code||'',batchName:batch.batch_name||'',serial:String((Number(batch.completed_count)||0)+1).padStart(3,'0'),consultantEmail:batch.counselor_email||'',status:'已驗證',message:'短碼已通過驗證'};
     render();
     return true;
   }catch(err){
@@ -281,7 +273,7 @@ function emailSendStatusHtml(){return `<strong>${escapeHtml(emailSendState.title
 function scheduleAutoEmailSend(complete){
   if(!AUTO_SEND_PDF_ON_COMPLETE || !complete || emailSendAttempted) return;
   if(!accessVerified){setEmailSendState('warn','尚未驗證短碼','短碼尚未驗證，不會自動寄送正式 PDF。');return;}
-  if(!isEmailEndpointReady()){
+  if(!isSupabaseReady()){
     setEmailSendState('warn','尚未寄送報告','目前無法自動寄送 Email，可先下載 PDF。');
     return;
   }
@@ -305,22 +297,6 @@ async function go(id){
   current=id;render();window.scrollTo({top:0,behavior:'smooth'});
 }
 function render(){updateAll(); const view=document.getElementById("view"); if(current==="profile") renderProfile(view); else if(current==="interest") renderHolland(view,'interest'); else if(current==="valley") renderValley(view); else if(current==="super") renderSuper(view); else renderResult(view);}
-function typeCardKey(secId,t){return `${secId}:${t}`;}
-function captureOpenTypeCards(){
-  openTypeCardKeys = new Set([...document.querySelectorAll('details.type-card[data-type-key]')].filter(el=>el.open).map(el=>el.dataset.typeKey));
-  return new Set(openTypeCardKeys);
-}
-function restoreOpenTypeCards(keys){
-  document.querySelectorAll('details.type-card[data-type-key]').forEach(el=>{ if(keys.has(el.dataset.typeKey)) el.open=true; });
-}
-function renderAfterHollandAnswer(secId,t){
-  const scrollY=window.scrollY;
-  const keys=captureOpenTypeCards();
-  keys.add(typeCardKey(secId,t));
-  render();
-  restoreOpenTypeCards(keys);
-  window.scrollTo({top:scrollY,behavior:'auto'});
-}
 async function nextStep(){
   if(current==="profile"){
     if(!validateProfile(true)) return;
@@ -424,13 +400,11 @@ function renderValley(view){
 function typeBlock(sec,t){
   const meta=DATA.riasec[t], arr=sec.types[t], vals=state.holland[sec.id][t];
   const score=vals.filter(v=>v===true).length, done=vals.filter(v=>v!==null).length;
-  const key=typeCardKey(sec.id,t);
-  const shouldOpen=done<arr.length || openTypeCardKeys.has(key);
-  return `<details class="type-card" data-type-key="${key}" ${shouldOpen?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
+  return `<details class="type-card" ${done<arr.length?'open':''}><summary><div class="type-title"><b>${meta.emoji}</b><span>${t} 型｜${meta.name}</span></div><span class="count-chip">${done}/${arr.length}　得分 ${score}</span></summary><div class="q-list">
     ${arr.map((q,i)=>`<div class="q-row"><div class="q-text">${i+1}. ${escapeHtml(q)}</div><div class="choice"><button class="${vals[i]===true?'selected yes':''}" onclick="setHolland('${sec.id}','${t}',${i},true)">${sec.yes}</button><button class="${vals[i]===false?'selected no':''}" onclick="setHolland('${sec.id}','${t}',${i},false)">${sec.no}</button></div></div>`).join('')}
   </div></details>`;
 }
-function setHolland(sec,t,i,val){const before=stepDone(sec==='interest'?'interest':'valley');state.holland[sec][t][i]=val;save();renderAfterHollandAnswer(sec,t);celebrateMissionIfDone(sec==='interest'?'interest':'valley',before);}
+function setHolland(sec,t,i,val){const before=stepDone(sec==='interest'?'interest':'valley');state.holland[sec][t][i]=val;save();render();celebrateMissionIfDone(sec==='interest'?'interest':'valley',before);}
 function renderRatingPanel(){
   return `<div class="sub-mission-title"><div><h3>📡 天賦雷達校準艙｜能力類型簡評</h3><span>請和同齡人相比，使用 1～7 分進行自我評估。</span></div><span class="count-chip">${TYPES.filter(t=>state.abilityA[t]&&state.abilityB[t]).length*2}/12</span></div>
   <div class="grid2"><div class="super-card"><div class="super-head"><h3>表 A｜工作能力</h3><span class="small">1 低 ～ 7 高</span></div>${TYPES.map(t=>ratingRow('abilityA',t,DATA.abilityA[t],DATA.riasec[t].name)).join('')}</div>
@@ -442,25 +416,21 @@ function ratingRow(bucket,t,label,sub){
   return `<div class="rating-row"><div><div class="rating-title">${DATA.riasec[t].emoji} ${t} 型｜${label}</div><div class="rating-sub">${sub}</div></div><div class="rating-buttons">${[1,2,3,4,5,6,7].map(n=>`<button class="${val===n?'active':''}" onclick="setRating('${bucket}','${t}',${n})">${n}</button>`).join('')}</div></div>`;
 }
 function setRating(bucket,t,n){const before=stepDone('valley');state[bucket][t]=n;save();render();celebrateMissionIfDone('valley',before);}
-function superGroupLabel(g){
-  const idx=DATA.superGroups.findIndex(x=>x.id===g.id);
-  return `第 ${idx+1} 組`;
-}
 function renderSuper(view){
   const ans=DATA.superGroups.reduce((a,g)=>a+state.super[g.id].filter(v=>v!==null).length,0), total=DATA.superGroups.reduce((a,g)=>a+g.items.length,0);
   view.innerHTML=`${renderMissionMap()}
-  ${questIntro('super','第 4 關｜價值羅盤','SUPER 工作價值觀探索','這一關請依照每一題對你的重要程度作答。請不要猜測題組代表什麼，只需要回到自己的真實感受。',[
-    {title:'這關在看什麼',text:'每一組題目都代表一種工作條件，系統會在完成後交由報告進行判讀。'},
+  ${questIntro('super','第 4 關｜價值羅盤','SUPER 工作價值觀探索','這一關不是問你現在擁有什麼，而是問未來選擇工作時，哪些條件會真正影響你的滿意度、投入度與穩定度。',[
+    {title:'這關在看什麼',text:'你真正重視的工作條件，例如成就感、獨立性、安全感、人際關係。'},
     {title:'作答方式',text:'5 分＝非常重要；1 分＝不重要。請避免全部選同一分數。'},
     {title:'完成獎勵',text:'完成後獲得「價值羅盤徽章」，前往職涯神殿產生報告。'}
   ])}
-  ${quickStats([{value:`${ans}/${total}`,label:'價值探索點'},{value:'13 組',label:'匿名題組'},{value:'1～5 分',label:'分數越高越重要'}])}
+  ${quickStats([{value:`${ans}/${total}`,label:'價值探索點'},{value:'13 組',label:'工作價值觀面向'},{value:'1～5 分',label:'分數越高越重視'}])}
   ${DATA.superGroups.map(g=>superBlock(g)).join('')}
   ${actions().replace('繼續冒險 →','前往職涯神殿 →')}`;
 }
 function superBlock(g){
   const vals=state.super[g.id]; const score=vals.reduce((a,v)=>a+(v||0),0); const done=vals.filter(v=>v!==null).length;
-  return `<div class="super-card"><div class="super-head"><h3>${superGroupLabel(g)}</h3><span class="count-chip">${done}/${g.items.length}　已作答</span></div>
+  return `<div class="super-card"><div class="super-head"><h3>${g.emoji} ${g.name}</h3><span class="count-chip">${done}/${g.items.length}　${score} 分</span></div><p class="super-desc">${escapeHtml(g.desc)}</p>
   ${g.items.map((q,i)=>`<div class="rating-row"><div class="rating-title">${i+1}. ${escapeHtml(q)}</div><div class="rating-buttons">${[1,2,3,4,5].map(n=>`<button class="${vals[i]===n?'active':''}" onclick="setSuper('${g.id}',${i},${n})">${n}</button>`).join('')}</div></div>`).join('')}
   </div>`;
 }
@@ -809,7 +779,7 @@ function buildResultRecord(h,s,fileName,status){
 }
 async function sendPdfToEmail(btn,silent=false){
   if(!validateProfile(!silent)) return false;
-  if(!isEmailEndpointReady()){
+  if(!isSupabaseReady()){
     setEmailSendState('warn','尚未寄送報告','目前無法自動寄送 Email，可先下載 PDF。');
     if(!silent) alert('目前無法自動寄送 Email，可先下載 PDF。');
     return false;
@@ -819,11 +789,13 @@ async function sendPdfToEmail(btn,silent=false){
     setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，請不要關閉頁面。');
     const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
     const fileName=pdfFileName();
-    const payload={shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topRiasec:h.ranking.slice(0,3),hollandScores:h.scores,valueScores:Object.fromEntries(s.rows.map(v=>[v.id,v.score])),topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),rawAnswers:{questionBankVersion:QUESTION_BANK_VERSION,shortCode:getShortCode(),accessInfo,profile:state.profile,holland:state.holland,abilityA:state.abilityA,abilityB:state.abilityB,super:state.super},record:buildResultRecord(h,s,fileName,'待寄送')};
-    const res=await apiFetch('/api/public/submit-result',payload,{timeout:60000});
-    setEmailSendState('ok','PDF 報告已完成',`系統已建立報告並送出 Email 到 ${payload.email}。報告編號：${res.resultId || '已建立'}`);
-    toast('PDF 報告已完成');
-    if(!silent) alert(`PDF 報告已完成，已送出到：${payload.email}
+    const payload={shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
+    const res=await fetch(SUBMIT_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(payload)});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok || data.ok===false) throw new Error(data.error || '寄送失敗，請稍後再試。');
+    setEmailSendState('ok','PDF 已寄送',`系統已將報告寄到 ${payload.email}。若幾分鐘內沒有收到，請先檢查垃圾信件。`);
+    toast('PDF 已寄送');
+    if(!silent) alert(`已將 PDF 寄送到：${payload.email}
 若沒有收到，請先檢查垃圾信件。`);
     return true;
   }catch(err){

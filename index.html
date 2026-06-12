@@ -115,6 +115,7 @@
     .rpt-rank-body{flex:1 1 auto;padding:7px 6px;min-width:0}
     .rpt-rank-body b{display:block;color:#3F2E73;font-size:12.5px}
     .rpt-rank-body span{display:block;color:#8A81A8;font-size:11px;margin-top:2px;line-height:1.5}
+    .rpt-rank-body span.rpt-rank-desc{color:#6B5E94;margin-top:4px;padding-top:4px;border-top:1px dashed #ECE8F8;line-height:1.7}
     .rpt-rank-score{flex:0 0 52px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#6B4FC9;font-size:13px;border-left:1px solid #ECE8F8}
     .rpt-rank-row.gold .rpt-rank-score{color:#C97A30;border-left-color:#F6E6CC}
     .rpt-num-card{display:flex;align-items:flex-start;gap:12px;border:1px solid #ECE8F8;border-radius:16px;padding:12px 14px;margin:8px 0;position:relative}
@@ -582,7 +583,7 @@ const RPT_TYPE_COLORS={
 };
 const RPT_SUPER_COLOR={from:'#B0A0F5',to:'#6B4FC9',text:'#6B4FC9'};
 function renderHollandHexSvg(scores,opt={}){
-  const size=opt.size||380,cx=size/2,cy=size/2,r=size*.29,order=['R','I','A','S','E','C'];
+  const size=opt.size||380,pad=size*.06,canvas=size+pad*2,cx=canvas/2,cy=canvas/2,r=size*.29,order=['R','I','A','S','E','C'];
   const levels=[1,.75,.5,.25];
   const purple=opt.theme==='purple';
   const c=purple
@@ -594,7 +595,7 @@ function renderHollandHexSvg(scores,opt={}){
   const dots=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const pct=Math.max(0,Math.min(1,(scores[t]||0)/hollandTypeMax(t)));const rr=r*pct;return `<circle cx="${(cx+Math.cos(a)*rr).toFixed(1)}" cy="${(cy+Math.sin(a)*rr).toFixed(1)}" r="5.5" fill="${c.dot}" stroke="${c.dotStroke}" stroke-width="2"/>`;}).join('');
   const labels=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const meta=DATA.riasec[t];const lx=cx+Math.cos(a)*(r+30),ly=cy+Math.sin(a)*(r+30);const anchor=Math.cos(a)>0.35?'start':(Math.cos(a)<-0.35?'end':'middle');const boxX=anchor==='start'?lx-4:(anchor==='end'?lx-74:lx-39);const boxY=ly-25;return `<g><rect x="${boxX.toFixed(1)}" y="${boxY.toFixed(1)}" width="78" height="56" rx="13" fill="${c.labelBox}" stroke="${c.labelBorder}"/><text x="${lx.toFixed(1)}" y="${(ly-7).toFixed(1)}" text-anchor="${anchor}" font-size="14" font-weight="700" fill="${c.labelMain}">${meta.emoji} ${t}</text><text x="${lx.toFixed(1)}" y="${(ly+9).toFixed(1)}" text-anchor="${anchor}" font-size="11" fill="${c.labelSub}">${meta.name}</text><text x="${lx.toFixed(1)}" y="${(ly+24).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="${c.labelScore}">${scores[t]||0}/${hollandTypeMax(t)}</text></g>`;}).join('');
   const ticks=levels.map(level=>`<text x="${(cx+6).toFixed(1)}" y="${(cy-r*level+14).toFixed(1)}" font-size="10" fill="${c.tick}">${Math.round(level*100)}%</text>`).join('');
-  return `<svg class="hex-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-label="荷倫六角型圖"><rect x="0" y="0" width="${size}" height="${size}" rx="26" fill="${c.bg}"/>${grid}${axes}${ticks}${dataPoly}${dots}<circle cx="${cx}" cy="${cy}" r="4" fill="${c.center}"/>${labels}</svg>`;
+  return `<svg class="hex-svg" width="${canvas}" height="${canvas}" viewBox="0 0 ${canvas} ${canvas}" xmlns="http://www.w3.org/2000/svg" aria-label="荷倫六角型圖"><rect x="0" y="0" width="${canvas}" height="${canvas}" rx="26" fill="${c.bg}"/>${grid}${axes}${ticks}${dataPoly}${dots}<circle cx="${cx}" cy="${cy}" r="4" fill="${c.center}"/>${labels}</svg>`;
 }
 function careerRoleTitle(h,s){
   const top=h.ranking[0]||{type:'',meta:{role:'職涯探索者'}};
@@ -859,11 +860,11 @@ function pdfSuperCardV2(s){
   </div>`;
 }
 function pdfRankCardV2(top3,values){
-  const rankRow=(num,icon,title,desc,score,gold)=>`<div class="rpt-rank-row ${gold?'gold':''}"><div class="rpt-rank-num">${String(num).padStart(2,'0')}</div><div class="rpt-rank-icon">${icon}</div><div class="rpt-rank-body"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span></div><div class="rpt-rank-score">${score}分</div></div>`;
+  const rankRow=(num,icon,title,desc,score,gold,longDesc)=>`<div class="rpt-rank-row ${gold?'gold':''}"><div class="rpt-rank-num">${String(num).padStart(2,'0')}</div><div class="rpt-rank-icon">${icon}</div><div class="rpt-rank-body"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span>${longDesc?`<span class="rpt-rank-desc">${escapeHtml(longDesc)}</span>`:''}</div><div class="rpt-rank-score">${score}分</div></div>`;
   return `<div class="rpt-card pdf-avoid">
     ${rptHead('🏅','前三型與價值觀說明')}
     <div class="rpt-rank-group-head">⚙️ 何倫碼前3高</div>
-    ${top3.map((x,i)=>rankRow(i+1,x.meta.emoji,`${x.type}型｜${x.meta.name}`,x.meta.role,x.score,false)).join('')}
+    ${top3.map((x,i)=>rankRow(i+1,x.meta.emoji,`${x.type}型｜${x.meta.name}`,x.meta.role,x.score,false,x.meta.desc)).join('')}
     <div class="rpt-rank-group-head" style="margin-top:12px">💎 SUPER工作價值觀前5高</div>
     ${values.map((v,i)=>rankRow(i+1,v.emoji,v.name,v.desc,v.score,true)).join('')}
   </div>`;
@@ -940,19 +941,19 @@ function pdfHollandDbCardsV2(db,top3,isCounselor){
       ${rptTextBlock('🧬 人格特質分析',code.personality_analysis)}
       ${rptTextBlock('💼 工作風格',code.work_style)}
     </div>`;
-    let strengthsEnvJobs=`${rptListBlock('✅ 你的優勢',code.strengths,'c-green','💪')}${rptListBlock('🏞️ 適合的工作環境',code.suitable_environment,'c-blue','🏞️')}${rptListBlock('🧰 可考慮的職業方向',code.suitable_jobs,'c-purple','🧰')}`;
-    if(isCounselor) strengthsEnvJobs+=rptListBlock('⚠️ 需留意的風險',code.career_risks,'c-pink','⚠️');
-    if(strengthsEnvJobs) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、環境與職業方向（資料庫）')}${strengthsEnvJobs}</div>`;
-    let extra=`${rptTextBlock('🌱 發展建議',code.development_advice)}${rptTextBlock('📝 報告段落',code.report_paragraph)}`;
+    let strengthsEnvJobs=`${rptListBlock('✅ 你的優勢',code.strengths,'c-green','💪')}${rptListBlock('🏞️ 適合的工作環境（參考）',code.suitable_environment,'c-blue','🏞️')}`;
+    if(isCounselor) strengthsEnvJobs+=`${rptListBlock('🧰 可考慮的職業方向',code.suitable_jobs,'c-purple','🧰')}${rptListBlock('⚠️ 需留意的風險',code.career_risks,'c-pink','⚠️')}`;
+    if(strengthsEnvJobs) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、環境與職業方向（參考）')}${strengthsEnvJobs}</div>`;
     if(isCounselor){
+      let extra=`${rptTextBlock('🌱 發展建議',code.development_advice)}${rptTextBlock('📝 報告段落',code.report_paragraph)}`;
       extra+=rptTextBlock('🧑‍💼 諮詢師解讀',code.counselor_interpretation);
       extra+=rptTextBlock('🔗 就業媒合建議',code.employment_matching_advice);
       extra+=rptTextBlock('📌 後續追蹤建議',code.follow_up_suggestion);
       extra+=rptListBlock('🛠️ 可遷移技能',code.transferable_skills,'c-teal','🛠️');
-    }
-    if(extra) html+=`<div class="rpt-card pdf-avoid">${rptHead('🌱','發展建議與報告段落（資料庫）')}${extra}</div>`;
-    if(isCounselor && code.counseling_questions && code.counseling_questions.length){
-      html+=`<div class="rpt-card pdf-avoid">${rptHead('❓','晤談切入問題（資料庫）')}${rptListBlock('',code.counseling_questions,'c-orange','❓')}</div>`;
+      if(extra) html+=`<div class="rpt-card pdf-avoid">${rptHead('🌱','發展建議與報告段落（參考）')}${extra}</div>`;
+      if(code.counseling_questions && code.counseling_questions.length){
+        html+=`<div class="rpt-card pdf-avoid">${rptHead('❓','晤談切入問題（資料庫）')}${rptListBlock('',code.counseling_questions,'c-orange','❓')}</div>`;
+      }
     }
   }else{
     const tr=db.typeReports||{};
@@ -996,7 +997,7 @@ async function pdfCaseReportHtml(){
     <div class="rpt-pagebreak">${pdfRiasecCardV2(h)}</div>
     ${pdfSuperCardV2(s)}
     <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
-    ${hollandDb?`<div class="rpt-pagebreak">${hollandDb}</div>`:''}
+    ${hollandDb}
     ${superDb}
     ${pdfFooterV2()}
   </div>`;
@@ -1018,7 +1019,7 @@ async function pdfCounselorReportHtml(){
     ${pdfRiasecCardV2(h)}
     ${pdfSuperCardV2(s)}
     <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
-    ${hollandDb?`<div class="rpt-pagebreak">${hollandDb}</div>`:''}
+    ${hollandDb}
     ${superDb}
     ${pdfEnvCardV2(env)}
     <div class="rpt-pagebreak">${pdfBlocksCardV2(blocks)}</div>

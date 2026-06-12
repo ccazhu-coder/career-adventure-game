@@ -739,8 +739,8 @@ function makeCounselorReport(h,s){
 function renderResult(view){
   const h=calcHolland(), s=calcSuper(), complete=answeredCount()===totalCount();
   const top=h.ranking[0], top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,2);
-  const role=careerRoleTitle(h,s), report=makeReport(h,s);
-  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), actionsList=nextActionAdvice(h,s), focus=explorationFocus(h,s);
+  const role=careerRoleTitle(h,s);
+  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=explorationFocus(h,s);
   view.innerHTML=`${renderMissionMap()}
   ${questIntro('result','第 5 關｜職涯神殿','產生職涯角色與正式報告','你已完成職涯探索冒險。職涯神殿會把荷倫興趣、能力自評與 SUPER 工作價值觀轉換成可理解、可討論、可行動的專屬報告。',[
     {title:'角色總覽',text:'以主型與前三高組合產生職涯角色稱號。'},
@@ -754,8 +754,7 @@ function renderResult(view){
   <div class="sub-card report-section"><h3>RIASEC 六型分數</h3>${TYPES.map(t=>barRow(t,DATA.riasec[t].emoji+' '+t+' '+DATA.riasec[t].name,h.scores[t],hollandTypeMax(t))).join('')}</div>
   <div class="sub-card report-section"><h3>SUPER 價值觀分數</h3>${s.ranking.map(v=>barRow(v.id,v.emoji+' '+v.name,v.score,20)).join('')}</div>
   <div class="sub-card report-section"><h3>前三型與價值觀說明</h3><p class="small">何倫碼前三高：</p><div class="desc-list">${top3.map((x,i)=>`<div class="desc-item"><strong>${i+1}. ${x.type} 型｜${x.meta.name}（${x.score}分）</strong><p>${escapeHtml(x.meta.desc)}</p></div>`).join('')}</div><p class="small">SUPER 工作價值觀前五高：</p><div class="gem-list">${values.map((v,i)=>`<div class="gem"><b>${i+1}</b><span>${v.emoji} ${v.name}</span><em>${v.score}分</em></div>`).join('')}</div><p class="small">這些是影響你工作滿意度與投入度的關鍵條件。</p></div>
-  <div class="treasure-grid report-section"><div class="treasure-card"><h3>適合的工作環境</h3><ul>${env.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>可能卡住的地方</h3><ul>${blocks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>延伸探索重點</h3><ul>${focus.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>下一步行動建議</h3><ul>${actionsList.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div></div>
-  <h3 class="report-section">可複製文字報告</h3><div class="report-box" id="reportText">${escapeHtml(report)}</div>
+  <div class="treasure-grid report-section"><div class="treasure-card"><h3>適合的工作環境</h3><ul>${env.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>可能卡住的地方</h3><ul>${blocks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card" style="grid-column:1/-1"><h3>延伸探索重點</h3><ul>${focus.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div></div>
   <div id="emailSendStatus" class="email-send-box ${emailSendState.kind}">${emailSendStatusHtml()}<div class="case-link">完成寄送後，請到信箱查看專屬 PDF 報告；若未收到，請先檢查垃圾信件。</div></div>
   <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回價值羅盤</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this,'case')">下載個案報告 PDF</button><button class="btn primary" onclick="sendPdfToEmail(this,false)" ${submissionDone?'disabled':''}>${submissionDone?'PDF 已寄送 ✓':'寄送 PDF 到 Email'}</button><button class="btn danger" onclick="resetGame()">重新冒險</button></div></div>`;
   if(complete) celebrateMissionIfDone('result',false);
@@ -898,12 +897,7 @@ function pdfActionsCardV2(actionsList){
   </div>`;
 }
 function pdfNoticeCardV2(){
-  return `<div class="rpt-notice-card pdf-avoid">
-    ${rptHead('🗨️','【諮詢師提醒】')}
-    <div class="rpt-notice-row"><div class="rpt-notice-icon">📋</div><span>本報告評估工具包含荷倫職業適性測驗、SUPER 工作價值觀測驗。測評結果係依個案實際作答內容與量表設計產出，僅作為諮詢師了解個案特質、興趣傾向、工作價值觀與職涯方向之參考依據，並非職業指派、能力認定或最終就業判斷。</span></div>
-    <div class="rpt-notice-row"><div class="rpt-notice-icon">👥</div><span>諮詢師進行報告解讀與職涯建議時，應綜合考量個案背景、工作經驗、身心狀態、家庭支持、經濟需求、就業市場條件及實際可行性，並以專業晤談內容作為後續職涯規劃與服務建議之主要依據。</span></div>
-    <div class="rpt-notice-deco">✦ ✨ ✦</div>
-  </div>`;
+  return `<div class="pdf-avoid" style="margin-bottom:12px;max-width:100%;"><img src="assets/counselor-notice.png" alt="諮詢師提醒" style="width:100%;display:block;border-radius:18px"/></div>`;
 }
 function pdfFooterV2(){
   return `<div class="rpt-foot">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>`;
@@ -924,7 +918,7 @@ async function fetchReportDbData(h,s){
 }
 function rptTextBlock(label,text){
   if(!text) return '';
-  return `<div class="rpt-subhead">${escapeHtml(label)}</div><div class="rpt-text">${escapeHtml(text)}</div>`;
+  return `<div class="pdf-avoid"><div class="rpt-subhead">${escapeHtml(label)}</div><div class="rpt-text">${escapeHtml(text)}</div></div>`;
 }
 function rptListBlock(label,arr,theme,icon){
   if(!arr || !arr.length) return '';
@@ -935,24 +929,23 @@ function pdfHollandDbCardsV2(db,top3,isCounselor){
   const code=db.hollandCodeReport;
   let html='';
   if(code){
-    html+=`<div class="rpt-card pdf-avoid">
-      ${rptHead('📚',`荷倫碼深度報告｜${escapeHtml(code.code_title||'')}`,'依「職涯測驗報告資料庫」內容，針對你的荷倫碼前三高組合進行延伸解讀，提供更完整的個人化說明。')}
+    html+=`<div class="rpt-card">
+      <div class="pdf-avoid">${rptHead('📚',`荷倫碼深度報告｜${escapeHtml(code.code_title||'')}`,'依「職涯測驗報告資料庫」內容，針對你的荷倫碼前三高組合進行延伸解讀，提供更完整的個人化說明。')}</div>
       ${rptTextBlock('🔑 整體摘要',code.student_summary||code.one_sentence_summary)}
       ${rptTextBlock('🧬 人格特質分析',code.personality_analysis)}
       ${rptTextBlock('💼 工作風格',code.work_style)}
     </div>`;
-    let strengthsEnvJobs=`${rptListBlock('✅ 你的優勢',code.strengths,'c-green','💪')}${rptListBlock('🏞️ 適合的工作環境（參考）',code.suitable_environment,'c-blue','🏞️')}`;
-    if(isCounselor) strengthsEnvJobs+=`${rptListBlock('🧰 可考慮的職業方向',code.suitable_jobs,'c-purple','🧰')}${rptListBlock('⚠️ 需留意的風險',code.career_risks,'c-pink','⚠️')}`;
-    if(strengthsEnvJobs) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、環境與職業方向（參考）')}${strengthsEnvJobs}</div>`;
     if(isCounselor){
+      const strengthsEnvJobs=`${rptListBlock('✅ 你的優勢',code.strengths,'c-green','💪')}${rptListBlock('🏞️ 適合的工作環境（參考）',code.suitable_environment,'c-blue','🏞️')}${rptListBlock('🧰 可考慮的職業方向',code.suitable_jobs,'c-purple','🧰')}${rptListBlock('⚠️ 需留意的風險',code.career_risks,'c-pink','⚠️')}`;
+      if(strengthsEnvJobs) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、環境與職業方向（參考）')}${strengthsEnvJobs}</div>`;
       let extra=`${rptTextBlock('🌱 發展建議',code.development_advice)}${rptTextBlock('📝 報告段落',code.report_paragraph)}`;
       extra+=rptTextBlock('🧑‍💼 諮詢師解讀',code.counselor_interpretation);
       extra+=rptTextBlock('🔗 就業媒合建議',code.employment_matching_advice);
       extra+=rptTextBlock('📌 後續追蹤建議',code.follow_up_suggestion);
       extra+=rptListBlock('🛠️ 可遷移技能',code.transferable_skills,'c-teal','🛠️');
-      if(extra) html+=`<div class="rpt-card pdf-avoid">${rptHead('🌱','發展建議與報告段落（參考）')}${extra}</div>`;
+      if(extra) html+=`<div class="rpt-card"><div class="pdf-avoid">${rptHead('🌱','發展建議與報告段落（參考）')}</div>${extra}</div>`;
       if(code.counseling_questions && code.counseling_questions.length){
-        html+=`<div class="rpt-card pdf-avoid">${rptHead('❓','晤談切入問題（資料庫）')}${rptListBlock('',code.counseling_questions,'c-orange','❓')}</div>`;
+        html+=`<div class="rpt-card pdf-avoid">${rptHead('❓','晤談切入問題（參考）')}${rptListBlock('',code.counseling_questions,'c-orange','❓')}</div>`;
       }
     }
   }else{
@@ -961,7 +954,7 @@ function pdfHollandDbCardsV2(db,top3,isCounselor){
       const r=tr[x.type]; if(!r) return '';
       return `${rptTextBlock(`${x.meta.emoji} ${x.type}型｜${r.type_name||''}｜${r.role_title||''}`,r.core_traits)}${rptTextBlock('🌱 探索建議',r.exploration_advice)}${isCounselor?rptTextBlock('💼 工作風格',r.work_style):''}`;
     }).join('');
-    if(part1) html+=`<div class="rpt-card pdf-avoid">${rptHead('📚','荷倫碼深度報告（單碼解讀，資料庫）','此三碼組合尚未收錄專屬報告，以下提供前三高單碼的深度解讀。')}${part1}</div>`;
+    if(part1) html+=`<div class="rpt-card"><div class="pdf-avoid">${rptHead('📚','荷倫碼深度報告（單碼解讀，資料庫）','此三碼組合尚未收錄專屬報告，以下提供前三高單碼的深度解讀。')}</div>${part1}</div>`;
     if(isCounselor){
       const part2=top3.map(x=>{
         const r=tr[x.type]; if(!r) return '';
@@ -977,8 +970,8 @@ function pdfSuperDbCardV2(db,values,isCounselor){
   const rows=db.superValueReports;
   const ordered=values.slice(0,3).map(v=>rows.find(r=>r.value_code===v.id)).filter(Boolean);
   if(!ordered.length) return '';
-  return `<div class="rpt-card pdf-avoid">
-    ${rptHead('💎','SUPER 工作價值觀深度解讀（資料庫）','針對你前三高的工作價值觀，提供更完整的說明與諮詢建議。')}
+  return `<div class="rpt-card">
+    <div class="pdf-avoid">${rptHead('💎','SUPER 工作價值觀深度解讀（參考）','針對你前三高的工作價值觀，提供更完整的說明與諮詢建議。')}</div>
     ${ordered.map(r=>`${rptTextBlock(r.value_name,r.value_summary)}${rptTextBlock('🎯 工作需求',r.work_need)}${rptTextBlock('🏞️ 適合環境',r.suitable_environment)}${isCounselor?rptTextBlock('⚠️ 若未滿足',r.risk_if_unmet)+rptTextBlock('🧑‍💼 諮詢師提醒',r.counselor_note):''}`).join('')}
   </div>`;
 }
@@ -988,7 +981,6 @@ async function pdfCaseReportHtml(){
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
   const db=await fetchReportDbData(h,s);
   const hollandDb=pdfHollandDbCardsV2(db,top3,false);
-  const superDb=pdfSuperDbCardV2(db,values,false);
   return `<div class="pdf-safe rpt-doc">
     ${pdfHeaderV2('正式個案報告')}
     ${pdfRoleCardV2(h,role,top)}
@@ -998,8 +990,6 @@ async function pdfCaseReportHtml(){
     ${pdfSuperCardV2(s)}
     <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
     ${hollandDb}
-    ${superDb}
-    ${pdfFooterV2()}
   </div>`;
 }
 async function pdfCounselorReportHtml(){
@@ -1036,32 +1026,26 @@ function pdfFileName(type){
 }
 async function createPdfBlob(type='case'){
   if(!window.html2pdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
-  const app=document.querySelector('.app');
-  const prevDisplay=app?app.style.display:'';
   const el=document.createElement('div');
   el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();
   el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
   document.body.appendChild(el);
-  if(app) app.style.display='none';
   try{
     const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     return await html2pdf().set(opt).from(el).outputPdf('blob');
-  }finally{if(app) app.style.display=prevDisplay;el.remove();}
+  }finally{el.remove();}
 }
 function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob);});}
 async function downloadPdf(btn,type='case'){
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF產生中...';}
-  const app=document.querySelector('.app');
-  const prevDisplay=app?app.style.display:'';
   let el=null;
   try{
     if(!window.html2pdf){window.print();return;}
     el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
-    if(app) app.style.display='none';
     const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     await html2pdf().set(opt).from(el).save();toast('PDF 已產生');
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
-  finally{if(app) app.style.display=prevDisplay;if(el) el.remove();if(btn){btn.disabled=false;btn.textContent=old;}}
+  finally{if(el) el.remove();if(btn){btn.disabled=false;btn.textContent=old;}}
 }
 function buildResultRecord(h,s,fileName,status){
   const record={};

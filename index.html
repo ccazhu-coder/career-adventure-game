@@ -92,7 +92,7 @@
     .rpt-role-card .rpt-code{font-size:40px;font-weight:700;color:#6B4FC9;letter-spacing:.12em;margin:2px 0 8px}
     .rpt-role-card .rpt-desc{font-size:13px;color:#5C5380;line-height:1.8;margin-bottom:10px}
     .rpt-axis{display:flex;justify-content:space-between;font-size:10px;color:#B3ABD1;margin:2px 0 4px}
-    .rpt-bar-item{margin:9px 0}
+    .rpt-bar-item{margin:2px 0}
     .rpt-bar-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
     .rpt-bar-top .rpt-bar-label{color:#3F2E73}
     .rpt-bar-track{position:relative;height:13px;background:#F1EEF8;border-radius:999px;overflow:hidden}
@@ -381,7 +381,11 @@ function render(scrollMode){
   else if(current==="valley") renderValley(view);
   else if(current==="super") renderSuper(view);
   else renderResult(view);
-  if(scrollMode==='top') window.scrollTo({top:0,behavior:'smooth'});
+  if(scrollMode==='top'){
+    const target=view.querySelector('.quest-intro')||view;
+    const y=target.getBoundingClientRect().top+window.scrollY-12;
+    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  }
   else if(scrollMode!=='none') window.scrollTo(0,scrollY);
 }
 async function nextStep(){
@@ -910,9 +914,9 @@ function pdfCaseReportHtml(){
     ${pdfRoleCardV2(h,role,top)}
     ${pdfSummaryCardV2(top3,values)}
     ${pdfHexCardV2(h)}
-    ${pdfRiasecCardV2(h)}
+    <div class="rpt-pagebreak">${pdfRiasecCardV2(h)}</div>
     ${pdfSuperCardV2(s)}
-    ${pdfRankCardV2(top3,values)}
+    <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
     ${pdfFooterV2()}
   </div>`;
 }
@@ -1019,6 +1023,7 @@ function buildResultRecord(h,s,fileName,status){
   record['諮詢師報告撰寫方向']=counselorWritingDirections(h,s).join('\n');
   record['諮詢師晤談追問']=counselorInterviewQuestions(h,s).join('\n');
   record['諮詢師報告句型']=counselorProfessionalPhrases(h,s).join('\n');
+  record['可複製文字報告']=makeReport(h,s);
   record['PDF檔名']=fileName || pdfFileName();
   record['個案報告連結']='後台產生中';
   record['PDF寄送狀態']=status || '待寄送';
@@ -1053,7 +1058,13 @@ async function sendPdfToEmail(btn,silent=false){
     setEmailSendState('warn','PDF 產生與寄送中','系統正在產生正式 PDF，請不要關閉頁面。');
     const pdfBlob=await createPdfBlob();const pdfBase64=await blobToBase64(pdfBlob);const h=calcHolland(),s=calcSuper();
     const fileName=pdfFileName();
-    const payload={shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
+    let counselorPdfBase64='',counselorFileName='';
+    try{
+      const counselorBlob=await createPdfBlob('counselor');
+      counselorPdfBase64=await blobToBase64(counselorBlob);
+      counselorFileName=pdfFileName('counselor');
+    }catch(e){console.error('諮詢師報告 PDF 產生失敗',e);}
+    const payload={shortCode:getShortCode(),batchShortCode:getShortCode(),accessInfo,email:String(state.profile.email||'').trim(),name:String(state.profile.name||'學員').trim(),fileName,subject:'知己知途｜職涯探索冒險遊戲正式個案報告',pdfBase64,counselorPdfBase64,counselorFileName,reportText:makeReport(h,s),counselorReportText:makeCounselorReport(h,s),hollandCode:h.code,topValues:s.ranking.slice(0,2).map(v=>v.name).join('、'),sentAt:new Date().toISOString(),record:buildResultRecord(h,s,fileName,'待寄送')};
     const res=await fetch(SUBMIT_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(payload)});
     const data=await res.json().catch(()=>({}));
     if(!res.ok || data.ok===false) throw new Error(data.error || '寄送失敗，請稍後再試。');

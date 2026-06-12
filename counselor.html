@@ -52,7 +52,15 @@
     details.advisor-box{margin-top:8px}
     details.advisor-box summary{cursor:pointer;color:var(--green);font-weight:1000;margin-bottom:6px}
     .contact-card{margin-top:12px;background:#F1FAF4;border:1px solid #CFE8D7;border-radius:16px;padding:12px 14px;color:#1C473A;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.contact-card strong{display:block;color:#173F33}.contact-card span{font-size:13px;color:#49665A}.contact-card a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 12px;background:#173F33;color:#fff;text-decoration:none;font-weight:1000}.contact-card a.mail{background:#B8872E}
-    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid,.stats{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .left,.toolbar .right{display:grid;grid-template-columns:1fr;width:100%}.btn,input{width:100%}}
+    .batch-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .batch-actions{display:grid;gap:6px;min-width:92px}
+    .batch-actions .btn{width:100%;padding:8px 10px;font-size:13px}
+    .section-divider{margin:28px 0 0;border:0;border-top:1px dashed var(--line)}
+    .case-report{margin-top:8px;background:#F7F3EA;color:#17382F;border:1px solid var(--line);border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}
+    details.case-box{margin-top:8px}
+    details.case-box summary{cursor:pointer;color:var(--green);font-weight:1000;margin-bottom:6px}
+    @media(max-width:900px){.batch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid,.stats,.batch-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .left,.toolbar .right{display:grid;grid-template-columns:1fr;width:100%}.btn,input{width:100%}}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -89,13 +97,23 @@
     <div class="subhead">
       <div>
         <h2>我負責的批次</h2>
-        <p>以下為指派給您 Email 的施測批次，學員透過下方測驗連結進入測驗。</p>
+        <p>以下為指派給您 Email 的施測批次，學員透過下方測驗連結進入測驗。您可以自行新增、修改、啟用/停用批次。</p>
       </div>
     </div>
+    <div class="batch-grid">
+      <div class="field"><label>批次代號</label><input id="batchCode" placeholder="例如 LG260613"></div>
+      <div class="field"><label>批次名稱</label><input id="batchName" placeholder="例如 2026/06/13 鹿港場"></div>
+      <div class="field"><label>數量（0=不限）</label><input id="batchQuantity" type="number" min="0" value="30"></div>
+      <div class="field"><label>狀態</label><select id="batchStatus"><option>啟用</option><option>停用</option></select></div>
+      <div class="field"><label>開始時間</label><input id="batchStart" type="datetime-local"></div>
+      <div class="field"><label>結束時間</label><input id="batchEnd" type="datetime-local"></div>
+      <div class="field"><label>&nbsp;</label><button id="createBatchBtn" class="btn primary" onclick="createBatch()">建立批次短碼</button></div>
+    </div>
+    <div id="batchMsg" class="notice hidden"></div>
     <div class="table-wrap" style="margin-bottom:18px">
       <table>
         <thead>
-          <tr><th>批次代號</th><th>批次名稱</th><th>短碼</th><th>數量</th><th>已完成</th><th>時間</th><th>狀態</th><th>測驗連結</th></tr>
+          <tr><th>批次代號</th><th>批次名稱</th><th>短碼</th><th>數量</th><th>已完成</th><th>時間</th><th>狀態</th><th>測驗連結</th><th>管理</th></tr>
         </thead>
         <tbody id="batchRows"></tbody>
       </table>
@@ -104,7 +122,7 @@
     <div class="subhead">
       <div>
         <h2>學員資料</h2>
-        <p>僅顯示您負責批次的學員測驗結果，可下載 PDF、查看諮詢師專用分析。</p>
+        <p>僅顯示您負責批次的學員測驗結果，可下載個案／諮詢師 PDF、查看諮詢師專用分析與可複製文字報告。</p>
       </div>
     </div>
     <div class="stats">
@@ -148,6 +166,30 @@ function showMsg(id,msg,bad=false){
 function hideMsg(id){document.getElementById(id).classList.add("hidden");}
 function copyText(text,msgId){
   navigator.clipboard.writeText(text).then(()=>showMsg(msgId,"連結已複製。")).catch(()=>showMsg(msgId,"無法自動複製，請手動選取連結。",true));
+}
+function showHtmlMsg(id,html,kind=""){
+  const el=document.getElementById(id);
+  el.innerHTML=html;
+  el.className="notice"+(kind==="error"?" error":(kind==="success"?" success":""));
+  el.classList.remove("hidden");
+}
+function genShortCode(prefix){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s="";
+  for(let i=0;i<4;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  const p=String(prefix||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  return (p?p+"-":"")+s;
+}
+function toTimestamptz(localValue){
+  if(!localValue) return null;
+  return localValue.length===16 ? localValue+":00+08:00" : localValue+"+08:00";
+}
+function toLocalInput(tzValue){
+  if(!tzValue) return "";
+  const d=new Date(tzValue);
+  if(isNaN(d.getTime())) return "";
+  const tz=new Date(d.getTime()+8*3600*1000);
+  return tz.toISOString().slice(0,16);
 }
 
 // ------------------------------------------------------------
@@ -205,8 +247,101 @@ function renderBatches(){
       <td><span class="pill">${esc(b.status)}</span></td>
       <td><a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a>
         <br><button class="btn" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="copyText('${escAttr(link)}','adminMsg')">複製連結</button></td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="editBatch('${escAttr(b.id)}')">修改</button>
+        <button class="btn" onclick="setBatchStatus('${escAttr(b.id)}','啟用')">啟用</button>
+        <button class="btn" onclick="setBatchStatus('${escAttr(b.id)}','停用')">停用</button>
+        <button class="btn danger" onclick="deleteBatch('${escAttr(b.id)}')">刪除</button>
+      </div></td>
     </tr>`;
-  }).join("") || `<tr><td colspan="8" class="muted">目前沒有指派給您的批次。</td></tr>`;
+  }).join("") || `<tr><td colspan="9" class="muted">目前沒有指派給您的批次，可使用上方表單建立。</td></tr>`;
+}
+function findBatch(id){return allBatches.find(b=>String(b.id)===String(id))||null;}
+async function createBatch(){
+  hideMsg("batchMsg");
+  const btn=document.getElementById("createBatchBtn");
+  const batchCode=document.getElementById("batchCode").value.trim();
+  const batchName=document.getElementById("batchName").value.trim();
+  const quantity=parseInt(document.getElementById("batchQuantity").value,10)||0;
+  const startTime=toTimestamptz(document.getElementById("batchStart").value);
+  const endTime=toTimestamptz(document.getElementById("batchEnd").value);
+  const status=document.getElementById("batchStatus").value;
+  const missing=[];
+  if(!batchCode) missing.push("批次代號");
+  if(!batchName) missing.push("批次名稱");
+  if(missing.length){
+    showHtmlMsg("batchMsg",`<strong>尚未建立批次</strong><br>請先補齊：${missing.map(esc).join("、")}。`,"error");
+    return;
+  }
+  if(btn){btn.disabled=true;btn.textContent="建立中...";}
+  try{
+    let lastErr=null;
+    for(let i=0;i<5;i++){
+      const shortCode=genShortCode(batchCode);
+      const {data,error}=await sb.from("batches").insert({
+        batch_code:batchCode,batch_name:batchName,short_code:shortCode,quantity,
+        start_time:startTime,end_time:endTime,counselor_email:counselorEmail,status
+      }).select("*").single();
+      if(!error){
+        const link=SITE_BASE_URL+"?c="+encodeURIComponent(data.short_code);
+        showHtmlMsg("batchMsg",`<strong>建立成功</strong><br>短碼：<span class="code">${esc(data.short_code)}</span><br>測驗連結：<a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a><br><button class="btn" style="margin-top:8px" onclick="copyText('${escAttr(link)}','batchMsg')">複製測驗連結</button>`,"success");
+        document.getElementById("batchCode").value="";
+        document.getElementById("batchName").value="";
+        await loadBatches();
+        lastErr=null;
+        break;
+      }
+      lastErr=error;
+      if(error.code!=="23505") break; // 非短碼重複，直接跳出
+    }
+    if(lastErr) throw new Error(lastErr.message);
+  }catch(err){
+    showHtmlMsg("batchMsg",`<strong>建立失敗</strong><br>${esc(err.message||"請稍後再試")}`,"error");
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent="建立批次短碼";}
+  }
+}
+async function editBatch(id){
+  const b=findBatch(id);
+  if(!b){showMsg("batchMsg","找不到此批次，請重新整理。",true);return;}
+  const batchName=prompt("批次名稱",b.batch_name||"");
+  if(batchName===null) return;
+  const quantity=prompt("數量（0=不限）",b.quantity??0);
+  if(quantity===null) return;
+  const startLocal=prompt("開始時間（格式 2026-06-13T08:00，留空=不限）",toLocalInput(b.start_time));
+  if(startLocal===null) return;
+  const endLocal=prompt("結束時間（格式 2026-06-15T18:00，留空=不限）",toLocalInput(b.end_time));
+  if(endLocal===null) return;
+  await updateBatch(id,{
+    batch_name:batchName,
+    quantity:parseInt(quantity,10)||0,
+    start_time:toTimestamptz(startLocal.trim()),
+    end_time:toTimestamptz(endLocal.trim())
+  });
+}
+async function setBatchStatus(id,status){
+  await updateBatch(id,{status});
+}
+async function updateBatch(id,patch){
+  hideMsg("batchMsg");
+  showHtmlMsg("batchMsg","<strong>正在更新批次...</strong>","");
+  const {error}=await sb.from("batches").update(patch).eq("id",id);
+  if(error){showHtmlMsg("batchMsg",`<strong>更新失敗</strong><br>${esc(error.message)}`,"error");return;}
+  showHtmlMsg("batchMsg","<strong>更新成功</strong>","success");
+  await loadBatches();
+}
+async function deleteBatch(id){
+  const b=findBatch(id);
+  if(!b){showMsg("batchMsg","找不到此批次，請重新整理。",true);return;}
+  if(!confirm(`確定要刪除批次 ${b.batch_code||""} / 短碼 ${b.short_code||""}？`)) return;
+  hideMsg("batchMsg");
+  const {error}=await sb.from("batches").delete().eq("id",id);
+  if(error){
+    showHtmlMsg("batchMsg","<strong>刪除失敗</strong><br>此批次已有學員資料，無法刪除，請改為「停用」。","error");
+    return;
+  }
+  showHtmlMsg("batchMsg","<strong>已刪除</strong>","success");
+  await loadBatches();
 }
 
 // ------------------------------------------------------------
@@ -233,8 +368,11 @@ function renderRows(){
   document.getElementById("rows").innerHTML=rows.map(r=>{
     const valueTop=Array.isArray(r.value_top)?r.value_top.join("、"):"";
     const advisorReport=r.counselor_report||"";
+    const caseReportText=r.case_report_text||"";
     const reportId=`advisorReport_${escAttr(r.id)}`;
+    const caseTextId=`caseReportText_${escAttr(r.id)}`;
     const hasPdf=!!r.pdf_path;
+    const hasCounselorPdf=!!r.counselor_pdf_path;
     return `<tr>
       <td>${esc(fmtTime(r.created_at))}</td>
       <td><strong>${esc(r.name)}</strong></td>
@@ -246,9 +384,12 @@ function renderRows(){
       <td>${esc(r.complete_pct)}%</td>
       <td>${esc(r.pdf_send_status||"")}</td>
       <td>
-        <button class="btn gold" style="${hasPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.pdf_path||"")}','${escAttr(r.pdf_filename||"報告.pdf")}')">下載 PDF</button>
-        <button class="btn" style="margin-top:6px;${advisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyAdvisorReport('${reportId}')">複製諮詢建議</button>
+        <button class="btn gold" style="${hasPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.pdf_path||"")}','${escAttr(r.pdf_filename||"報告.pdf")}')">下載個案報告</button>
+        <button class="btn gold" style="margin-top:6px;${hasCounselorPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.counselor_pdf_path||"")}','${escAttr(r.counselor_pdf_filename||"諮詢師報告.pdf")}')">下載諮詢報告</button>
+        <button class="btn" style="margin-top:6px;${advisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyBoxText('${reportId}','adminMsg')">複製諮詢建議</button>
         ${advisorReport?`<details class="advisor-box"><summary>查看諮詢師專用分析</summary><div id="${reportId}" class="advisor-report">${esc(advisorReport)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無諮詢分析</div>`}
+        <button class="btn" style="margin-top:6px;${caseReportText?"":"opacity:.55;pointer-events:none"}" onclick="copyBoxText('${caseTextId}','adminMsg')">複製文字報告</button>
+        ${caseReportText?`<details class="case-box"><summary>查看可複製文字報告</summary><div id="${caseTextId}" class="case-report">${esc(caseReportText)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無文字報告</div>`}
       </td>
     </tr>`;
   }).join("") || `<tr><td colspan="10" class="muted">目前沒有資料。</td></tr>`;
@@ -259,10 +400,10 @@ async function downloadPdf(path,filename){
   if(error){showMsg("adminMsg","取得 PDF 連結失敗："+error.message,true);return;}
   window.open(data.signedUrl,"_blank");
 }
-function copyAdvisorReport(id){
-  const text=document.getElementById(id)?.innerText||"";
-  if(!text){showMsg("adminMsg","這筆資料尚無諮詢師專用分析。",true);return;}
-  navigator.clipboard.writeText(text).then(()=>showMsg("adminMsg","已複製諮詢師專用分析。")).catch(()=>showMsg("adminMsg","無法自動複製，請手動選取文字。",true));
+function copyBoxText(id,msgId){
+  const text=document.getElementById(id)?.textContent||"";
+  if(!text){showMsg(msgId,"這筆資料尚無可複製的內容。",true);return;}
+  navigator.clipboard.writeText(text).then(()=>showMsg(msgId,"已複製內容。")).catch(()=>showMsg(msgId,"無法自動複製，請手動選取文字。",true));
 }
 
 // ------------------------------------------------------------

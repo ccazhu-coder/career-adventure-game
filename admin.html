@@ -460,6 +460,7 @@ function renderSubmissions(){
     const advisorReport=r.counselor_report||"";
     const reportId=`advisorReport_${escAttr(r.id)}`;
     const hasPdf=!!r.pdf_path;
+    const hasCounselorPdf=!!r.counselor_pdf_path;
     return `<tr>
       <td>${esc(fmtTime(r.created_at))}</td>
       <td><strong>${esc(r.name)}</strong></td>
@@ -472,6 +473,7 @@ function renderSubmissions(){
       <td>${esc(r.pdf_send_status||"")}</td>
       <td>
         <button class="btn gold" style="${hasPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.pdf_path||"")}','${escAttr(r.pdf_filename||"報告.pdf")}')">下載 PDF</button>
+        <button class="btn gold" style="margin-top:6px;${hasCounselorPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.counselor_pdf_path||"")}','${escAttr(r.counselor_pdf_filename||"諮詢師報告.pdf")}')">下載諮詢報告</button>
         <button class="btn" style="margin-top:6px;${advisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyAdvisorReport('${reportId}')">複製諮詢建議</button>
         ${advisorReport?`<details class="advisor-box"><summary>查看諮詢師專用分析</summary><div id="${reportId}" class="advisor-report">${esc(advisorReport)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無諮詢分析</div>`}
       </td>

@@ -71,6 +71,74 @@
     @media print{.pdf-safe{width:170mm!important;max-width:170mm!important;padding:0!important;margin:0 auto!important;overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-safe *{overflow-wrap:anywhere!important;word-break:break-word!important}.pdf-avoid{break-inside:avoid!important;page-break-inside:avoid!important}}
     details.type-card.just-done{border-color:#2F9C70;box-shadow:0 0 0 3px rgba(47,156,112,.18),0 14px 30px rgba(48,77,62,.10);background:linear-gradient(180deg,#F2FBF5,#fff)}details.type-card.just-done .count-chip{background:#E3F6EA;border-color:#9FDDB7;color:#1E6B47}
     @media(max-width:900px){.access-grid{grid-template-columns:1fr}.mission-map{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    /* 報告 v2（紫色主題：個案／諮詢師報告）*/
+    .rpt-doc{font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#3F2E73;width:170mm;max-width:170mm;margin:0 auto;padding:0;line-height:1.6;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word}
+    .rpt-header{border-bottom:4px solid #6B4FC9;padding-bottom:12px;margin-bottom:14px;max-width:100%}
+    .rpt-header .rpt-header-top{font-size:12px;color:#9B8FC4;font-weight:700}
+    .rpt-header h1{margin:6px 0 8px;font-size:24px;color:#3F2E73;line-height:1.3;text-align:center;overflow-wrap:anywhere}
+    .rpt-header .rpt-header-meta{font-size:12px;color:#6C7A72;display:flex;flex-wrap:wrap;gap:14px}
+    .rpt-card{background:#fff;border:1px solid #E6E1F7;border-radius:18px;padding:14px 16px;margin-bottom:12px;max-width:100%}
+    .rpt-head{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+    .rpt-head .rpt-icon{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#9B8AF0,#6B4FC9);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex:0 0 34px}
+    .rpt-head h3{margin:0;font-size:16px;color:#3F2E73}
+    .rpt-sub{font-size:11px;color:#8A81A8;margin:4px 0 10px}
+    .rpt-text{font-size:13px;color:#4B4470;line-height:1.85}
+    .rpt-pill{display:inline-flex;align-items:center;background:#F1ECFB;border:1px solid #E3DBF7;border-radius:999px;padding:4px 10px;font-size:12px;color:#5C5380;margin:2px 4px 0 0}
+    .rpt-pill b{color:#3F2E73;margin-right:3px}
+    .rpt-role-card{background:linear-gradient(135deg,#F1ECFB,#FBF9FF);border:1px solid #E3DBF7;border-radius:20px;padding:16px;margin-bottom:12px;max-width:100%}
+    .rpt-role-card .rpt-tag{display:inline-flex;align-items:center;gap:6px;background:#6B4FC9;color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;margin-bottom:10px}
+    .rpt-role-card .rpt-role-name{font-size:22px;font-weight:700;color:#3F2E73;line-height:1.25;margin:2px 0}
+    .rpt-role-card .rpt-code{font-size:40px;font-weight:700;color:#6B4FC9;letter-spacing:.12em;margin:2px 0 8px}
+    .rpt-role-card .rpt-desc{font-size:13px;color:#5C5380;line-height:1.8;margin-bottom:10px}
+    .rpt-axis{display:flex;justify-content:space-between;font-size:10px;color:#B3ABD1;margin:2px 0 4px}
+    .rpt-bar-item{margin:9px 0}
+    .rpt-bar-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
+    .rpt-bar-top .rpt-bar-label{color:#3F2E73}
+    .rpt-bar-track{position:relative;height:13px;background:#F1EEF8;border-radius:999px;overflow:hidden}
+    .rpt-bar-fill{height:100%;border-radius:999px}
+    .rpt-bar-score{flex:0 0 auto;border-radius:999px;padding:1px 10px;font-size:11px;font-weight:700;border:1px solid currentColor}
+    .rpt-judge-card{background:linear-gradient(135deg,#F4F1FC,#FBF9FF);border:1px solid #E3DBF7;border-radius:18px;padding:16px;margin-bottom:12px;max-width:100%}
+    .rpt-judge-row{display:flex;align-items:flex-start;gap:10px;margin:9px 0}
+    .rpt-judge-row .rpt-judge-icon{flex:0 0 32px;height:32px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 6px rgba(107,79,201,.15)}
+    .rpt-judge-row b{display:block;color:#3F2E73;font-size:13px;margin-bottom:2px}
+    .rpt-judge-row span{display:block;color:#5C5380;font-size:12px;line-height:1.75}
+    .rpt-judge-foot{margin-top:8px;padding-top:10px;border-top:1px dashed #DCD2F5;font-size:12px;color:#6B4FC9;line-height:1.75}
+    .rpt-rank-group-head{display:flex;align-items:center;gap:8px;margin:4px 0 8px;font-weight:700;color:#3F2E73;font-size:13px}
+    .rpt-rank-row{display:flex;align-items:stretch;margin:6px 0;border:1px solid #ECE8F8;border-radius:12px;overflow:hidden;background:#FBFAFF}
+    .rpt-rank-row.gold{border-color:#F6E6CC;background:#FFFBF6}
+    .rpt-rank-num{flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;background:linear-gradient(135deg,#9B8AF0,#6B4FC9)}
+    .rpt-rank-row.gold .rpt-rank-num{background:linear-gradient(135deg,#F0B860,#E0954C)}
+    .rpt-rank-icon{flex:0 0 32px;display:flex;align-items:center;justify-content:center;font-size:15px}
+    .rpt-rank-body{flex:1 1 auto;padding:7px 6px;min-width:0}
+    .rpt-rank-body b{display:block;color:#3F2E73;font-size:12.5px}
+    .rpt-rank-body span{display:block;color:#8A81A8;font-size:11px;margin-top:2px;line-height:1.5}
+    .rpt-rank-score{flex:0 0 52px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#6B4FC9;font-size:13px;border-left:1px solid #ECE8F8}
+    .rpt-rank-row.gold .rpt-rank-score{color:#C97A30;border-left-color:#F6E6CC}
+    .rpt-num-card{display:flex;align-items:flex-start;gap:12px;border:1px solid #ECE8F8;border-radius:16px;padding:12px 14px;margin:8px 0;position:relative}
+    .rpt-num-card .rpt-num-icon{flex:0 0 36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff}
+    .rpt-num-badge{position:absolute;top:8px;right:10px;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.18);border-radius:999px;padding:2px 8px}
+    .rpt-num-card .rpt-num-text{font-size:12.5px;color:#3F2E73;line-height:1.8;padding-top:6px}
+    .rpt-num-card.c-purple{border-left:4px solid #8B6CD6}.rpt-num-card.c-purple .rpt-num-icon{background:linear-gradient(135deg,#9B8AF0,#6B4FC9)}
+    .rpt-num-card.c-blue{border-left:4px solid #4C9CE0}.rpt-num-card.c-blue .rpt-num-icon{background:linear-gradient(135deg,#6FB6F0,#2F7AC0)}
+    .rpt-num-card.c-green{border-left:4px solid #5CB87E}.rpt-num-card.c-green .rpt-num-icon{background:linear-gradient(135deg,#7FD49C,#4FA060)}
+    .rpt-num-card.c-orange{border-left:4px solid #F0A050}.rpt-num-card.c-orange .rpt-num-icon{background:linear-gradient(135deg,#F8C98A,#E0823C)}
+    .rpt-num-card.c-pink{border-left:4px solid #E87CAE}.rpt-num-card.c-pink .rpt-num-icon{background:linear-gradient(135deg,#F5A8CC,#E0507F)}
+    .rpt-num-card.c-teal{border-left:4px solid #4CAEB8}.rpt-num-card.c-teal .rpt-num-icon{background:linear-gradient(135deg,#7FDCE0,#2F8A93)}
+    .rpt-action-card{border:1px solid #ECE8F8;border-radius:16px;padding:12px 14px;margin:8px 0;display:flex;gap:12px;align-items:flex-start;position:relative}
+    .rpt-action-card .rpt-action-icon{flex:0 0 36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff}
+    .rpt-action-card .rpt-action-body{flex:1 1 auto;min-width:0}
+    .rpt-action-card .rpt-action-label{font-size:11px;font-weight:700;margin-bottom:4px}
+    .rpt-action-card .rpt-action-text{font-size:12.5px;color:#3F2E73;line-height:1.8}
+    .rpt-action-card.c-purple .rpt-action-icon{background:linear-gradient(135deg,#9B8AF0,#6B4FC9)}.rpt-action-card.c-purple .rpt-action-label{color:#6B4FC9}
+    .rpt-action-card.c-blue .rpt-action-icon{background:linear-gradient(135deg,#6FB6F0,#2F7AC0)}.rpt-action-card.c-blue .rpt-action-label{color:#2F7AC0}
+    .rpt-action-card.c-green .rpt-action-icon{background:linear-gradient(135deg,#7FD49C,#4FA060)}.rpt-action-card.c-green .rpt-action-label{color:#4FA060}
+    .rpt-action-card.c-orange .rpt-action-icon{background:linear-gradient(135deg,#F8C98A,#E0823C)}.rpt-action-card.c-orange .rpt-action-label{color:#E0823C}
+    .rpt-notice-card{background:linear-gradient(135deg,#FFF8E8,#FFFDF8);border:1px solid #F6E0A8;border-radius:18px;padding:16px;margin-bottom:12px;max-width:100%}
+    .rpt-notice-card .rpt-head .rpt-icon{background:linear-gradient(135deg,#F5BD5C,#E89B30)}
+    .rpt-notice-row{display:flex;align-items:flex-start;gap:10px;margin:10px 0}
+    .rpt-notice-row .rpt-notice-icon{flex:0 0 32px;height:32px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+    .rpt-notice-row span{font-size:12px;color:#6B501E;line-height:1.85}
+    .rpt-foot{margin-top:6px;font-size:11px;color:#9B8FC4;border-top:1px solid #E6E1F7;padding-top:10px}
 
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -488,16 +556,29 @@ function maxScore(obj){return Math.max(...Object.values(obj),1);}
 function hollandTypeMax(t){return DATA.hollandSections.reduce((sum,sec)=>sum + ((sec.types[t]||[]).length),0) + 14;}
 function hexPolygonPoints(cx,cy,r){return ['R','I','A','S','E','C'].map((_,idx)=>{const a=(-90+idx*60)*Math.PI/180;return `${(cx+Math.cos(a)*r).toFixed(1)},${(cy+Math.sin(a)*r).toFixed(1)}`;}).join(' ');}
 function hollandHexScorePoints(scores,cx,cy,r){return ['R','I','A','S','E','C'].map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const pct=Math.max(0,Math.min(1,(scores[t]||0)/hollandTypeMax(t)));const rr=r*pct;return `${(cx+Math.cos(a)*rr).toFixed(1)},${(cy+Math.sin(a)*rr).toFixed(1)}`;}).join(' ');}
+const RPT_TYPE_COLORS={
+  R:{from:'#6FB6F0',to:'#3F7FC9',text:'#2F6CB0'},
+  I:{from:'#B0A0F5',to:'#7C5CD9',text:'#6B4FC9'},
+  A:{from:'#F5A8CC',to:'#E06CA0',text:'#D6549A'},
+  S:{from:'#8FDCAE',to:'#4FA866',text:'#3F9456'},
+  E:{from:'#F8C98A',to:'#E0954C',text:'#D6863C'},
+  C:{from:'#8AD8DC',to:'#4CAEB8',text:'#3F9CA6'}
+};
+const RPT_SUPER_COLOR={from:'#B0A0F5',to:'#6B4FC9',text:'#6B4FC9'};
 function renderHollandHexSvg(scores,opt={}){
   const size=opt.size||380,cx=size/2,cy=size/2,r=size*.29,order=['R','I','A','S','E','C'];
   const levels=[1,.75,.5,.25];
-  const grid=levels.map(level=>`<polygon points="${hexPolygonPoints(cx,cy,r*level)}" fill="none" stroke="#E7DCC7" stroke-width="${level===1?1.8:1}"/>`).join('');
-  const axes=order.map((_,idx)=>{const a=(-90+idx*60)*Math.PI/180;return `<line x1="${cx}" y1="${cy}" x2="${(cx+Math.cos(a)*r).toFixed(1)}" y2="${(cy+Math.sin(a)*r).toFixed(1)}" stroke="#DCCFB9" stroke-width="1.2"/>`;}).join('');
-  const dataPoly=`<polygon points="${hollandHexScorePoints(scores,cx,cy,r)}" fill="rgba(46,107,85,.20)" stroke="#173F33" stroke-width="3"/>`;
-  const dots=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const pct=Math.max(0,Math.min(1,(scores[t]||0)/hollandTypeMax(t)));const rr=r*pct;return `<circle cx="${(cx+Math.cos(a)*rr).toFixed(1)}" cy="${(cy+Math.sin(a)*rr).toFixed(1)}" r="5.5" fill="#B8872E" stroke="#FFFDF8" stroke-width="2"/>`;}).join('');
-  const labels=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const meta=DATA.riasec[t];const lx=cx+Math.cos(a)*(r+30),ly=cy+Math.sin(a)*(r+30);const anchor=Math.cos(a)>0.35?'start':(Math.cos(a)<-0.35?'end':'middle');const boxX=anchor==='start'?lx-4:(anchor==='end'?lx-74:lx-39);const boxY=ly-25;return `<g><rect x="${boxX.toFixed(1)}" y="${boxY.toFixed(1)}" width="78" height="56" rx="13" fill="#FFFDF8" stroke="#DCCFB9"/><text x="${lx.toFixed(1)}" y="${(ly-7).toFixed(1)}" text-anchor="${anchor}" font-size="14" font-weight="900" fill="#173F33">${meta.emoji} ${t}</text><text x="${lx.toFixed(1)}" y="${(ly+9).toFixed(1)}" text-anchor="${anchor}" font-size="11" fill="#53665C">${meta.name}</text><text x="${lx.toFixed(1)}" y="${(ly+24).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="800" fill="#B8872E">${scores[t]||0}/${hollandTypeMax(t)}</text></g>`;}).join('');
-  const ticks=levels.map(level=>`<text x="${(cx+6).toFixed(1)}" y="${(cy-r*level+14).toFixed(1)}" font-size="10" fill="#8A826F">${Math.round(level*100)}%</text>`).join('');
-  return `<svg class="hex-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-label="荷倫六角型圖"><rect x="0" y="0" width="${size}" height="${size}" rx="26" fill="#FCFAF4"/>${grid}${axes}${ticks}${dataPoly}${dots}<circle cx="${cx}" cy="${cy}" r="4" fill="#173F33"/>${labels}</svg>`;
+  const purple=opt.theme==='purple';
+  const c=purple
+    ?{grid:'#E6E0F7',axis:'#E6E0F7',poly:'rgba(107,79,201,.16)',polyStroke:'#6B4FC9',dot:'#6B4FC9',dotStroke:'#FBF9FF',labelBox:'#FBF9FF',labelBorder:'#E3DBF7',labelMain:'#3F2E73',labelSub:'#8A81A8',labelScore:'#6B4FC9',center:'#6B4FC9',tick:'#B3ABD1',bg:'#FCFBFF'}
+    :{grid:'#E7DCC7',axis:'#DCCFB9',poly:'rgba(46,107,85,.20)',polyStroke:'#173F33',dot:'#B8872E',dotStroke:'#FFFDF8',labelBox:'#FFFDF8',labelBorder:'#DCCFB9',labelMain:'#173F33',labelSub:'#53665C',labelScore:'#B8872E',center:'#173F33',tick:'#8A826F',bg:'#FCFAF4'};
+  const grid=levels.map(level=>`<polygon points="${hexPolygonPoints(cx,cy,r*level)}" fill="none" stroke="${c.grid}" stroke-width="${level===1?1.8:1}"/>`).join('');
+  const axes=order.map((_,idx)=>{const a=(-90+idx*60)*Math.PI/180;return `<line x1="${cx}" y1="${cy}" x2="${(cx+Math.cos(a)*r).toFixed(1)}" y2="${(cy+Math.sin(a)*r).toFixed(1)}" stroke="${c.axis}" stroke-width="1.2"/>`;}).join('');
+  const dataPoly=`<polygon points="${hollandHexScorePoints(scores,cx,cy,r)}" fill="${c.poly}" stroke="${c.polyStroke}" stroke-width="3"/>`;
+  const dots=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const pct=Math.max(0,Math.min(1,(scores[t]||0)/hollandTypeMax(t)));const rr=r*pct;return `<circle cx="${(cx+Math.cos(a)*rr).toFixed(1)}" cy="${(cy+Math.sin(a)*rr).toFixed(1)}" r="5.5" fill="${c.dot}" stroke="${c.dotStroke}" stroke-width="2"/>`;}).join('');
+  const labels=order.map((t,idx)=>{const a=(-90+idx*60)*Math.PI/180;const meta=DATA.riasec[t];const lx=cx+Math.cos(a)*(r+30),ly=cy+Math.sin(a)*(r+30);const anchor=Math.cos(a)>0.35?'start':(Math.cos(a)<-0.35?'end':'middle');const boxX=anchor==='start'?lx-4:(anchor==='end'?lx-74:lx-39);const boxY=ly-25;return `<g><rect x="${boxX.toFixed(1)}" y="${boxY.toFixed(1)}" width="78" height="56" rx="13" fill="${c.labelBox}" stroke="${c.labelBorder}"/><text x="${lx.toFixed(1)}" y="${(ly-7).toFixed(1)}" text-anchor="${anchor}" font-size="14" font-weight="700" fill="${c.labelMain}">${meta.emoji} ${t}</text><text x="${lx.toFixed(1)}" y="${(ly+9).toFixed(1)}" text-anchor="${anchor}" font-size="11" fill="${c.labelSub}">${meta.name}</text><text x="${lx.toFixed(1)}" y="${(ly+24).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="${c.labelScore}">${scores[t]||0}/${hollandTypeMax(t)}</text></g>`;}).join('');
+  const ticks=levels.map(level=>`<text x="${(cx+6).toFixed(1)}" y="${(cy-r*level+14).toFixed(1)}" font-size="10" fill="${c.tick}">${Math.round(level*100)}%</text>`).join('');
+  return `<svg class="hex-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-label="荷倫六角型圖"><rect x="0" y="0" width="${size}" height="${size}" rx="26" fill="${c.bg}"/>${grid}${axes}${ticks}${dataPoly}${dots}<circle cx="${cx}" cy="${cy}" r="4" fill="${c.center}"/>${labels}</svg>`;
 }
 function careerRoleTitle(h,s){
   const top=h.ranking[0]||{type:'',meta:{role:'職涯探索者'}};
@@ -545,6 +626,19 @@ function explorationFocus(h,s){
     '想想你的高分職涯類型，目前是「真的做過、有成就感」，還是「只是聽起來很嚮往」，避免把想像誤判成已具備的能力。',
     '把你的高分工作價值觀拿來對照未來想投入的工作條件，找出適合與可能落差的地方。'
   ];
+}
+function counselorJudgment(h,s){
+  const top3=h.ranking.slice(0,3);
+  const axis=`${top3.map(x=>`${x.type}型 ${x.meta.name}`).join(' → ')}。可優先往這三型交會的任務、職務或學習方向探索。`;
+  const maxV=s.ranking[0]?.score ?? 0;
+  const topVals=s.ranking.filter(v=>v.score===maxV).map(v=>v.name);
+  const motivation=`${topVals.join('、')} 分數最高，代表選擇工作時最容易影響投入度與滿意度。`;
+  const minV=s.low[0]?.score ?? 0;
+  const lowVals=s.low.filter(v=>v.score===minV).map(v=>v.name);
+  const lowPriority=`${lowVals.join('、')} 目前分數較低，諮詢時可追問是否真的不重要，或只是現階段尚未被滿足。`;
+  const tips='六角型上相鄰類型通常較容易整合；若對角類型同時很高，代表可能需要兼具兩種不同工作情境，建議做職務拆解。';
+  const footnote='結合優勢主軸 × 工作動機 × 判讀技巧，能更全面掌握個案的職涯方向與興趣。';
+  return {axis,motivation,lowPriority,tips,footnote};
 }
 function counselorCaseSummary(h,s){
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,3);
@@ -646,7 +740,7 @@ function renderResult(view){
   <div class="treasure-grid report-section"><div class="treasure-card"><h3>適合的工作環境</h3><ul>${env.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>可能卡住的地方</h3><ul>${blocks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>延伸探索重點</h3><ul>${focus.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div><div class="treasure-card"><h3>下一步行動建議</h3><ul>${actionsList.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div></div>
   <h3 class="report-section">可複製文字報告</h3><div class="report-box" id="reportText">${escapeHtml(report)}</div>
   <div id="emailSendStatus" class="email-send-box ${emailSendState.kind}">${emailSendStatusHtml()}<div class="case-link">完成寄送後，請到信箱查看專屬 PDF 報告；若未收到，請先檢查垃圾信件。</div></div>
-  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回價值羅盤</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this)">下載 PDF 報告</button><button class="btn primary" onclick="sendPdfToEmail(this,false)" ${submissionDone?'disabled':''}>${submissionDone?'PDF 已寄送 ✓':'寄送 PDF 到 Email'}</button><button class="btn danger" onclick="resetGame()">重新冒險</button></div></div>`;
+  <div class="actions"><div class="left"><button class="btn ghost" onclick="prevStep()">← 回價值羅盤</button></div><div class="right"><button class="btn gold" onclick="copyReport()">複製報告</button><button class="btn ghost" onclick="downloadPdf(this,'case')">下載個案報告 PDF</button><button class="btn ghost" onclick="downloadPdf(this,'counselor')">下載諮詢師報告 PDF</button><button class="btn primary" onclick="sendPdfToEmail(this,false)" ${submissionDone?'disabled':''}>${submissionDone?'PDF 已寄送 ✓':'寄送 PDF 到 Email'}</button><button class="btn danger" onclick="resetGame()">重新冒險</button></div></div>`;
   if(complete) celebrateMissionIfDone('result',false);
   scheduleAutoEmailSend(complete);
 }
@@ -685,88 +779,184 @@ function makeReport(h,s){
   return lines.join('\n');
 }
 
-function pdfReportHtml(){
-  const h=calcHolland(), s=calcSuper();
-  const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-'}};
-  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
-  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=explorationFocus(h,s), actionsList=nextActionAdvice(h,s);
-  const pdfBar=(label,score,max)=>{
-    const pct=Math.min(100,Math.round(score/max*100));
-    return `<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:12px;"><div style="flex:0 0 130px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(label)}</div><div style="flex:1 1 auto;height:12px;background:#F0E8D8;border-radius:999px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#173F33,#2E6B55,#B8872E);"></div></div><div style="flex:0 0 36px;text-align:right;font-weight:700;">${score}</div></div>`;
-  };
-  return `<div class="pdf-safe" style="font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#1F2F29;width:170mm;max-width:170mm;margin:0 auto;padding:0;line-height:1.58;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word;">
-    <div style="border-bottom:4px solid #173F33;padding-bottom:12px;margin-bottom:14px;max-width:100%;">
-      <div style="font-size:13px;color:#7A6A4D;font-weight:700;">知己知途｜職涯探索冒險遊戲｜正式個案報告</div>
-      <h1 style="margin:6px 0 4px;font-size:23px;color:#173F33;line-height:1.25;overflow-wrap:anywhere;">${escapeHtml(state.profile.name || '學員')} 的職涯神殿報告</h1>
-      <div style="font-size:12px;color:#6C7A72;">Email：${escapeHtml(state.profile.email || '')}｜日期：${escapeHtml(state.profile.date || '')}<br>任務序號：${escapeHtml(accessInfo.serial || '未提供')}</div>
-    </div>
-    <div class="pdf-avoid" style="background:#F6F1E5;border:1px solid #DED2B8;border-radius:16px;padding:14px;max-width:100%;margin-bottom:12px;">
-      <div style="font-size:14px;color:#6C7A72;font-weight:700;">職涯角色卡</div>
-      <div style="font-size:26px;font-weight:700;color:#173F33;line-height:1.2;margin:5px 0;">${escapeHtml(role)}</div>
-      <div style="font-size:38px;font-weight:700;color:#B8872E;letter-spacing:.1em;">${escapeHtml(h.code || '---')}</div>
-      <div style="font-weight:700;">主型：${escapeHtml(top.type)} 型｜${escapeHtml(top.meta.name)}｜${escapeHtml(top.meta.role)}</div>
-    </div>
-    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
-      <div style="font-size:16px;font-weight:700;color:#173F33;margin-bottom:6px;">報告摘要</div>
-      <div style="font-size:13px;color:#3F4F47;line-height:1.85;">你的結果顯示，職涯能量以 <strong>${top3.map(x=>x.type+'型'+x.meta.name).join('、')}</strong> 為主軸；在選擇工作時，最需要留意 <strong>${values.slice(0,5).map(v=>v.name).join('、')}</strong> 是否被滿足。</div>
-    </div>
-    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
-      <div style="font-size:16px;font-weight:700;color:#173F33;margin-bottom:6px;">何倫碼六角型圖</div>
-      <div style="display:flex;justify-content:center;max-width:100%;">${renderHollandHexSvg(h.scores,{size:400})}</div>
-    </div>
-    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
-      <div style="font-size:16px;font-weight:700;color:#173F33;margin-bottom:6px;">RIASEC 六型分數</div>
-      ${TYPES.map(t=>pdfBar(`${DATA.riasec[t].emoji} ${t} ${DATA.riasec[t].name}`,h.scores[t],hollandTypeMax(t))).join('')}
-    </div>
-    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
-      <div style="font-size:16px;font-weight:700;color:#173F33;margin-bottom:6px;">SUPER 價值觀分數</div>
-      ${s.ranking.map(v=>pdfBar(`${v.emoji} ${v.name}`,v.score,20)).join('')}
-    </div>
-    <div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;">
-      <div style="font-size:16px;font-weight:700;color:#173F33;margin-bottom:6px;">前三型與價值觀說明</div>
-      <div style="font-size:13px;font-weight:700;color:#173F33;margin:4px 0;">何倫碼前三高</div>
-      ${top3.map((x,i)=>`<div style="margin:7px 0;padding:9px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}. ${x.type} 型｜${x.meta.name}｜${x.score}分</strong><br><span style="font-size:12px;color:#5D6D66;">${escapeHtml(x.meta.desc)}</span></div>`).join('')}
-      <div style="font-size:13px;font-weight:700;color:#173F33;margin:10px 0 4px;">SUPER 工作價值觀前五高</div>
-      ${values.map((v,i)=>`<div style="margin:7px 0;padding:9px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;"><strong>${i+1}. ${v.name}｜${v.score}分</strong><br><span style="font-size:12px;color:#5D6D66;">${escapeHtml(v.desc)}</span></div>`).join('')}
-    </div>
-    ${pdfListBlock('適合的工作環境',env)}
-    ${pdfListBlock('可能卡住的地方',blocks)}
-    ${pdfListBlock('延伸探索重點',focus)}
-    ${pdfListBlock('下一步行動建議',actionsList)}
-    <div style="margin-top:14px;font-size:11px;color:#6C7A72;border-top:1px solid #E4DAC7;padding-top:10px;">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>
+function rptHead(icon,title,sub){
+  return `<div class="rpt-head"><div class="rpt-icon">${icon}</div><h3>${escapeHtml(title)}</h3></div>${sub?`<div class="rpt-sub">${escapeHtml(sub)}</div>`:''}`;
+}
+const RPT_AXIS_ROW='<div class="rpt-axis"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>';
+function rptBar(label,score,max,color){
+  const pct=Math.min(100,Math.round(score/max*100));
+  return `<div class="rpt-bar-item"><div class="rpt-bar-top"><span class="rpt-bar-label">${escapeHtml(label)}</span><span class="rpt-bar-score" style="color:${color.text}">${score}</span></div><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${color.from},${color.to});"></div></div></div>`;
+}
+function pdfHeaderV2(reportLabel){
+  const metaParts=[`✉️ Email：${escapeHtml(state.profile.email || '')}`,`📅 日期：${escapeHtml(state.profile.date || '')}`,`🔖 任務序號：${escapeHtml(accessInfo.serial || '未提供')}`];
+  if(reportLabel==='諮詢師報告') metaParts.push(`🧑‍💼 諮詢師：${escapeHtml(accessInfo.consultantEmail || '未提供')}`);
+  return `<div class="rpt-header">
+    <div class="rpt-header-top">知己知途｜發現職場無限可能｜${escapeHtml(reportLabel)}</div>
+    <h1>${escapeHtml(state.profile.name || '學員')} 的職涯神殿報告</h1>
+    <div class="rpt-header-meta">${metaParts.map(x=>`<span>${x}</span>`).join('')}</div>
   </div>`;
 }
-function pdfListBlock(title,items){return `<div class="pdf-avoid" style="background:#FCFAF4;border:1px solid #DED2B8;border-radius:16px;padding:12px;margin-bottom:12px;max-width:100%;"><div style="font-size:16px;font-weight:700;color:#173F33;margin-bottom:6px;">${escapeHtml(title)}</div>${items.map((x,i)=>`<div style="margin:6px 0;padding:8px 10px;border-radius:12px;background:#fff;border:1px solid #E5D8C2;font-size:12px;"><strong>${i+1}.</strong> ${escapeHtml(x)}</div>`).join('')}</div>`;}
-function pdfFileName(){
+function pdfRoleCardV2(h,role,top){
+  return `<div class="rpt-role-card pdf-avoid">
+    <div class="rpt-tag">👤 職涯角色卡</div>
+    <div class="rpt-role-name">${escapeHtml(role)}</div>
+    <div class="rpt-code">${escapeHtml(h.code || '---')}</div>
+    <div class="rpt-desc">${escapeHtml(top.meta.desc || '')}</div>
+    <div><span class="rpt-pill"><b>主型</b>${escapeHtml(top.type)} 型</span><span class="rpt-pill"><b>類型</b>${escapeHtml(top.meta.name)}</span><span class="rpt-pill"><b>角色</b>${escapeHtml(top.meta.role)}</span></div>
+  </div>`;
+}
+function pdfSummaryCardV2(top3,values){
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('📝','報告摘要')}
+    <div class="rpt-text">你的結果顯示，職涯能量以 <strong>${top3.map(x=>x.type+'型'+x.meta.name).join('、')}</strong> 為主軸；在選擇工作時，最需要留意 <strong>${values.slice(0,5).map(v=>v.name).join('、')}</strong> 是否被滿足。</div>
+  </div>`;
+}
+function pdfHexCardV2(h){
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('🔮','何倫碼報告','從六大向度了解你的職涯興趣與優勢，協助你探索最適合的發展方向。')}
+    <div style="display:flex;justify-content:center;max-width:100%;">${renderHollandHexSvg(h.scores,{size:380,theme:'purple'})}</div>
+  </div>`;
+}
+function pdfJudgmentCardV2(h,s){
+  const j=counselorJudgment(h,s);
+  return `<div class="rpt-judge-card pdf-avoid">
+    ${rptHead('💡','諮詢師判讀（參考）','掌握優勢、理解動機、留意低優先，精準判讀，提升諮詢效率！')}
+    <div class="rpt-judge-row"><div class="rpt-judge-icon">🎯</div><div><b>優勢主軸</b><span>${escapeHtml(j.axis)}</span></div></div>
+    <div class="rpt-judge-row"><div class="rpt-judge-icon">🔥</div><div><b>工作動機</b><span>${escapeHtml(j.motivation)}</span></div></div>
+    <div class="rpt-judge-row"><div class="rpt-judge-icon">🔔</div><div><b>低優先提醒</b><span>${escapeHtml(j.lowPriority)}</span></div></div>
+    <div class="rpt-judge-row"><div class="rpt-judge-icon">✨</div><div><b>判讀技巧</b><span>${escapeHtml(j.tips)}</span></div></div>
+    <div class="rpt-judge-foot">💡 小提醒：${escapeHtml(j.footnote)}</div>
+  </div>`;
+}
+function pdfRiasecCardV2(h){
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('📊','RIASEC 六型分數','六大向度的強弱分布，協助你更了解自己的職涯興趣特質與發展方向。')}
+    ${RPT_AXIS_ROW}
+    ${TYPES.map(t=>rptBar(`${DATA.riasec[t].emoji} ${t} ${DATA.riasec[t].name}`,h.scores[t],hollandTypeMax(t),RPT_TYPE_COLORS[t])).join('')}
+  </div>`;
+}
+function pdfSuperCardV2(s){
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('💎','SUPER 價值觀分數','了解自己在不同價值觀向度的重視程度，協助你探索職涯人生哲學發展方向。')}
+    ${RPT_AXIS_ROW}
+    ${s.ranking.map(v=>rptBar(`${v.emoji} ${v.name}`,v.score,20,RPT_SUPER_COLOR)).join('')}
+  </div>`;
+}
+function pdfRankCardV2(top3,values){
+  const rankRow=(num,icon,title,desc,score,gold)=>`<div class="rpt-rank-row ${gold?'gold':''}"><div class="rpt-rank-num">${String(num).padStart(2,'0')}</div><div class="rpt-rank-icon">${icon}</div><div class="rpt-rank-body"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span></div><div class="rpt-rank-score">${score}分</div></div>`;
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('🏅','前三型與價值觀說明')}
+    <div class="rpt-rank-group-head">⚙️ 何倫碼前3高</div>
+    ${top3.map((x,i)=>rankRow(i+1,x.meta.emoji,`${x.type}型｜${x.meta.name}`,x.meta.role,x.score,false)).join('')}
+    <div class="rpt-rank-group-head" style="margin-top:12px">💎 SUPER工作價值觀前5高</div>
+    ${values.map((v,i)=>rankRow(i+1,v.emoji,v.name,v.desc,v.score,true)).join('')}
+  </div>`;
+}
+function pdfEnvCardV2(env){
+  const colors=['c-purple','c-blue','c-green','c-orange'], icons=['🧭','🏢','🤝','📊'];
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('🏞️','適合工作環境','根據你的興趣與價值觀組合，整理出較容易讓你發揮優勢、感到投入的工作環境特質。')}
+    ${env.map((x,i)=>`<div class="rpt-num-card ${colors[i%4]}"><div class="rpt-num-icon">${icons[i%4]}</div><div class="rpt-num-badge">0${i+1}</div><div class="rpt-num-text">${escapeHtml(x)}</div></div>`).join('')}
+  </div>`;
+}
+function pdfBlocksCardV2(blocks){
+  const themes=['c-pink','c-orange'], icons=['⚠️','💡'];
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('🚧','可能卡住的地方','提前了解可能的挑戰與限制，幫助你做好準備、提早調整，降低未來碰到卡關時的衝擊。')}
+    ${blocks.map((x,i)=>`<div class="rpt-num-card ${themes[i%2]}"><div class="rpt-num-icon">${icons[i%2]}</div><div class="rpt-num-badge">0${i+1}</div><div class="rpt-num-text">${escapeHtml(x)}</div></div>`).join('')}
+  </div>`;
+}
+function pdfFocusCardV2(focus){
+  const themes=['c-purple','c-teal'], icons=['🧭','💡'];
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('🔭','延伸探索（參考）','延伸思考方向，協助你進一步檢核興趣與價值觀是否能在現實工作中被滿足。')}
+    ${focus.map((x,i)=>`<div class="rpt-num-card ${themes[i%2]}"><div class="rpt-num-icon">${icons[i%2]}</div><div class="rpt-num-badge">0${i+1}</div><div class="rpt-num-text">${escapeHtml(x)}</div></div>`).join('')}
+  </div>`;
+}
+function pdfActionsCardV2(actionsList){
+  const themes=['c-purple','c-blue','c-green','c-orange'], icons=['🔍','🎯','🌱','🚀'];
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('🎯','下一步行動建議（參考）','將探索結果轉化為具體可執行的下一步，協助你逐步邁向理想的職涯方向。')}
+    ${actionsList.map((x,i)=>`<div class="rpt-action-card ${themes[i%4]}"><div class="rpt-action-icon">${icons[i%4]}</div><div class="rpt-num-badge">0${i+1}</div><div class="rpt-action-body"><div class="rpt-action-label">建議方向／行動重點：</div><div class="rpt-action-text">${escapeHtml(x)}</div></div></div>`).join('')}
+  </div>`;
+}
+function pdfNoticeCardV2(){
+  return `<div class="rpt-notice-card pdf-avoid">
+    ${rptHead('🗨️','【諮詢師提醒】')}
+    <div class="rpt-notice-row"><div class="rpt-notice-icon">📋</div><span>本報告評估工具包含荷倫職業適性測驗、SUPER 工作價值觀測驗及創業適性量表。測評結果係依個案實際作答內容與量表設計產出，僅作為諮詢師了解個案特質、興趣傾向、工作價值觀、職涯方向及創業適性之參考依據，並非職業指派、能力認定或最終就業判斷。</span></div>
+    <div class="rpt-notice-row"><div class="rpt-notice-icon">👥</div><span>諮詢師進行報告解讀與職涯建議時，應綜合考量個案背景、工作經驗、身心狀態、家庭支持、經濟需求、就業市場條件及實際可行性，並以專業晤談內容為後續職涯規劃與服務建議之主要依據。</span></div>
+  </div>`;
+}
+function pdfFooterV2(){
+  return `<div class="rpt-foot">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>`;
+}
+function pdfCaseReportHtml(){
+  const h=calcHolland(), s=calcSuper();
+  const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-', desc:'', emoji:''}};
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
+  return `<div class="pdf-safe rpt-doc">
+    ${pdfHeaderV2('正式個案報告')}
+    ${pdfRoleCardV2(h,role,top)}
+    ${pdfSummaryCardV2(top3,values)}
+    ${pdfHexCardV2(h)}
+    ${pdfRiasecCardV2(h)}
+    ${pdfSuperCardV2(s)}
+    ${pdfRankCardV2(top3,values)}
+    ${pdfFooterV2()}
+  </div>`;
+}
+function pdfCounselorReportHtml(){
+  const h=calcHolland(), s=calcSuper();
+  const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-', desc:'', emoji:''}};
+  const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
+  const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=explorationFocus(h,s), actionsList=nextActionAdvice(h,s);
+  return `<div class="pdf-safe rpt-doc">
+    ${pdfHeaderV2('諮詢師報告')}
+    ${pdfRoleCardV2(h,role,top)}
+    ${pdfSummaryCardV2(top3,values)}
+    ${pdfHexCardV2(h)}
+    ${pdfJudgmentCardV2(h,s)}
+    ${pdfRiasecCardV2(h)}
+    ${pdfSuperCardV2(s)}
+    ${pdfRankCardV2(top3,values)}
+    ${pdfEnvCardV2(env)}
+    ${pdfBlocksCardV2(blocks)}
+    ${pdfFocusCardV2(focus)}
+    ${pdfActionsCardV2(actionsList)}
+    ${pdfNoticeCardV2()}
+  </div>`;
+}
+function pdfFileName(type){
   const name=String(state.profile.name||'學員').trim().replace(/[\\/:*?"<>|\s]+/g,'_');
   const date=String(state.profile.date||new Date().toISOString().slice(0,10));
-  return `知己知途_職涯探索冒險遊戲_個案報告_${name}_${date}.pdf`;
+  const label=type==='counselor'?'諮詢師報告':'個案報告';
+  return `知己知途_職涯探索冒險遊戲_${label}_${name}_${date}.pdf`;
 }
-async function createPdfBlob(){
+async function createPdfBlob(type='case'){
   if(!window.html2pdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
   const app=document.querySelector('.app');
   const prevDisplay=app?app.style.display:'';
   const el=document.createElement('div');
-  el.innerHTML=pdfReportHtml();
+  el.innerHTML=type==='counselor'?pdfCounselorReportHtml():pdfCaseReportHtml();
   el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
   document.body.appendChild(el);
   if(app) app.style.display='none';
   try{
-    const opt={margin:[12,12,12,12],filename:pdfFileName(),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
+    const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     return await html2pdf().set(opt).from(el).outputPdf('blob');
   }finally{if(app) app.style.display=prevDisplay;el.remove();}
 }
 function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob);});}
-async function downloadPdf(btn){
+async function downloadPdf(btn,type='case'){
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF產生中...';}
   const app=document.querySelector('.app');
   const prevDisplay=app?app.style.display:'';
   let el=null;
   try{
     if(!window.html2pdf){window.print();return;}
-    el=document.createElement('div');el.innerHTML=pdfReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
+    el=document.createElement('div');el.innerHTML=type==='counselor'?pdfCounselorReportHtml():pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
     if(app) app.style.display='none';
-    const opt={margin:[12,12,12,12],filename:pdfFileName(),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
+    const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     await html2pdf().set(opt).from(el).save();toast('PDF 已產生');
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
   finally{if(app) app.style.display=prevDisplay;if(el) el.remove();if(btn){btn.disabled=false;btn.textContent=old;}}

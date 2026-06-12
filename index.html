@@ -84,6 +84,8 @@
     .rpt-head h3{margin:0;font-size:16px;color:#3F2E73}
     .rpt-sub{font-size:11px;color:#8A81A8;margin:4px 0 10px}
     .rpt-text{font-size:13px;color:#4B4470;line-height:1.85}
+    .rpt-subhead{font-size:12px;font-weight:700;color:#6B4FC9;margin:10px 0 4px}
+    .rpt-subhead:first-child{margin-top:0}
     .rpt-pill{display:inline-flex;align-items:center;background:#F1ECFB;border:1px solid #E3DBF7;border-radius:999px;padding:4px 10px;font-size:12px;color:#5C5380;margin:2px 4px 0 0}
     .rpt-pill b{color:#3F2E73;margin-right:3px}
     .rpt-role-card{background:linear-gradient(135deg,#F1ECFB,#FBF9FF);border:1px solid #E3DBF7;border-radius:20px;padding:16px;margin-bottom:12px;max-width:100%}
@@ -905,10 +907,87 @@ function pdfNoticeCardV2(){
 function pdfFooterV2(){
   return `<div class="rpt-foot">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>`;
 }
-function pdfCaseReportHtml(){
+let _reportDbCache=null, _reportDbCacheKey='';
+async function fetchReportDbData(h,s){
+  const superCodes=s.ranking.slice(0,5).map(v=>v.id).join(',');
+  const key=(h.code||'')+'|'+superCodes;
+  if(_reportDbCache && _reportDbCacheKey===key) return _reportDbCache;
+  try{
+    const url=SUPABASE_URL+'/functions/v1/report-data?holland_code='+encodeURIComponent(h.code||'')+'&super_values='+encodeURIComponent(superCodes);
+    const res=await fetch(url,{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    const data=await res.json();
+    const result=(data && data.ok) ? data : null;
+    _reportDbCache=result; _reportDbCacheKey=key;
+    return result;
+  }catch(e){console.error('report-data 讀取失敗',e); return null;}
+}
+function rptTextBlock(label,text){
+  if(!text) return '';
+  return `<div class="rpt-subhead">${escapeHtml(label)}</div><div class="rpt-text">${escapeHtml(text)}</div>`;
+}
+function rptListBlock(label,arr,theme,icon){
+  if(!arr || !arr.length) return '';
+  return `${label?`<div class="rpt-subhead">${escapeHtml(label)}</div>`:''}${arr.map((x,i)=>`<div class="rpt-num-card ${theme}"><div class="rpt-num-icon">${icon}</div><div class="rpt-num-badge">0${i+1}</div><div class="rpt-num-text">${escapeHtml(x)}</div></div>`).join('')}`;
+}
+function pdfHollandDbCardsV2(db,top3,isCounselor){
+  if(!db) return '';
+  const code=db.hollandCodeReport;
+  let html='';
+  if(code){
+    html+=`<div class="rpt-card pdf-avoid">
+      ${rptHead('📚',`荷倫碼深度報告｜${escapeHtml(code.code_title||'')}`,'依「職涯測驗報告資料庫」內容，針對你的荷倫碼前三高組合進行延伸解讀，提供更完整的個人化說明。')}
+      ${rptTextBlock('🔑 整體摘要',code.student_summary||code.one_sentence_summary)}
+      ${rptTextBlock('🧬 人格特質分析',code.personality_analysis)}
+      ${rptTextBlock('💼 工作風格',code.work_style)}
+    </div>`;
+    let strengthsEnvJobs=`${rptListBlock('✅ 你的優勢',code.strengths,'c-green','💪')}${rptListBlock('🏞️ 適合的工作環境',code.suitable_environment,'c-blue','🏞️')}${rptListBlock('🧰 可考慮的職業方向',code.suitable_jobs,'c-purple','🧰')}`;
+    if(isCounselor) strengthsEnvJobs+=rptListBlock('⚠️ 需留意的風險',code.career_risks,'c-pink','⚠️');
+    if(strengthsEnvJobs) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、環境與職業方向（資料庫）')}${strengthsEnvJobs}</div>`;
+    let extra=`${rptTextBlock('🌱 發展建議',code.development_advice)}${rptTextBlock('📝 報告段落',code.report_paragraph)}`;
+    if(isCounselor){
+      extra+=rptTextBlock('🧑‍💼 諮詢師解讀',code.counselor_interpretation);
+      extra+=rptTextBlock('🔗 就業媒合建議',code.employment_matching_advice);
+      extra+=rptTextBlock('📌 後續追蹤建議',code.follow_up_suggestion);
+      extra+=rptListBlock('🛠️ 可遷移技能',code.transferable_skills,'c-teal','🛠️');
+    }
+    if(extra) html+=`<div class="rpt-card pdf-avoid">${rptHead('🌱','發展建議與報告段落（資料庫）')}${extra}</div>`;
+    if(isCounselor && code.counseling_questions && code.counseling_questions.length){
+      html+=`<div class="rpt-card pdf-avoid">${rptHead('❓','晤談切入問題（資料庫）')}${rptListBlock('',code.counseling_questions,'c-orange','❓')}</div>`;
+    }
+  }else{
+    const tr=db.typeReports||{};
+    const part1=top3.map(x=>{
+      const r=tr[x.type]; if(!r) return '';
+      return `${rptTextBlock(`${x.meta.emoji} ${x.type}型｜${r.type_name||''}｜${r.role_title||''}`,r.core_traits)}${rptTextBlock('🌱 探索建議',r.exploration_advice)}${isCounselor?rptTextBlock('💼 工作風格',r.work_style):''}`;
+    }).join('');
+    if(part1) html+=`<div class="rpt-card pdf-avoid">${rptHead('📚','荷倫碼深度報告（單碼解讀，資料庫）','此三碼組合尚未收錄專屬報告，以下提供前三高單碼的深度解讀。')}${part1}</div>`;
+    if(isCounselor){
+      const part2=top3.map(x=>{
+        const r=tr[x.type]; if(!r) return '';
+        return `<div class="rpt-subhead">${x.meta.emoji} ${x.type}型｜${r.type_name||''}</div>${rptListBlock('優勢',r.strengths,'c-green','💪')}${rptListBlock('風險',r.risks,'c-pink','⚠️')}${rptListBlock('適合職業',r.suitable_jobs,'c-purple','🧰')}`;
+      }).join('');
+      if(part2) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、風險與職業方向（單碼解讀，資料庫）')}${part2}</div>`;
+    }
+  }
+  return html;
+}
+function pdfSuperDbCardV2(db,values,isCounselor){
+  if(!db || !db.superValueReports || !db.superValueReports.length) return '';
+  const rows=db.superValueReports;
+  const ordered=values.slice(0,3).map(v=>rows.find(r=>r.value_code===v.id)).filter(Boolean);
+  if(!ordered.length) return '';
+  return `<div class="rpt-card pdf-avoid">
+    ${rptHead('💎','SUPER 工作價值觀深度解讀（資料庫）','針對你前三高的工作價值觀，提供更完整的說明與諮詢建議。')}
+    ${ordered.map(r=>`${rptTextBlock(r.value_name,r.value_summary)}${rptTextBlock('🎯 工作需求',r.work_need)}${rptTextBlock('🏞️ 適合環境',r.suitable_environment)}${isCounselor?rptTextBlock('⚠️ 若未滿足',r.risk_if_unmet)+rptTextBlock('🧑‍💼 諮詢師提醒',r.counselor_note):''}`).join('')}
+  </div>`;
+}
+async function pdfCaseReportHtml(){
   const h=calcHolland(), s=calcSuper();
   const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-', desc:'', emoji:''}};
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
+  const db=await fetchReportDbData(h,s);
+  const hollandDb=pdfHollandDbCardsV2(db,top3,false);
+  const superDb=pdfSuperDbCardV2(db,values,false);
   return `<div class="pdf-safe rpt-doc">
     ${pdfHeaderV2('正式個案報告')}
     ${pdfRoleCardV2(h,role,top)}
@@ -917,14 +996,19 @@ function pdfCaseReportHtml(){
     <div class="rpt-pagebreak">${pdfRiasecCardV2(h)}</div>
     ${pdfSuperCardV2(s)}
     <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
+    ${hollandDb?`<div class="rpt-pagebreak">${hollandDb}</div>`:''}
+    ${superDb}
     ${pdfFooterV2()}
   </div>`;
 }
-function pdfCounselorReportHtml(){
+async function pdfCounselorReportHtml(){
   const h=calcHolland(), s=calcSuper();
   const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-', desc:'', emoji:''}};
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
   const env=suitedEnvironment(h,s), blocks=possibleBlocks(h,s), focus=explorationFocus(h,s), actionsList=nextActionAdvice(h,s);
+  const db=await fetchReportDbData(h,s);
+  const hollandDb=pdfHollandDbCardsV2(db,top3,true);
+  const superDb=pdfSuperDbCardV2(db,values,true);
   return `<div class="pdf-safe rpt-doc">
     ${pdfHeaderV2('諮詢師報告')}
     ${pdfRoleCardV2(h,role,top)}
@@ -934,6 +1018,8 @@ function pdfCounselorReportHtml(){
     ${pdfRiasecCardV2(h)}
     ${pdfSuperCardV2(s)}
     <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
+    ${hollandDb?`<div class="rpt-pagebreak">${hollandDb}</div>`:''}
+    ${superDb}
     ${pdfEnvCardV2(env)}
     <div class="rpt-pagebreak">${pdfBlocksCardV2(blocks)}</div>
     ${pdfFocusCardV2(focus)}
@@ -952,7 +1038,7 @@ async function createPdfBlob(type='case'){
   const app=document.querySelector('.app');
   const prevDisplay=app?app.style.display:'';
   const el=document.createElement('div');
-  el.innerHTML=type==='counselor'?pdfCounselorReportHtml():pdfCaseReportHtml();
+  el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();
   el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
   document.body.appendChild(el);
   if(app) app.style.display='none';
@@ -969,7 +1055,7 @@ async function downloadPdf(btn,type='case'){
   let el=null;
   try{
     if(!window.html2pdf){window.print();return;}
-    el=document.createElement('div');el.innerHTML=type==='counselor'?pdfCounselorReportHtml():pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
+    el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
     if(app) app.style.display='none';
     const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     await html2pdf().set(opt).from(el).save();toast('PDF 已產生');

@@ -1024,12 +1024,17 @@ function pdfFileName(type){
   const label=type==='counselor'?'諮詢師報告':'個案報告';
   return `知己知途_職涯探索冒險遊戲_${label}_${name}_${date}.pdf`;
 }
+function waitForImages(el){
+  const imgs=Array.from(el.querySelectorAll('img'));
+  return Promise.all(imgs.map(img=>(img.complete && img.naturalWidth>0)?Promise.resolve():new Promise(res=>{img.onload=res;img.onerror=res;})));
+}
 async function createPdfBlob(type='case'){
   if(!window.html2pdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
   const el=document.createElement('div');
   el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();
   el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
   document.body.appendChild(el);
+  await waitForImages(el);
   try{
     const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     return await html2pdf().set(opt).from(el).outputPdf('blob');
@@ -1042,6 +1047,7 @@ async function downloadPdf(btn,type='case'){
   try{
     if(!window.html2pdf){window.print();return;}
     el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
+    await waitForImages(el);
     const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
     await html2pdf().set(opt).from(el).save();toast('PDF 已產生');
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}

@@ -73,7 +73,8 @@
     @media(max-width:900px){.access-grid{grid-template-columns:1fr}.mission-map{grid-template-columns:repeat(2,minmax(0,1fr))}}
     /* 報告 v2（紫色主題：個案／諮詢師報告）*/
     .rpt-doc{font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#3F2E73;width:170mm;max-width:170mm;margin:0 auto;padding:0;line-height:1.6;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word}
-    .rpt-header{border-bottom:4px solid #6B4FC9;padding-bottom:12px;margin-bottom:14px;max-width:100%}
+    .rpt-header{border-bottom:4px solid #6B4FC9;padding-bottom:12px;margin-bottom:0;max-width:100%}
+    .rpt-pagebreak{page-break-before:always;break-before:page}
     .rpt-header .rpt-header-top{font-size:12px;color:#9B8FC4;font-weight:700}
     .rpt-header h1{margin:6px 0 8px;font-size:24px;color:#3F2E73;line-height:1.3;text-align:center;overflow-wrap:anywhere}
     .rpt-header .rpt-header-meta{font-size:12px;color:#6C7A72;display:flex;flex-wrap:wrap;gap:14px}
@@ -138,6 +139,7 @@
     .rpt-notice-row{display:flex;align-items:flex-start;gap:10px;margin:10px 0}
     .rpt-notice-row .rpt-notice-icon{flex:0 0 32px;height:32px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
     .rpt-notice-row span{font-size:12px;color:#6B501E;line-height:1.85}
+    .rpt-notice-deco{text-align:center;margin-top:8px;font-size:13px;color:#E0954C;letter-spacing:10px}
     .rpt-foot{margin-top:6px;font-size:11px;color:#9B8FC4;border-top:1px solid #E6E1F7;padding-top:10px}
 
 </style>
@@ -883,8 +885,9 @@ function pdfActionsCardV2(actionsList){
 function pdfNoticeCardV2(){
   return `<div class="rpt-notice-card pdf-avoid">
     ${rptHead('🗨️','【諮詢師提醒】')}
-    <div class="rpt-notice-row"><div class="rpt-notice-icon">📋</div><span>本報告評估工具包含荷倫職業適性測驗、SUPER 工作價值觀測驗及創業適性量表。測評結果係依個案實際作答內容與量表設計產出，僅作為諮詢師了解個案特質、興趣傾向、工作價值觀、職涯方向及創業適性之參考依據，並非職業指派、能力認定或最終就業判斷。</span></div>
-    <div class="rpt-notice-row"><div class="rpt-notice-icon">👥</div><span>諮詢師進行報告解讀與職涯建議時，應綜合考量個案背景、工作經驗、身心狀態、家庭支持、經濟需求、就業市場條件及實際可行性，並以專業晤談內容為後續職涯規劃與服務建議之主要依據。</span></div>
+    <div class="rpt-notice-row"><div class="rpt-notice-icon">📋</div><span>本報告評估工具包含荷倫職業適性測驗、SUPER 工作價值觀測驗。測評結果係依個案實際作答內容與量表設計產出，僅作為諮詢師了解個案特質、興趣傾向、工作價值觀與職涯方向之參考依據，並非職業指派、能力認定或最終就業判斷。</span></div>
+    <div class="rpt-notice-row"><div class="rpt-notice-icon">👥</div><span>諮詢師進行報告解讀與職涯建議時，應綜合考量個案背景、工作經驗、身心狀態、家庭支持、經濟需求、就業市場條件及實際可行性，並以專業晤談內容作為後續職涯規劃與服務建議之主要依據。</span></div>
+    <div class="rpt-notice-deco">✦ ✨ ✦</div>
   </div>`;
 }
 function pdfFooterV2(){
@@ -915,12 +918,12 @@ function pdfCounselorReportHtml(){
     ${pdfRoleCardV2(h,role,top)}
     ${pdfSummaryCardV2(top3,values)}
     ${pdfHexCardV2(h)}
-    ${pdfJudgmentCardV2(h,s)}
+    <div class="rpt-pagebreak">${pdfJudgmentCardV2(h,s)}</div>
     ${pdfRiasecCardV2(h)}
     ${pdfSuperCardV2(s)}
-    ${pdfRankCardV2(top3,values)}
+    <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
     ${pdfEnvCardV2(env)}
-    ${pdfBlocksCardV2(blocks)}
+    <div class="rpt-pagebreak">${pdfBlocksCardV2(blocks)}</div>
     ${pdfFocusCardV2(focus)}
     ${pdfActionsCardV2(actionsList)}
     ${pdfNoticeCardV2()}

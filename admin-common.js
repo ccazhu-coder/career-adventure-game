@@ -93,6 +93,35 @@ function renderPagination(containerId,page,totalPages,onChange){
 }
 
 // ------------------------------------------------------------
+// 諮詢師額度餘額 = 既有 counselor_authorizations 快照
+//               + 新 credit_transactions 帳本（預設 0）
+// ------------------------------------------------------------
+function computeCounselorBalances(authorizations,creditTx){
+  const balances={};
+  (authorizations||[]).forEach(a=>{
+    const email=(a.counselor_email||"").toLowerCase();
+    if(!email) return;
+    balances[email]=(balances[email]||0)+((a.purchased_quantity||0)-(a.used_quantity||0));
+  });
+  (creditTx||[]).forEach(t=>{
+    const email=(t.counselor_email||"").toLowerCase();
+    if(!email) return;
+    balances[email]=(balances[email]||0)+(t.delta||0);
+  });
+  return balances;
+}
+async function getCounselorBalance(email){
+  const lower=(email||"").toLowerCase();
+  const [authRes,creditRes]=await Promise.all([
+    sb.from("counselor_authorizations").select("purchased_quantity,used_quantity").eq("counselor_email",lower),
+    sb.from("credit_transactions").select("delta").eq("counselor_email",lower)
+  ]);
+  const legacy=(authRes.data||[]).reduce((s,a)=>s+((a.purchased_quantity||0)-(a.used_quantity||0)),0);
+  const ledger=(creditRes.data||[]).reduce((s,t)=>s+(t.delta||0),0);
+  return legacy+ledger;
+}
+
+// ------------------------------------------------------------
 // admin-counselors Edge Function（沿用 admin.html 既有呼叫方式）
 // ------------------------------------------------------------
 async function callAdminFunction(payload){

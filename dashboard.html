@@ -94,17 +94,7 @@ async function loadDashboard(){
   document.getElementById("statMonthCredits").textContent=monthCredits;
 
   // 剩餘額度異常提醒：既有 counselor_authorizations 快照 + 新 credit_transactions 帳本
-  const balances={};
-  authorizations.forEach(a=>{
-    const email=(a.counselor_email||"").toLowerCase();
-    if(!email) return;
-    balances[email]=(balances[email]||0)+((a.purchased_quantity||0)-(a.used_quantity||0));
-  });
-  creditTx.forEach(t=>{
-    const email=(t.counselor_email||"").toLowerCase();
-    if(!email) return;
-    balances[email]=(balances[email]||0)+(t.delta||0);
-  });
+  const balances=computeCounselorBalances(authorizations,creditTx);
   const lowEmails=Object.entries(balances).filter(([,bal])=>bal<=5);
   const alertEl=document.getElementById("lowCreditAlert");
   alertEl.innerHTML=lowEmails.length

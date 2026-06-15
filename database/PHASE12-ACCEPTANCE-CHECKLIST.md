@@ -80,10 +80,17 @@
 - ⏳ 建立成功 → `batches` 新增一筆、`credit_transactions` 新增 `-quantity` 的 `batch_create` 紀錄、`logs` 新增 `create_batch`
 - ⏳ 修改/啟用/停用/刪除/匯出 CSV 功能與既有 `admin.html` 行為一致，且皆寫入 `logs`
 
-### 4.3 students.html（Phase 3）
+### 4.3 students.html（Phase 3，2026-06-15 改為「諮詢師優先」兩層結構）
 - ✅ 未登入 → 導向 `admin-login.html`
-- ✅ 搜尋/批次篩選/諮詢師篩選/分頁邏輯語法正確
-- ⏳ owner 登入後：下載個案 PDF / 諮詢師 PDF、複製諮詢建議/文字報告，皆正確寫入 `logs`（`download_pdf`/`download_counselor_pdf`/`copy_advisor_report`/`copy_case_report`）
+- ✅ 預設視圖（無參數）改為諮詢師列表（`callAdminFunction({action:"list"})` 取 role=consultant，
+  各諮詢師統計學員數/PDF已寄送/今日新增，「未指派」分組統計 `counselor_email` 為空者），
+  「查看學員」連結至 `students.html?counselor=<email>`／`__unassigned__`
+- ✅ 學員清單（drilldown）為原 Phase 3 功能 1:1 保留：搜尋/批次篩選/諮詢師篩選/分頁/PDF下載/報告複製，
+  新增「← 返回諮詢師列表」連結；`?all=1` 可直接進入不篩選的全部學員清單
+- ✅ 相容既有跨頁連結：`batches.html?batch=<短碼>`、`counselors.html?counselor=<email>`
+  皆直接進入 drilldown 並套用對應篩選（含目前 0 筆資料的批次/諮詢師，篩選下拉選單會自動補上該選項）
+- ⏳ owner 登入後：諮詢師列表統計數字與實際資料一致；下載個案 PDF / 諮詢師 PDF、複製諮詢建議/文字報告，
+  皆正確寫入 `logs`（`download_pdf`/`download_counselor_pdf`/`copy_advisor_report`/`copy_case_report`）
 
 ### 4.4 counselors.html（Phase 4）
 - ✅ 未登入 → 導向 `admin-login.html`

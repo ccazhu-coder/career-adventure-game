@@ -14,38 +14,73 @@
     <header class="topbar" id="topbar"></header>
     <div class="content">
 
-      <div class="subhead">
-        <div>
-          <h2>學員資料</h2>
-          <p>所有批次的學員測驗結果，可依批次／諮詢師篩選、搜尋姓名／Email／何倫碼，並下載 PDF、查看諮詢分析與文字報告。</p>
+      <!-- 視圖一：諮詢師列表（預設） -->
+      <div id="counselorListView">
+        <div class="subhead">
+          <div>
+            <h2>學員資料</h2>
+            <p>請先選擇諮詢師，再查看該諮詢師名下的學員測驗紀錄。</p>
+          </div>
+          <div><a class="btn" href="students.html?all=1">查看所有學員</a></div>
         </div>
-      </div>
-      <div class="toolbar">
-        <div class="left">
-          <input id="searchInput" oninput="onStudentFilterChange()" placeholder="搜尋姓名、Email、短碼、何倫碼...">
-          <select id="batchFilter" onchange="onStudentFilterChange()"><option value="">全部批次</option></select>
-          <select id="counselorFilter" onchange="onStudentFilterChange()"><option value="">全部諮詢師</option></select>
+        <div class="toolbar">
+          <div class="left">
+            <input id="counselorListSearch" oninput="onCounselorListFilterChange()" placeholder="搜尋諮詢師 Email、顯示名稱...">
+          </div>
+          <div class="right"><button class="btn" onclick="loadCounselorList()">重新整理</button></div>
         </div>
-        <div class="right">
-          <button class="btn" onclick="loadSubmissions()">重新整理</button>
+        <div class="stats">
+          <div class="stat"><b id="clTotalCounselors">0</b><span>諮詢師人數</span></div>
+          <div class="stat"><b id="clTotalStudents">0</b><span>學員總數</span></div>
+          <div class="stat"><b id="clSentCount">0</b><span>PDF 已寄送</span></div>
+          <div class="stat"><b id="clTodayCount">0</b><span>今日新增</span></div>
         </div>
+        <div id="counselorListMsg" class="notice hidden"></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>諮詢師 Email</th><th>顯示名稱</th><th>學員數</th><th>PDF 已寄送</th><th>今日新增</th><th>操作</th></tr></thead>
+            <tbody id="counselorListRows"></tbody>
+          </table>
+        </div>
+        <div id="counselorListPagination" class="pagination"></div>
       </div>
-      <div class="stats">
-        <div class="stat"><b id="totalCount">0</b><span>總測驗紀錄</span></div>
-        <div class="stat"><b id="sentCount">0</b><span>PDF 已寄送</span></div>
-        <div class="stat"><b id="todayCount">0</b><span>今日新增</span></div>
-        <div class="stat"><b id="visibleCount">0</b><span>目前顯示</span></div>
+
+      <!-- 視圖二：學員清單（依諮詢師／批次篩選，或「查看所有學員」） -->
+      <div id="drilldownView" class="hidden">
+        <div class="subhead">
+          <div>
+            <h2 id="drilldownTitle">學員資料</h2>
+            <p id="drilldownDesc">所有批次的學員測驗結果，可依批次／諮詢師篩選、搜尋姓名／Email／何倫碼，並下載 PDF、查看諮詢分析與文字報告。</p>
+          </div>
+          <div><a class="btn" href="students.html">← 返回諮詢師列表</a></div>
+        </div>
+        <div class="toolbar">
+          <div class="left">
+            <input id="searchInput" oninput="onStudentFilterChange()" placeholder="搜尋姓名、Email、短碼、何倫碼...">
+            <select id="batchFilter" onchange="onStudentFilterChange()"><option value="">全部批次</option></select>
+            <select id="counselorFilter" onchange="onStudentFilterChange()"><option value="">全部諮詢師</option></select>
+          </div>
+          <div class="right">
+            <button class="btn" onclick="loadSubmissions()">重新整理</button>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="totalCount">0</b><span>總測驗紀錄</span></div>
+          <div class="stat"><b id="sentCount">0</b><span>PDF 已寄送</span></div>
+          <div class="stat"><b id="todayCount">0</b><span>今日新增</span></div>
+          <div class="stat"><b id="visibleCount">0</b><span>目前顯示</span></div>
+        </div>
+        <div id="studentMsg" class="notice hidden"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>送出時間</th><th>姓名</th><th>Email</th><th>批次/短碼</th><th>諮詢師Email</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
+            </thead>
+            <tbody id="submissionRows"></tbody>
+          </table>
+        </div>
+        <div id="studentPagination" class="pagination"></div>
       </div>
-      <div id="studentMsg" class="notice hidden"></div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>送出時間</th><th>姓名</th><th>Email</th><th>批次/短碼</th><th>諮詢師Email</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
-          </thead>
-          <tbody id="submissionRows"></tbody>
-        </table>
-      </div>
-      <div id="studentPagination" class="pagination"></div>
 
     </div>
   </div>
@@ -59,30 +94,155 @@ let allSubmissions=[];
 let studentPage=1;
 const STUDENT_PAGE_SIZE=20;
 
+let allCounselors=[];
+let counselorListStats={};
+let counselorListPage=1;
+const COUNSELOR_LIST_PAGE_SIZE=20;
+
 (async function init(){
   const auth=await requireOwner();
   if(!auth) return;
   renderAdminShell("students",{title:"學員資料",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
-  await loadSubmissions();
+
   const params=new URLSearchParams(location.search);
   const batchParam=params.get("batch");
-  if(batchParam){
-    const sel=document.getElementById("batchFilter");
-    if([...sel.options].some(o=>o.value===batchParam)){
-      sel.value=batchParam;
-      onStudentFilterChange();
-    }
-  }
   const counselorParam=params.get("counselor");
-  if(counselorParam){
-    const sel=document.getElementById("counselorFilter");
-    if([...sel.options].some(o=>o.value===counselorParam)){
-      sel.value=counselorParam;
-      onStudentFilterChange();
+  const showAll=params.has("all");
+
+  if(batchParam || counselorParam || showAll){
+    document.getElementById("counselorListView").classList.add("hidden");
+    document.getElementById("drilldownView").classList.remove("hidden");
+    await loadSubmissions();
+    if(batchParam){
+      selectOrAppendOption("batchFilter",batchParam,batchParam);
+      updateDrilldownHeader("batch",batchParam);
+    }else if(counselorParam){
+      selectOrAppendOption("counselorFilter",counselorParam,counselorParam==="__unassigned__"?"（未指派）":counselorParam);
+      updateDrilldownHeader("counselor",counselorParam);
+    }else{
+      updateDrilldownHeader("all");
     }
+    onStudentFilterChange();
+  }else{
+    document.getElementById("drilldownView").classList.add("hidden");
+    document.getElementById("counselorListView").classList.remove("hidden");
+    await loadCounselorList();
   }
 })();
 
+function selectOrAppendOption(selectId,value,label){
+  const sel=document.getElementById(selectId);
+  if(![...sel.options].some(o=>o.value===value)){
+    const opt=document.createElement("option");
+    opt.value=value;
+    opt.textContent=label;
+    sel.appendChild(opt);
+  }
+  sel.value=value;
+}
+
+function updateDrilldownHeader(mode,value){
+  const title=document.getElementById("drilldownTitle");
+  const desc=document.getElementById("drilldownDesc");
+  if(mode==="counselor"){
+    const label=value==="__unassigned__"?"（未指派）":value;
+    title.textContent=`學員資料：${label}`;
+    desc.textContent=`此諮詢師（${label}）名下的學員測驗結果，可依批次篩選、搜尋姓名／Email／何倫碼，並下載 PDF、查看諮詢分析與文字報告。`;
+  }else if(mode==="batch"){
+    title.textContent=`學員資料：批次 ${value}`;
+    desc.textContent=`此批次（${value}）的學員測驗結果，可依諮詢師篩選、搜尋姓名／Email／何倫碼，並下載 PDF、查看諮詢分析與文字報告。`;
+  }else{
+    title.textContent="學員資料（全部）";
+    desc.textContent="所有批次的學員測驗結果，可依批次／諮詢師篩選、搜尋姓名／Email／何倫碼，並下載 PDF、查看諮詢分析與文字報告。";
+  }
+}
+
+// ------------------------------------------------------------
+// 視圖一：諮詢師列表
+// ------------------------------------------------------------
+async function loadCounselorList(){
+  hideMsg("counselorListMsg");
+  try{
+    const [listRes,submissionsRes]=await Promise.all([
+      callAdminFunction({action:"list"}),
+      sb.from("submissions").select("counselor_email,pdf_send_status,created_at")
+    ]);
+    allCounselors=(listRes.profiles||[]).filter(p=>p.role==="consultant");
+    const submissions=submissionsRes.data||[];
+    const today=new Date().toISOString().slice(0,10);
+
+    counselorListStats={};
+    allCounselors.forEach(p=>{
+      const email=(p.email||"").toLowerCase();
+      const subs=submissions.filter(s=>(s.counselor_email||"").toLowerCase()===email);
+      counselorListStats[email]={
+        studentCount:subs.length,
+        sentCount:subs.filter(s=>String(s.pdf_send_status||"").includes("成功")).length,
+        todayCount:subs.filter(s=>String(s.created_at||"").slice(0,10)===today).length
+      };
+    });
+    const unassigned=submissions.filter(s=>!s.counselor_email);
+    counselorListStats.__unassigned__={
+      studentCount:unassigned.length,
+      sentCount:unassigned.filter(s=>String(s.pdf_send_status||"").includes("成功")).length,
+      todayCount:unassigned.filter(s=>String(s.created_at||"").slice(0,10)===today).length
+    };
+
+    document.getElementById("clTotalCounselors").textContent=allCounselors.length;
+    document.getElementById("clTotalStudents").textContent=submissions.length;
+    document.getElementById("clSentCount").textContent=submissions.filter(s=>String(s.pdf_send_status||"").includes("成功")).length;
+    document.getElementById("clTodayCount").textContent=submissions.filter(s=>String(s.created_at||"").slice(0,10)===today).length;
+
+    renderCounselorList();
+  }catch(err){
+    showMsg("counselorListMsg","諮詢師清單讀取失敗："+err.message,true);
+  }
+}
+function onCounselorListFilterChange(){
+  counselorListPage=1;
+  renderCounselorList();
+}
+function getFilteredCounselorList(){
+  const q=document.getElementById("counselorListSearch").value.trim().toLowerCase();
+  if(!q) return allCounselors;
+  return allCounselors.filter(p=>[p.email,p.display_name].some(v=>String(v||"").toLowerCase().includes(q)));
+}
+function renderCounselorList(){
+  const q=document.getElementById("counselorListSearch").value.trim().toLowerCase();
+  const filtered=getFilteredCounselorList();
+  const {pageItems,page,totalPages}=paginate(filtered,counselorListPage,COUNSELOR_LIST_PAGE_SIZE);
+  counselorListPage=page;
+
+  const unassignedStats=counselorListStats.__unassigned__||{studentCount:0,sentCount:0,todayCount:0};
+  const unassignedRow=(!q && page===1 && unassignedStats.studentCount>0) ? `<tr>
+      <td><span class="muted">（未指派）</span></td>
+      <td class="muted">—</td>
+      <td>${esc(unassignedStats.studentCount)}</td>
+      <td>${esc(unassignedStats.sentCount)}</td>
+      <td>${esc(unassignedStats.todayCount)}</td>
+      <td><a class="btn" href="students.html?counselor=__unassigned__">查看學員</a></td>
+    </tr>` : "";
+
+  const rows=pageItems.map(p=>{
+    const email=(p.email||"").toLowerCase();
+    const stats=counselorListStats[email]||{studentCount:0,sentCount:0,todayCount:0};
+    return `<tr>
+      <td>${esc(p.email)}</td>
+      <td>${esc(p.display_name||"")}</td>
+      <td>${esc(stats.studentCount)}</td>
+      <td>${esc(stats.sentCount)}</td>
+      <td>${esc(stats.todayCount)}</td>
+      <td><a class="btn" href="students.html?counselor=${encodeURIComponent(p.email||"")}">查看學員</a></td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("counselorListRows").innerHTML=(unassignedRow+rows) || `<tr><td colspan="6" class="empty-state">尚無符合條件的諮詢師帳號。</td></tr>`;
+  renderPagination("counselorListPagination",page,totalPages,p=>{counselorListPage=p;renderCounselorList();});
+}
+
+// ------------------------------------------------------------
+// 視圖二：學員清單（原有功能：搜尋/批次/諮詢師篩選、PDF下載、報告複製）
+// ------------------------------------------------------------
 function onStudentFilterChange(){
   studentPage=1;
   renderSubmissions();
@@ -108,9 +268,9 @@ function populateFilters(){
     if(r.counselor_email) counselors.add(r.counselor_email);
   });
   batchSel.innerHTML='<option value="">全部批次</option>'+[...batches.entries()].map(([code,name])=>`<option value="${escAttr(code)}">${esc(name)}（${esc(code)}）</option>`).join("");
-  counselorSel.innerHTML='<option value="">全部諮詢師</option>'+[...counselors].sort().map(e=>`<option value="${escAttr(e)}">${esc(e)}</option>`).join("");
+  counselorSel.innerHTML='<option value="">全部諮詢師</option><option value="__unassigned__">（未指派）</option>'+[...counselors].sort().map(e=>`<option value="${escAttr(e)}">${esc(e)}</option>`).join("");
   if(curBatch && batches.has(curBatch)) batchSel.value=curBatch;
-  if(curCounselor && counselors.has(curCounselor)) counselorSel.value=curCounselor;
+  if(curCounselor && (curCounselor==="__unassigned__" || counselors.has(curCounselor))) counselorSel.value=curCounselor;
 }
 function getFilteredSubmissions(){
   const q=document.getElementById("searchInput").value.trim().toLowerCase();
@@ -118,7 +278,9 @@ function getFilteredSubmissions(){
   const counselorFilter=document.getElementById("counselorFilter").value;
   return allSubmissions.filter(r=>{
     if(batchFilter && r.short_code!==batchFilter) return false;
-    if(counselorFilter && (r.counselor_email||"")!==counselorFilter) return false;
+    if(counselorFilter==="__unassigned__"){
+      if(r.counselor_email) return false;
+    }else if(counselorFilter && (r.counselor_email||"")!==counselorFilter) return false;
     if(!q) return true;
     return [r.name,r.email,r.holland_code,r.primary_type,r.secondary_type,r.third_type,r.batch_code,r.short_code,r.counselor_email].some(v=>String(v||"").toLowerCase().includes(q));
   });

@@ -13,18 +13,138 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 6 開放（重構進行中，目前請先使用 <a href="./admin.html">admin.html</a> 對應功能）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>授權方案</h2>
+          <p>管理可販售的授權方案（金額、數量），作為諮詢師購買額度時的對照表。</p>
+        </div>
+      </div>
+      <div class="batch-grid">
+        <div class="field"><label>方案名稱</label><input id="planName" placeholder="例如 單次測驗授權" value="單次測驗授權"></div>
+        <div class="field"><label>金額</label><input id="planAmount" type="number" min="0" value="100"></div>
+        <div class="field"><label>數量</label><input id="planQuantity" type="number" min="1" value="1"></div>
+        <div class="field"><label>狀態</label><select id="planStatus"><option>啟用</option><option>停用</option></select></div>
+        <div class="field" style="grid-column:1/-1"><label>備註</label><input id="planNote" placeholder="例如：單次測驗 100 元"></div>
+        <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="saveLicensePlan()">新增授權方案</button></div>
+      </div>
+      <div id="planMsg" class="notice hidden"></div>
+
+      <hr class="section-divider">
+
+      <div class="toolbar">
+        <div class="left"><input id="planSearchInput" placeholder="搜尋方案名稱..." oninput="onPlanFilterChange()"></div>
+        <div class="right"><button class="btn" onclick="loadLicensePlans()">重新整理</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>方案名稱</th><th>金額</th><th>數量</th><th>狀態</th><th>備註</th><th>建立時間</th><th>管理</th></tr></thead>
+          <tbody id="planRows"></tbody>
+        </table>
+      </div>
+      <div id="planPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="admin-common.js"></script>
 <script src="admin-auth.js"></script>
+<script src="admin-logs.js"></script>
 <script>
+let allLicensePlans=[];
+let planPage=1;
+const PLAN_PAGE_SIZE=10;
+
 (async function init(){
   const auth=await requireOwner();
   if(!auth) return;
   renderAdminShell("plans",{title:"授權方案",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadLicensePlans();
 })();
+
+function onPlanFilterChange(){
+  planPage=1;
+  renderLicensePlans();
+}
+async function loadLicensePlans(){
+  hideMsg("planMsg");
+  const {data,error}=await sb.from("license_plans").select("*").order("created_at",{ascending:false});
+  if(error){showMsg("planMsg","授權方案讀取失敗："+error.message,true);return;}
+  allLicensePlans=data||[];
+  renderLicensePlans();
+}
+function getFilteredPlans(){
+  const q=document.getElementById("planSearchInput").value.trim().toLowerCase();
+  if(!q) return allLicensePlans;
+  return allLicensePlans.filter(p=>String(p.plan_name||"").toLowerCase().includes(q));
+}
+function renderLicensePlans(){
+  const filtered=getFilteredPlans();
+  const {pageItems,page,totalPages}=paginate(filtered,planPage,PLAN_PAGE_SIZE);
+  planPage=page;
+  document.getElementById("planRows").innerHTML=pageItems.length ? pageItems.map(p=>`<tr>
+    <td><strong>${esc(p.plan_name)}</strong></td>
+    <td>${esc(p.amount)}</td>
+    <td>${esc(p.quantity)}</td>
+    <td><span class="pill">${esc(p.status)}</span></td>
+    <td>${esc(p.note||"")}</td>
+    <td>${esc(fmtTime(p.created_at))}</td>
+    <td><div class="batch-actions">
+      <button class="btn" onclick="editLicensePlan('${escAttr(p.id)}')">修改</button>
+      <button class="btn danger" onclick="deleteLicensePlan('${escAttr(p.id)}')">刪除</button>
+    </div></td>
+  </tr>`).join("") : `<tr><td colspan="7" class="empty-state">尚未建立授權方案。</td></tr>`;
+  renderPagination("planPagination",page,totalPages,p=>{planPage=p;renderLicensePlans();});
+}
+async function saveLicensePlan(){
+  hideMsg("planMsg");
+  const planName=document.getElementById("planName").value.trim();
+  const amount=parseFloat(document.getElementById("planAmount").value)||0;
+  const quantity=parseInt(document.getElementById("planQuantity").value,10)||1;
+  const status=document.getElementById("planStatus").value;
+  const note=document.getElementById("planNote").value.trim();
+  if(!planName){showMsg("planMsg","請輸入方案名稱。",true);return;}
+  const {data,error}=await sb.from("license_plans").insert({plan_name:planName,amount,quantity,status,note}).select("*").single();
+  if(error){showMsg("planMsg","新增失敗："+error.message,true);return;}
+  showMsg("planMsg","授權方案已新增。");
+  document.getElementById("planNote").value="";
+  await logAction({actionType:"create_plan",targetType:"license_plan",targetId:data.id,after:data});
+  await loadLicensePlans();
+}
+function findLicensePlan(id){return allLicensePlans.find(p=>String(p.id)===String(id))||null;}
+async function editLicensePlan(id){
+  const p=findLicensePlan(id);
+  if(!p){showMsg("planMsg","找不到此方案，請重新整理。",true);return;}
+  const planName=prompt("方案名稱",p.plan_name||"");
+  if(planName===null) return;
+  const amount=prompt("金額",p.amount??0);
+  if(amount===null) return;
+  const quantity=prompt("數量",p.quantity??1);
+  if(quantity===null) return;
+  const status=prompt("狀態：啟用 或 停用",p.status||"啟用");
+  if(status===null) return;
+  const note=prompt("備註",p.note||"");
+  if(note===null) return;
+  const patch={
+    plan_name:planName,amount:parseFloat(amount)||0,quantity:parseInt(quantity,10)||1,status,note
+  };
+  const {error}=await sb.from("license_plans").update(patch).eq("id",id);
+  if(error){showMsg("planMsg","更新失敗："+error.message,true);return;}
+  showMsg("planMsg","授權方案已更新。");
+  await logAction({actionType:"update_plan",targetType:"license_plan",targetId:id,before:p,after:patch});
+  await loadLicensePlans();
+}
+async function deleteLicensePlan(id){
+  const p=findLicensePlan(id);
+  if(!p){showMsg("planMsg","找不到此方案，請重新整理。",true);return;}
+  if(!confirm(`確定要刪除方案「${p.plan_name||""}」？`)) return;
+  const {error}=await sb.from("license_plans").delete().eq("id",id);
+  if(error){showMsg("planMsg","刪除失敗："+error.message,true);return;}
+  showMsg("planMsg","已刪除。");
+  await logAction({actionType:"delete_plan",targetType:"license_plan",targetId:id,before:p});
+  await loadLicensePlans();
+}
 </script>
 </body>
 </html>

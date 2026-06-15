@@ -91,10 +91,15 @@ create policy "authenticated insert logs" on logs
   for insert with check (auth.uid() is not null);
 
 -- ------------------------------------------------------------
--- 3. report_templates：報告資料庫管理（Holland/SUPER/創業適性/報告模板）
+-- 3. admin_report_templates：報告資料庫管理（Holland/SUPER/創業適性/報告模板）
 --    純後台管理介面，與 index.html 實際報告產出程式完全脫鉤，僅 owner 可用
+--    注意：表名為 admin_report_templates（不是 report_templates）——
+--    `report_templates` 已是既有資料表（2026-06-12 報告資料庫整合，供
+--    index.html 的 report-data Edge Function 讀取，欄位與用途完全不同），
+--    若沿用同名，`create table if not exists` 會是 no-op 而不會建立我們
+--    需要的欄位，因此本頁改用新表名避免撞名。
 -- ------------------------------------------------------------
-create table if not exists report_templates (
+create table if not exists admin_report_templates (
   id uuid primary key default gen_random_uuid(),
   category text not null,       -- holland | super | startup | case_template | counselor_template | ai_rule
   template_key text not null,
@@ -106,8 +111,8 @@ create table if not exists report_templates (
   updated_at timestamptz not null default now(),
   unique(category, template_key)
 );
-alter table report_templates enable row level security;
+alter table admin_report_templates enable row level security;
 
-drop policy if exists "owner full access on report_templates" on report_templates;
-create policy "owner full access on report_templates" on report_templates
+drop policy if exists "owner full access on admin_report_templates" on admin_report_templates;
+create policy "owner full access on admin_report_templates" on admin_report_templates
   for all using (is_owner()) with check (is_owner());

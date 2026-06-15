@@ -35,8 +35,8 @@
         <div class="field"><label>標題</label><input id="tplTitle" placeholder="例如 實作型（Realistic）"></div>
         <div class="field"><label>狀態</label><select id="tplStatus"><option value="active">啟用</option><option value="inactive">停用</option></select></div>
         <div class="field" style="grid-column:1/-1">
-          <label>內容（JSON 格式）</label>
-          <textarea id="tplContent" rows="6" placeholder='{"description":"...","traits":["..."]}'>{}</textarea>
+          <label>內容說明</label>
+          <textarea id="tplContent" rows="6" placeholder="請輸入此模板的說明文字內容..."></textarea>
         </div>
         <div class="field">
           <label>&nbsp;</label>
@@ -104,7 +104,7 @@ function onTplFilterChange(){
 }
 async function loadTemplates(){
   hideMsg("reportMsg");
-  const {data,error}=await sb.from("report_templates").select("*").order("category",{ascending:true}).order("template_key",{ascending:true});
+  const {data,error}=await sb.from("admin_report_templates").select("*").order("category",{ascending:true}).order("template_key",{ascending:true});
   if(error){
     showMsg("reportMsg","報告模板讀取失敗（可能尚未執行 database/admin-backend-new-tables.sql）："+error.message,true);
     allTemplates=[];
@@ -128,7 +128,7 @@ function renderTemplates(){
   const {pageItems,page,totalPages}=paginate(filtered,tplPage,TPL_PAGE_SIZE);
   tplPage=page;
   document.getElementById("tplRows").innerHTML=pageItems.length ? pageItems.map(t=>{
-    const preview=JSON.stringify(t.content||{});
+    const preview=(t.content&&t.content.text)||"";
     return `<tr>
       <td><span class="pill">${esc(CATEGORY_LABELS[t.category]||t.category)}</span></td>
       <td><span class="code">${esc(t.template_key)}</span></td>
@@ -151,31 +151,25 @@ async function saveTemplate(){
   const templateKey=document.getElementById("tplKey").value.trim();
   const title=document.getElementById("tplTitle").value.trim();
   const status=document.getElementById("tplStatus").value;
-  const contentRaw=document.getElementById("tplContent").value.trim();
+  const contentText=document.getElementById("tplContent").value.trim();
   if(!templateKey){showMsg("reportMsg","請輸入模板代碼。",true);return;}
-  let content;
-  try{
-    content=contentRaw?JSON.parse(contentRaw):{};
-  }catch(e){
-    showMsg("reportMsg","內容必須是合法的 JSON 格式："+e.message,true);
-    return;
-  }
+  const content={text:contentText};
   const patch={category,template_key:templateKey,title,status,content,updated_at:new Date().toISOString()};
   if(editingTplId){
     const before=findTemplate(editingTplId);
-    const {error}=await sb.from("report_templates").update(patch).eq("id",editingTplId);
+    const {error}=await sb.from("admin_report_templates").update(patch).eq("id",editingTplId);
     if(error){showMsg("reportMsg","更新失敗："+error.message,true);return;}
     showMsg("reportMsg","模板已更新。");
     await logAction({actionType:"update_report_template",targetType:"report_template",targetId:editingTplId,before,after:patch});
     cancelEditTemplate();
   }else{
-    const {data,error}=await sb.from("report_templates").insert(patch).select("*").single();
+    const {data,error}=await sb.from("admin_report_templates").insert(patch).select("*").single();
     if(error){showMsg("reportMsg","新增失敗（可能尚未執行 database/admin-backend-new-tables.sql，或分類+代碼重複）："+error.message,true);return;}
     showMsg("reportMsg","模板已新增。");
     await logAction({actionType:"create_report_template",targetType:"report_template",targetId:data.id,after:data});
     document.getElementById("tplKey").value="";
     document.getElementById("tplTitle").value="";
-    document.getElementById("tplContent").value="{}";
+    document.getElementById("tplContent").value="";
   }
   await loadTemplates();
 }
@@ -187,7 +181,7 @@ function editTemplate(id){
   document.getElementById("tplKey").value=t.template_key||"";
   document.getElementById("tplTitle").value=t.title||"";
   document.getElementById("tplStatus").value=t.status||"active";
-  document.getElementById("tplContent").value=JSON.stringify(t.content||{},null,2);
+  document.getElementById("tplContent").value=(t.content&&t.content.text)||"";
   document.getElementById("tplSaveBtn").textContent="更新模板";
   document.getElementById("tplCancelBtn").classList.remove("hidden");
   document.getElementById("tplKey").scrollIntoView({behavior:"smooth",block:"center"});
@@ -197,7 +191,7 @@ function cancelEditTemplate(){
   document.getElementById("tplKey").value="";
   document.getElementById("tplTitle").value="";
   document.getElementById("tplStatus").value="active";
-  document.getElementById("tplContent").value="{}";
+  document.getElementById("tplContent").value="";
   document.getElementById("tplSaveBtn").textContent="新增模板";
   document.getElementById("tplCancelBtn").classList.add("hidden");
 }
@@ -205,7 +199,7 @@ async function deleteTemplate(id){
   const t=findTemplate(id);
   if(!t) return;
   if(!confirm(`確定要刪除模板「${t.template_key||""}」（${CATEGORY_LABELS[t.category]||t.category}）？`)) return;
-  const {error}=await sb.from("report_templates").delete().eq("id",id);
+  const {error}=await sb.from("admin_report_templates").delete().eq("id",id);
   if(error){showMsg("reportMsg","刪除失敗："+error.message,true);return;}
   showMsg("reportMsg","已刪除。");
   await logAction({actionType:"delete_report_template",targetType:"report_template",targetId:id,before:t});

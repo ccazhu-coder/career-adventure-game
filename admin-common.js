@@ -3,7 +3,7 @@
 // 與 admin.html / counselor.html 使用相同的 Supabase 專案與金鑰，
 // 僅讀寫既有表（profiles/batches/submissions/license_plans/
 // counselor_authorizations）與新表（credit_transactions/logs/
-// report_templates），不影響前台測驗。
+// admin_report_templates），不影響前台測驗。
 // ============================================================
 const SUPABASE_URL = "https://bkovbcdqhljrnpyhfqdq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrb3ZiY2RxaGxqcm5weWhmcWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzgwMjAsImV4cCI6MjA5NjcxNDAyMH0.zp5poRNp3f1Dsuehaatkqj4etXA61aNBLoGew57FGY4";

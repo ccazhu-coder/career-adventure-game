@@ -30,7 +30,7 @@
 | 8 | 諮詢師 Email 寄送邏輯 | ✅ | 未新增/修改任何寄信相關程式碼 |
 | 9 | 既有資料欄位名稱 | ✅ | 新頁面查詢的欄位（`profiles/batches/submissions/license_plans/counselor_authorizations`）均為既有欄位名，未 rename |
 | 10 | 不得刪除既有資料 | ✅ | 新增的刪除操作（`deleteBatch`/`deletePlan`/`deleteAuthorization`/`deleteCounselor`）皆為新頁面操作既有「管理功能」，與 admin.html/counselor.html 既有刪除邏輯一致，非新增風險 |
-| 11 | 不得覆蓋既有 localStorage/Firebase/Supabase 資料 | ✅ | 新表 `credit_transactions`/`logs`/`report_templates` 為 `create table if not exists`，純新增；既有表僅新增 `select`，唯一的 `update`（批次/方案/額度管理）與 admin.html/counselor.html 既有行為一致 |
+| 11 | 不得覆蓋既有 localStorage/Firebase/Supabase 資料 | ✅ | 新表 `credit_transactions`/`logs`/`admin_report_templates` 為 `create table if not exists`，純新增；既有表僅新增 `select`，唯一的 `update`（批次/方案/額度管理）與 admin.html/counselor.html 既有行為一致 |
 | 12 | 不得因後台重構造成前台無法測驗/送出/產生報告/寄信 | ✅ | 同 1-8，`index.html` 零異動，且新頁面與前台無共用程式碼或資料表寫入路徑交集 |
 
 ---
@@ -56,12 +56,12 @@
 
 | 項目 | 狀態 | 說明 |
 |---|---|---|
-| SQL 語法正確性、`create table if not exists` 純新增 | ✅ | 三張新表（`credit_transactions`/`logs`/`report_templates`），未修改既有表結構 |
+| SQL 語法正確性、`create table if not exists` 純新增 | ✅ | 三張新表（`credit_transactions`/`logs`/`admin_report_templates`），未修改既有表結構；`admin_report_templates` 改用此名以避免與既有（2026-06-12 報告資料庫整合所建立、欄位不同的）`report_templates` 撞名 |
 | RLS：owner 對三張新表皆全權限 | ⏳ | 需在 Supabase SQL Editor 執行遷移後，用 owner 帳號測試 CRUD |
 | RLS：consultant 對 `credit_transactions` 僅能 `select` 自己 email 的紀錄 | ⏳ | 需 consultant 帳號登入後，於 `counselor-credits.html` 確認能讀到自己的紀錄、且 PostgREST 直接 `insert/update/delete` 會被拒絕 |
 | RLS：consultant 可 `insert`（不可 `select`）`logs` | ⏳ | 需 consultant 帳號操作任一會 `logAction()` 的功能（如下載 PDF），確認寫入成功；同時確認 `logs.html`（owner-only）consultant 無法存取 |
-| RLS：`report_templates` consultant 完全無權限 | ⏳ | 需 consultant 帳號嘗試 `sb.from("report_templates").select("*")`，預期回傳空陣列或權限錯誤 |
-| **使用者待辦：執行一次 SQL 遷移** | ⏳ | 請至 Supabase SQL Editor 貼上並執行 `database/admin-backend-new-tables.sql`（一次性，後續所有 credits/logs/report_templates 功能才有資料可寫） |
+| RLS：`admin_report_templates` consultant 完全無權限 | ⏳ | 需 consultant 帳號嘗試 `sb.from("admin_report_templates").select("*")`，預期回傳空陣列或權限錯誤 |
+| **使用者待辦：執行一次 SQL 遷移** | ⏳ | 請至 Supabase SQL Editor 貼上並執行 `database/admin-backend-new-tables.sql`（一次性，後續所有 credits/logs/admin_report_templates 功能才有資料可寫） |
 
 ---
 
@@ -102,7 +102,7 @@
 
 ### 4.7 reports.html（Phase 7）
 - ✅ 未登入 → 導向 `admin-login.html`
-- ✅ `report_templates` CRUD 語法正確，與 `index.html` 報告產生邏輯完全脫鉤（純管理介面）
+- ✅ `admin_report_templates` CRUD 語法正確，與 `index.html` 報告產生邏輯完全脫鉤（純管理介面）；內容欄位為純文字（`{text:"..."}`），不顯示 JSON/程式碼語法
 - ⏳ owner 登入後：新增/修改/刪除報告模板皆寫入 `logs`（`create/update/delete_report_template`）
 
 ### 4.8 logs.html（Phase 8）
@@ -153,7 +153,7 @@
 ## 六、使用者待辦事項彙總
 
 1. **執行一次資料庫遷移**：到 Supabase SQL Editor 貼上並執行
-   `database/admin-backend-new-tables.sql`（建立 `credit_transactions`/`logs`/`report_templates` 三張新表 + RLS）。
+   `database/admin-backend-new-tables.sql`（建立 `credit_transactions`/`logs`/`admin_report_templates` 三張新表 + RLS）。
 2. **以 owner 帳號登入測試**：依「四、Admin 後台逐頁 BDD」中所有 ⏳ 項目逐一點擊驗證，
    特別是額度檢查、`logs` 寫入、Sidebar active 狀態。
 3. **以 consultant 帳號登入測試**：依「五、Counselor 後台逐頁 BDD」中所有 ⏳ 項目逐一點擊驗證，

@@ -13,18 +13,164 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 10 開放（重構進行中，目前請先使用 <a href="./counselor.html">counselor.html</a> 對應功能）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>學員資料</h2>
+          <p>僅顯示您負責批次的學員測驗結果，可搜尋姓名／Email／何倫碼、依批次篩選，並下載 PDF、查看諮詢分析與文字報告。</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="left">
+          <input id="searchInput" oninput="onStudentFilterChange()" placeholder="搜尋姓名、Email、短碼、何倫碼...">
+          <select id="batchFilter" onchange="onStudentFilterChange()"><option value="">全部批次</option></select>
+        </div>
+        <div class="right">
+          <button class="btn" onclick="loadSubmissions()">重新整理</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="totalCount">0</b><span>總測驗紀錄</span></div>
+        <div class="stat"><b id="sentCount">0</b><span>PDF 已寄送</span></div>
+        <div class="stat"><b id="todayCount">0</b><span>今日新增</span></div>
+        <div class="stat"><b id="visibleCount">0</b><span>目前顯示</span></div>
+      </div>
+      <div id="studentMsg" class="notice hidden"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>送出時間</th><th>姓名</th><th>Email</th><th>批次/短碼</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
+          </thead>
+          <tbody id="submissionRows"></tbody>
+        </table>
+      </div>
+      <div id="studentPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="counselor-common.js"></script>
 <script src="counselor-auth.js"></script>
+<script src="counselor-logs.js"></script>
 <script>
+let allSubmissions=[];
+let studentPage=1;
+let counselorEmail="";
+const STUDENT_PAGE_SIZE=20;
+
 (async function init(){
   const auth=await requireConsultant();
   if(!auth) return;
+  counselorEmail=auth.email;
   renderCounselorShell("counselor-students",{title:"學員資料",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadSubmissions();
+  const batchParam=new URLSearchParams(location.search).get("batch");
+  if(batchParam){
+    const sel=document.getElementById("batchFilter");
+    if([...sel.options].some(o=>o.value===batchParam)){
+      sel.value=batchParam;
+      onStudentFilterChange();
+    }
+  }
 })();
+
+function onStudentFilterChange(){
+  studentPage=1;
+  renderSubmissions();
+}
+
+async function loadSubmissions(){
+  hideMsg("studentMsg");
+  const {data,error}=await sb.from("submissions").select("*").eq("counselor_email",counselorEmail).order("created_at",{ascending:false});
+  if(error){showMsg("studentMsg","學員資料讀取失敗："+error.message,true);return;}
+  allSubmissions=data||[];
+  populateFilters();
+  renderSubmissions();
+}
+function populateFilters(){
+  const batchSel=document.getElementById("batchFilter");
+  const curBatch=batchSel.value;
+  const batches=new Map();
+  allSubmissions.forEach(r=>{
+    if(r.short_code) batches.set(r.short_code,r.batch_name||r.batch_code||r.short_code);
+  });
+  batchSel.innerHTML='<option value="">全部批次</option>'+[...batches.entries()].map(([code,name])=>`<option value="${escAttr(code)}">${esc(name)}（${esc(code)}）</option>`).join("");
+  if(curBatch && batches.has(curBatch)) batchSel.value=curBatch;
+}
+function getFilteredSubmissions(){
+  const q=document.getElementById("searchInput").value.trim().toLowerCase();
+  const batchFilter=document.getElementById("batchFilter").value;
+  return allSubmissions.filter(r=>{
+    if(batchFilter && r.short_code!==batchFilter) return false;
+    if(!q) return true;
+    return [r.name,r.email,r.holland_code,r.primary_type,r.secondary_type,r.third_type,r.batch_code,r.short_code].some(v=>String(v||"").toLowerCase().includes(q));
+  });
+}
+function renderSubmissions(){
+  const filtered=getFilteredSubmissions();
+  document.getElementById("totalCount").textContent=allSubmissions.length;
+  document.getElementById("sentCount").textContent=allSubmissions.filter(r=>String(r.pdf_send_status||"").includes("成功")).length;
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById("todayCount").textContent=allSubmissions.filter(r=>String(r.created_at||"").slice(0,10)===today).length;
+  document.getElementById("visibleCount").textContent=filtered.length;
+
+  const {pageItems,page,totalPages}=paginate(filtered,studentPage,STUDENT_PAGE_SIZE);
+  studentPage=page;
+  document.getElementById("submissionRows").innerHTML=pageItems.length ? pageItems.map(r=>{
+    const valueTop=Array.isArray(r.value_top)?r.value_top.join("、"):"";
+    const advisorReport=r.counselor_report||"";
+    const caseReportText=r.case_report_text||"";
+    const reportId=`advisorReport_${escAttr(r.id)}`;
+    const caseTextId=`caseReportText_${escAttr(r.id)}`;
+    const hasPdf=!!r.pdf_path;
+    const hasCounselorPdf=!!r.counselor_pdf_path;
+    return `<tr>
+      <td>${esc(fmtTime(r.created_at))}</td>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${esc(r.email)}</td>
+      <td>${esc(r.batch_name||r.batch_code||"")}<br><span class="code">${esc(r.short_code||"")}</span></td>
+      <td><span class="code">${esc(r.holland_code)}</span></td>
+      <td>${esc(r.primary_type)}<br>${esc(r.secondary_type)}<br>${esc(r.third_type)}</td>
+      <td>${esc(valueTop)}</td>
+      <td>${esc(r.complete_pct)}%</td>
+      <td>${esc(r.pdf_send_status||"")}</td>
+      <td>
+        <button class="btn gold" style="${hasPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadCasePdf('${escAttr(r.id)}','${escAttr(r.pdf_path||"")}','${escAttr(r.pdf_filename||"報告.pdf")}')">下載個案報告</button>
+        <button class="btn gold" style="margin-top:6px;${hasCounselorPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadCounselorPdf('${escAttr(r.id)}','${escAttr(r.counselor_pdf_path||"")}','${escAttr(r.counselor_pdf_filename||"諮詢師報告.pdf")}')">下載諮詢報告</button>
+        <button class="btn" style="margin-top:6px;${advisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyReportSection('${reportId}','studentMsg','${escAttr(r.id)}','copy_advisor_report')">複製諮詢建議</button>
+        ${advisorReport?`<details class="advisor-box"><summary>查看諮詢師專用分析</summary><div id="${reportId}" class="advisor-report">${esc(advisorReport)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無諮詢分析</div>`}
+        <button class="btn" style="margin-top:6px;${caseReportText?"":"opacity:.55;pointer-events:none"}" onclick="copyReportSection('${caseTextId}','studentMsg','${escAttr(r.id)}','copy_case_report')">複製文字報告</button>
+        ${caseReportText?`<details class="case-box"><summary>查看可複製文字報告</summary><div id="${caseTextId}" class="case-report">${esc(caseReportText)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無文字報告</div>`}
+      </td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="10" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
+  renderPagination("studentPagination",page,totalPages,p=>{studentPage=p;renderSubmissions();});
+}
+async function downloadPdf(path,filename){
+  if(!path){showMsg("studentMsg","此筆資料尚無 PDF。",true);return false;}
+  const win=window.open("","_blank");
+  const {data,error}=await sb.storage.from("reports").createSignedUrl(path,3600,{download:filename||true});
+  if(error){if(win)win.close();showMsg("studentMsg","取得 PDF 連結失敗："+error.message,true);return false;}
+  if(win) win.location.href=data.signedUrl; else window.open(data.signedUrl,"_blank");
+  return true;
+}
+async function downloadCasePdf(id,path,filename){
+  const ok=await downloadPdf(path,filename);
+  if(ok) await logAction({actionType:"download_pdf",targetType:"submission",targetId:id,after:{filename}});
+}
+async function downloadCounselorPdf(id,path,filename){
+  const ok=await downloadPdf(path,filename);
+  if(ok) await logAction({actionType:"download_counselor_pdf",targetType:"submission",targetId:id,after:{filename}});
+}
+function copyReportSection(elId,msgId,submissionId,actionType){
+  const text=document.getElementById(elId)?.innerText||"";
+  if(!text){showMsg(msgId,"這筆資料尚無可複製的內容。",true);return;}
+  navigator.clipboard.writeText(text).then(()=>{
+    showMsg(msgId,"已複製內容。");
+    logAction({actionType,targetType:"submission",targetId:submissionId});
+  }).catch(()=>showMsg(msgId,"無法自動複製，請手動選取文字。",true));
+}
 </script>
 </body>
 </html>

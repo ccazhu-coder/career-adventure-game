@@ -13,18 +13,235 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 10 開放（重構進行中，目前請先使用 <a href="./counselor.html">counselor.html</a> 對應功能）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>建立批次</h2>
+          <p>建立後系統會自動產生短碼，學員使用「測驗網址 + ?c=短碼」進入測驗。批次會自動指派給您的 Email，您可自行修改、啟用/停用、刪除。</p>
+        </div>
+      </div>
+      <div class="batch-grid">
+        <div class="field"><label>批次代號</label><input id="batchCode" placeholder="例如 LG260613"></div>
+        <div class="field"><label>批次名稱</label><input id="batchName" placeholder="例如 2026/06/13 鹿港場"></div>
+        <div class="field"><label>數量（0=不限）</label><input id="batchQuantity" type="number" min="0" value="30"></div>
+        <div class="field"><label>狀態</label><select id="batchStatus"><option>啟用</option><option>停用</option></select></div>
+        <div class="field"><label>開始時間</label><input id="batchStart" type="datetime-local"></div>
+        <div class="field"><label>結束時間</label><input id="batchEnd" type="datetime-local"></div>
+        <div class="field"><label>&nbsp;</label><button id="createBatchBtn" class="btn primary" onclick="createBatch()">建立批次短碼</button></div>
+      </div>
+      <div id="batchMsg" class="notice hidden"></div>
+
+      <hr class="section-divider">
+
+      <div class="subhead">
+        <div>
+          <h2>我的批次</h2>
+          <p>以下為指派給您 Email 的施測批次，可搜尋批次代號／名稱／短碼並依狀態篩選。</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="left">
+          <input id="batchSearchInput" placeholder="搜尋批次代號、名稱、短碼..." oninput="onBatchFilterChange()">
+          <select id="batchStatusFilter" onchange="onBatchFilterChange()">
+            <option value="">全部狀態</option>
+            <option value="啟用">啟用</option>
+            <option value="停用">停用</option>
+          </select>
+        </div>
+        <div class="right">
+          <button class="btn" onclick="loadBatches()">重新整理</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>批次代號</th><th>批次名稱</th><th>短碼</th><th>建立日期</th><th>可用數量</th><th>已完成</th><th>未完成</th><th>施測期間</th><th>狀態</th><th>測驗連結</th><th>管理</th></tr>
+          </thead>
+          <tbody id="batchRows"></tbody>
+        </table>
+      </div>
+      <div id="batchPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="counselor-common.js"></script>
 <script src="counselor-auth.js"></script>
+<script src="counselor-logs.js"></script>
 <script>
+let allBatches=[];
+let batchPage=1;
+let counselorEmail="";
+const BATCH_PAGE_SIZE=10;
+
 (async function init(){
   const auth=await requireConsultant();
   if(!auth) return;
+  counselorEmail=auth.email;
   renderCounselorShell("counselor-batches",{title:"批次管理",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadBatches();
 })();
+
+function onBatchFilterChange(){
+  batchPage=1;
+  renderBatches();
+}
+
+async function loadBatches(){
+  hideMsg("batchMsg");
+  const {data,error}=await sb.from("batches").select("*").eq("counselor_email",counselorEmail).order("created_at",{ascending:false});
+  if(error){showMsg("batchMsg","批次讀取失敗："+error.message,true);return;}
+  allBatches=data||[];
+  renderBatches();
+}
+function getFilteredBatches(){
+  const q=document.getElementById("batchSearchInput").value.trim().toLowerCase();
+  const statusFilter=document.getElementById("batchStatusFilter").value;
+  return allBatches.filter(b=>{
+    if(statusFilter && b.status!==statusFilter) return false;
+    if(!q) return true;
+    return [b.batch_code,b.batch_name,b.short_code].some(v=>String(v||"").toLowerCase().includes(q));
+  });
+}
+function renderBatches(){
+  const filtered=getFilteredBatches();
+  const {pageItems,page,totalPages}=paginate(filtered,batchPage,BATCH_PAGE_SIZE);
+  batchPage=page;
+  document.getElementById("batchRows").innerHTML=pageItems.length ? pageItems.map(b=>{
+    const link=SITE_BASE_URL+"?c="+encodeURIComponent(b.short_code||"");
+    const remain=(b.quantity>0)?Math.max(0,(b.quantity||0)-(b.completed_count||0)):"不限";
+    return `<tr>
+      <td><strong>${esc(b.batch_code)}</strong></td>
+      <td>${esc(b.batch_name)}</td>
+      <td><span class="code">${esc(b.short_code)}</span></td>
+      <td>${esc(fmtTime(b.created_at))}</td>
+      <td>${b.quantity>0?esc(b.quantity):"不限"}</td>
+      <td>${esc(b.completed_count||0)}</td>
+      <td>${esc(remain)}</td>
+      <td>${esc(fmtTime(b.start_time))}<br>${esc(fmtTime(b.end_time))}</td>
+      <td><span class="pill">${esc(b.status)}</span></td>
+      <td><a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a>
+        <br><button class="btn" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="copyText('${escAttr(link)}','batchMsg')">複製連結</button></td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="editBatch('${escAttr(b.id)}')">修改</button>
+        <button class="btn" onclick="setBatchStatus('${escAttr(b.id)}','啟用')">啟用</button>
+        <button class="btn" onclick="setBatchStatus('${escAttr(b.id)}','停用')">停用</button>
+        <a class="btn" href="counselor-students.html?batch=${encodeURIComponent(b.short_code||"")}">查看學員</a>
+        <button class="btn" onclick="exportBatchCsv('${escAttr(b.id)}')">匯出資料</button>
+        <button class="btn danger" onclick="deleteBatch('${escAttr(b.id)}')">刪除</button>
+      </div></td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="11" class="empty-state">目前沒有指派給您的批次，可使用上方表單建立。</td></tr>`;
+  renderPagination("batchPagination",page,totalPages,p=>{batchPage=p;renderBatches();});
+}
+function findBatch(id){return allBatches.find(b=>String(b.id)===String(id))||null;}
+
+async function createBatch(){
+  hideMsg("batchMsg");
+  const btn=document.getElementById("createBatchBtn");
+  const batchCode=document.getElementById("batchCode").value.trim();
+  const batchName=document.getElementById("batchName").value.trim();
+  const quantity=parseInt(document.getElementById("batchQuantity").value,10)||0;
+  const startTime=toTimestamptz(document.getElementById("batchStart").value);
+  const endTime=toTimestamptz(document.getElementById("batchEnd").value);
+  const status=document.getElementById("batchStatus").value;
+  const missing=[];
+  if(!batchCode) missing.push("批次代號");
+  if(!batchName) missing.push("批次名稱");
+  if(missing.length){
+    showHtmlMsg("batchMsg",`<strong>尚未建立批次</strong><br>請先補齊：${missing.map(esc).join("、")}。`,"error");
+    return;
+  }
+  if(btn){btn.disabled=true;btn.textContent="建立中...";}
+  try{
+    let lastErr=null;
+    let created=null;
+    for(let i=0;i<5;i++){
+      const shortCode=genShortCode(batchCode);
+      const {data,error}=await sb.from("batches").insert({
+        batch_code:batchCode,batch_name:batchName,short_code:shortCode,quantity,
+        start_time:startTime,end_time:endTime,counselor_email:counselorEmail,status
+      }).select("*").single();
+      if(!error){created=data;lastErr=null;break;}
+      lastErr=error;
+      if(error.code!=="23505") break; // 非短碼重複，直接跳出
+    }
+    if(lastErr) throw new Error(lastErr.message);
+    await logAction({actionType:"create_batch",targetType:"batch",targetId:created.id,after:created});
+
+    const link=SITE_BASE_URL+"?c="+encodeURIComponent(created.short_code);
+    showHtmlMsg("batchMsg",`<strong>建立成功</strong><br>短碼：<span class="code">${esc(created.short_code)}</span><br>測驗連結：<a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a><br><button class="btn" style="margin-top:8px" onclick="copyText('${escAttr(link)}','batchMsg')">複製測驗連結</button>`,"success");
+    document.getElementById("batchCode").value="";
+    document.getElementById("batchName").value="";
+    await loadBatches();
+  }catch(err){
+    showHtmlMsg("batchMsg",`<strong>建立失敗</strong><br>${esc(err.message||"請稍後再試")}`,"error");
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent="建立批次短碼";}
+  }
+}
+async function editBatch(id){
+  const b=findBatch(id);
+  if(!b){showMsg("batchMsg","找不到此批次，請重新整理。",true);return;}
+  const batchName=prompt("批次名稱",b.batch_name||"");
+  if(batchName===null) return;
+  const quantity=prompt("數量（0=不限）",b.quantity??0);
+  if(quantity===null) return;
+  const startLocal=prompt("開始時間（格式 2026-06-13T08:00，留空=不限）",toLocalInput(b.start_time));
+  if(startLocal===null) return;
+  const endLocal=prompt("結束時間（格式 2026-06-15T18:00，留空=不限）",toLocalInput(b.end_time));
+  if(endLocal===null) return;
+  await updateBatch(id,{
+    batch_name:batchName,
+    quantity:parseInt(quantity,10)||0,
+    start_time:toTimestamptz(startLocal.trim()),
+    end_time:toTimestamptz(endLocal.trim())
+  });
+}
+async function setBatchStatus(id,status){
+  await updateBatch(id,{status},status==="啟用"?"enable_batch":"disable_batch");
+}
+async function updateBatch(id,patch,actionType="update_batch"){
+  hideMsg("batchMsg");
+  const before=findBatch(id);
+  showHtmlMsg("batchMsg","<strong>正在更新批次...</strong>","");
+  const {error}=await sb.from("batches").update(patch).eq("id",id);
+  if(error){showHtmlMsg("batchMsg",`<strong>更新失敗</strong><br>${esc(error.message)}`,"error");return;}
+  showHtmlMsg("batchMsg","<strong>更新成功</strong>","success");
+  await logAction({actionType,targetType:"batch",targetId:id,before,after:patch});
+  await loadBatches();
+}
+async function deleteBatch(id){
+  const b=findBatch(id);
+  if(!b){showMsg("batchMsg","找不到此批次，請重新整理。",true);return;}
+  if(!confirm(`確定要刪除批次 ${b.batch_code||""} / 短碼 ${b.short_code||""}？`)) return;
+  hideMsg("batchMsg");
+  const {error}=await sb.from("batches").delete().eq("id",id);
+  if(error){
+    showHtmlMsg("batchMsg","<strong>刪除失敗</strong><br>此批次已有學員資料，無法刪除，請改為「停用」。","error");
+    return;
+  }
+  showHtmlMsg("batchMsg","<strong>已刪除</strong>","success");
+  await logAction({actionType:"delete_batch",targetType:"batch",targetId:id,before:b});
+  await loadBatches();
+}
+function exportBatchCsv(id){
+  const b=findBatch(id);
+  if(!b) return;
+  const remain=(b.quantity>0)?Math.max(0,(b.quantity||0)-(b.completed_count||0)):"不限";
+  const link=SITE_BASE_URL+"?c="+encodeURIComponent(b.short_code||"");
+  const headers=["批次代號","批次名稱","短碼","可用數量","已完成","未完成","開始時間","結束時間","狀態","建立時間","測驗連結"];
+  const row=[b.batch_code,b.batch_name,b.short_code,b.quantity,b.completed_count||0,remain,fmtTime(b.start_time),fmtTime(b.end_time),b.status,fmtTime(b.created_at),link];
+  const csv=[headers,row].map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=`batch_${b.batch_code||b.short_code||"export"}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  logAction({actionType:"export_batch",targetType:"batch",targetId:id,after:{batch_code:b.batch_code,short_code:b.short_code}});
+}
 </script>
 </body>
 </html>

@@ -658,16 +658,28 @@ function counselorJudgment(h,s){
   const footnote='結合優勢主軸 × 工作動機 × 判讀技巧，能更全面掌握個案的職涯方向與興趣。';
   return {axis,motivation,lowPriority,tips,footnote};
 }
+const CASE_SUMMARY_TRAITS={
+  R:{primary:'喜歡動手實作、操作工具設備並透過具體成果展現能力',secondary:'操作型任務、設備工具、現場執行及具體成果產出具有一定接受度',third:'重視動手實作與具體成果的特質，在設備操作、現場執行、技術維護及成果產出'},
+  I:{primary:'喜歡觀察分析、探究問題根源並運用邏輯找出解決方案',secondary:'資料分析、問題研究、邏輯推理及知識探索具有一定接受度',third:'重視邏輯思考與知識探索的特質，在資料分析、問題研究、實驗驗證及專業學習'},
+  A:{primary:'喜歡發揮創意、嘗試新點子並透過作品展現個人風格',secondary:'創意發想、內容創作、設計表達及風格呈現具有一定接受度',third:'重視自由創作與原創表達的特質，在內容創作、設計發想、品牌呈現及創意發展'},
+  S:{primary:'喜歡關懷他人、陪伴溝通並透過服務建立良好的人際連結',secondary:'人際互動、教學陪伴、服務溝通及團隊協作具有一定接受度',third:'重視人際互動與協助他人成長的特質，在團隊合作、服務支持、溝通協調及人才培育'},
+  E:{primary:'喜歡規劃、協調、整合資源及帶領他人完成目標',secondary:'提案企劃、資源整合、團隊推動及目標達成具有一定接受度',third:'重視影響力與成果展現的特質，在提案說服、專案推動、資源整合及目標管理'},
+  C:{primary:'喜歡依循清楚規則、整理資料並透過穩定執行確保正確與效率',secondary:'制度建立、行政管理、流程規劃及細節執行具有一定接受度',third:'重視秩序與正確效率的特質，在資料整理、行政管理、流程規劃及品質控管'}
+};
 function counselorCaseSummary(h,s){
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5), lows=s.low.slice(0,3);
   const role=careerRoleTitle(h,s);
   const primary=top3[0] || {type:'-', meta:{name:'-', role:'-'}, score:0};
   const secondary=top3[1] || {type:'-', meta:{name:'-'}, score:0};
+  const third=top3[2] || null;
+  const primaryTrait=CASE_SUMMARY_TRAITS[primary.type]?.primary || '';
+  const secondaryTrait=CASE_SUMMARY_TRAITS[secondary.type]?.secondary || '';
+  const thirdTrait=third ? (CASE_SUMMARY_TRAITS[third.type]?.third || '') : '';
   const valueNames=values.slice(0,3).map(v=>v.name).join('、');
   const lowNames=lows.map(v=>v.name).join('、');
   return [
     `本個案目前呈現「${role}」傾向，何倫碼前三高為 ${top3.map(x=>`${x.type}型${x.meta.name}（${x.score}）`).join('、')}。`,
-    `主型 ${primary.type} 型顯示其在「${primary.meta.role}」相關任務上較容易產生投入感；次型 ${secondary.type} 型則可視為輔助興趣或第二探索方向。`,
+    `主型 ${primary.type} 型顯示其在「${primary.meta.role}」相關任務上較容易產生投入感${primaryTrait?'，'+primaryTrait:''}；次型 ${secondary.type} 型則可視為輔助興趣或第二探索方向${secondaryTrait?'，代表其對'+secondaryTrait:''}${third&&thirdTrait?`；第三碼 ${third.type} 型${third.meta.name}則反映其${thirdTrait}相關情境中較容易展現優勢。`:'。'}`,
     `SUPER 價值觀以 ${valueNames} 為優先，代表工作選擇不宜只看職稱，需同步檢核任務內容、回饋方式與工作條件是否能支持這些價值。`,
     `低優先價值觀為 ${lowNames || '暫無明顯低分項'}，諮詢時可確認這些分數較低是「真的不在意」，或是目前經驗不足、理解不足所致。`
   ];

@@ -13,18 +13,205 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 7 開放（重構進行中，目前請先使用 <a href="./admin.html">admin.html</a> 對應功能）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>報告資料庫管理</h2>
+          <p>管理 Holland 何倫碼／SUPER 價值觀／創業適性／個案與諮詢師報告模板等內容片段。<strong>本頁僅供後台管理與留存，不會影響 index.html 既有的報告產生流程</strong>，可作為未來報告內容調整的草稿與備份。</p>
+        </div>
+      </div>
+      <div class="batch-grid">
+        <div class="field"><label>分類</label>
+          <select id="tplCategory">
+            <option value="holland">Holland 何倫碼</option>
+            <option value="super">SUPER 價值觀</option>
+            <option value="startup">創業適性</option>
+            <option value="case_template">個案報告模板</option>
+            <option value="counselor_template">諮詢師報告模板</option>
+            <option value="ai_rule">AI 規則</option>
+          </select>
+        </div>
+        <div class="field"><label>模板代碼（同分類下需唯一）</label><input id="tplKey" placeholder="例如 R / 投資型 / intro"></div>
+        <div class="field"><label>標題</label><input id="tplTitle" placeholder="例如 實作型（Realistic）"></div>
+        <div class="field"><label>狀態</label><select id="tplStatus"><option value="active">啟用</option><option value="inactive">停用</option></select></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>內容（JSON 格式）</label>
+          <textarea id="tplContent" rows="6" placeholder='{"description":"...","traits":["..."]}'>{}</textarea>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button id="tplSaveBtn" class="btn gold" onclick="saveTemplate()">新增模板</button>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button id="tplCancelBtn" class="btn hidden" onclick="cancelEditTemplate()">取消編輯</button>
+        </div>
+      </div>
+      <div id="reportMsg" class="notice hidden"></div>
+
+      <hr class="section-divider">
+
+      <div class="toolbar">
+        <div class="left">
+          <input id="tplSearchInput" placeholder="搜尋模板代碼、標題..." oninput="onTplFilterChange()">
+          <select id="tplCategoryFilter" onchange="onTplFilterChange()">
+            <option value="">全部分類</option>
+            <option value="holland">Holland 何倫碼</option>
+            <option value="super">SUPER 價值觀</option>
+            <option value="startup">創業適性</option>
+            <option value="case_template">個案報告模板</option>
+            <option value="counselor_template">諮詢師報告模板</option>
+            <option value="ai_rule">AI 規則</option>
+          </select>
+        </div>
+        <div class="right"><button class="btn" onclick="loadTemplates()">重新整理</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>分類</th><th>模板代碼</th><th>標題</th><th>內容預覽</th><th>狀態</th><th>更新時間</th><th>管理</th></tr></thead>
+          <tbody id="tplRows"></tbody>
+        </table>
+      </div>
+      <div id="tplPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="admin-common.js"></script>
 <script src="admin-auth.js"></script>
+<script src="admin-logs.js"></script>
 <script>
+let allTemplates=[];
+let tplPage=1;
+let editingTplId=null;
+const TPL_PAGE_SIZE=10;
+const CATEGORY_LABELS={
+  holland:"Holland 何倫碼",super:"SUPER 價值觀",startup:"創業適性",
+  case_template:"個案報告模板",counselor_template:"諮詢師報告模板",ai_rule:"AI 規則"
+};
+
 (async function init(){
   const auth=await requireOwner();
   if(!auth) return;
   renderAdminShell("reports",{title:"報告資料庫",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadTemplates();
 })();
+
+function onTplFilterChange(){
+  tplPage=1;
+  renderTemplates();
+}
+async function loadTemplates(){
+  hideMsg("reportMsg");
+  const {data,error}=await sb.from("report_templates").select("*").order("category",{ascending:true}).order("template_key",{ascending:true});
+  if(error){
+    showMsg("reportMsg","報告模板讀取失敗（可能尚未執行 database/admin-backend-new-tables.sql）："+error.message,true);
+    allTemplates=[];
+    renderTemplates();
+    return;
+  }
+  allTemplates=data||[];
+  renderTemplates();
+}
+function getFilteredTemplates(){
+  const q=document.getElementById("tplSearchInput").value.trim().toLowerCase();
+  const category=document.getElementById("tplCategoryFilter").value;
+  return allTemplates.filter(t=>{
+    if(category && t.category!==category) return false;
+    if(!q) return true;
+    return [t.template_key,t.title].some(v=>String(v||"").toLowerCase().includes(q));
+  });
+}
+function renderTemplates(){
+  const filtered=getFilteredTemplates();
+  const {pageItems,page,totalPages}=paginate(filtered,tplPage,TPL_PAGE_SIZE);
+  tplPage=page;
+  document.getElementById("tplRows").innerHTML=pageItems.length ? pageItems.map(t=>{
+    const preview=JSON.stringify(t.content||{});
+    return `<tr>
+      <td><span class="pill">${esc(CATEGORY_LABELS[t.category]||t.category)}</span></td>
+      <td><span class="code">${esc(t.template_key)}</span></td>
+      <td>${esc(t.title||"")}</td>
+      <td class="muted" style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(preview.length>80?preview.slice(0,80)+"...":preview)}</td>
+      <td><span class="pill${t.status==="active"?" ok":""}">${esc(t.status)}</span></td>
+      <td>${esc(fmtTime(t.updated_at))}</td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="editTemplate('${escAttr(t.id)}')">編輯</button>
+        <button class="btn danger" onclick="deleteTemplate('${escAttr(t.id)}')">刪除</button>
+      </div></td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="7" class="empty-state">尚無報告模板（資料表可能尚未建立，或尚未新增資料）。</td></tr>`;
+  renderPagination("tplPagination",page,totalPages,p=>{tplPage=p;renderTemplates();});
+}
+function findTemplate(id){return allTemplates.find(t=>String(t.id)===String(id))||null;}
+async function saveTemplate(){
+  hideMsg("reportMsg");
+  const category=document.getElementById("tplCategory").value;
+  const templateKey=document.getElementById("tplKey").value.trim();
+  const title=document.getElementById("tplTitle").value.trim();
+  const status=document.getElementById("tplStatus").value;
+  const contentRaw=document.getElementById("tplContent").value.trim();
+  if(!templateKey){showMsg("reportMsg","請輸入模板代碼。",true);return;}
+  let content;
+  try{
+    content=contentRaw?JSON.parse(contentRaw):{};
+  }catch(e){
+    showMsg("reportMsg","內容必須是合法的 JSON 格式："+e.message,true);
+    return;
+  }
+  const patch={category,template_key:templateKey,title,status,content,updated_at:new Date().toISOString()};
+  if(editingTplId){
+    const before=findTemplate(editingTplId);
+    const {error}=await sb.from("report_templates").update(patch).eq("id",editingTplId);
+    if(error){showMsg("reportMsg","更新失敗："+error.message,true);return;}
+    showMsg("reportMsg","模板已更新。");
+    await logAction({actionType:"update_report_template",targetType:"report_template",targetId:editingTplId,before,after:patch});
+    cancelEditTemplate();
+  }else{
+    const {data,error}=await sb.from("report_templates").insert(patch).select("*").single();
+    if(error){showMsg("reportMsg","新增失敗（可能尚未執行 database/admin-backend-new-tables.sql，或分類+代碼重複）："+error.message,true);return;}
+    showMsg("reportMsg","模板已新增。");
+    await logAction({actionType:"create_report_template",targetType:"report_template",targetId:data.id,after:data});
+    document.getElementById("tplKey").value="";
+    document.getElementById("tplTitle").value="";
+    document.getElementById("tplContent").value="{}";
+  }
+  await loadTemplates();
+}
+function editTemplate(id){
+  const t=findTemplate(id);
+  if(!t) return;
+  editingTplId=id;
+  document.getElementById("tplCategory").value=t.category;
+  document.getElementById("tplKey").value=t.template_key||"";
+  document.getElementById("tplTitle").value=t.title||"";
+  document.getElementById("tplStatus").value=t.status||"active";
+  document.getElementById("tplContent").value=JSON.stringify(t.content||{},null,2);
+  document.getElementById("tplSaveBtn").textContent="更新模板";
+  document.getElementById("tplCancelBtn").classList.remove("hidden");
+  document.getElementById("tplKey").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function cancelEditTemplate(){
+  editingTplId=null;
+  document.getElementById("tplKey").value="";
+  document.getElementById("tplTitle").value="";
+  document.getElementById("tplStatus").value="active";
+  document.getElementById("tplContent").value="{}";
+  document.getElementById("tplSaveBtn").textContent="新增模板";
+  document.getElementById("tplCancelBtn").classList.add("hidden");
+}
+async function deleteTemplate(id){
+  const t=findTemplate(id);
+  if(!t) return;
+  if(!confirm(`確定要刪除模板「${t.template_key||""}」（${CATEGORY_LABELS[t.category]||t.category}）？`)) return;
+  const {error}=await sb.from("report_templates").delete().eq("id",id);
+  if(error){showMsg("reportMsg","刪除失敗："+error.message,true);return;}
+  showMsg("reportMsg","已刪除。");
+  await logAction({actionType:"delete_report_template",targetType:"report_template",targetId:id,before:t});
+  if(editingTplId===id) cancelEditTemplate();
+  await loadTemplates();
+}
 </script>
 </body>
 </html>

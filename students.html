@@ -64,11 +64,20 @@ const STUDENT_PAGE_SIZE=20;
   if(!auth) return;
   renderAdminShell("students",{title:"學員資料",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
   await loadSubmissions();
-  const batchParam=new URLSearchParams(location.search).get("batch");
+  const params=new URLSearchParams(location.search);
+  const batchParam=params.get("batch");
   if(batchParam){
     const sel=document.getElementById("batchFilter");
     if([...sel.options].some(o=>o.value===batchParam)){
       sel.value=batchParam;
+      onStudentFilterChange();
+    }
+  }
+  const counselorParam=params.get("counselor");
+  if(counselorParam){
+    const sel=document.getElementById("counselorFilter");
+    if([...sel.options].some(o=>o.value===counselorParam)){
+      sel.value=counselorParam;
       onStudentFilterChange();
     }
   }

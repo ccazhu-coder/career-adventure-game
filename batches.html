@@ -80,6 +80,11 @@ const BATCH_PAGE_SIZE=10;
   if(!auth) return;
   renderAdminShell("batches",{title:"批次管理",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
   await loadBatches();
+  const counselorParam=new URLSearchParams(location.search).get("counselor");
+  if(counselorParam){
+    document.getElementById("batchSearchInput").value=counselorParam;
+    onBatchFilterChange();
+  }
 })();
 
 function onBatchFilterChange(){

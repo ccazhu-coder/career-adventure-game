@@ -13,18 +13,174 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 4 開放（重構進行中，目前請先使用 <a href="./admin.html">admin.html</a> 對應功能）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>建立諮詢師帳號</h2>
+          <p>建立後諮詢師即可用「Email + 密碼」登入諮詢師後台，僅能看到自己 Email 對應批次的學員資料。</p>
+        </div>
+      </div>
+      <div class="batch-grid">
+        <div class="field"><label>諮詢師 Email</label><input id="newCounselorEmail" type="email" placeholder="counselor@example.com"></div>
+        <div class="field"><label>顯示名稱</label><input id="newCounselorName" placeholder="諮詢師姓名"></div>
+        <div class="field"><label>登入密碼</label><input id="newCounselorPass" placeholder="至少 8 個字元"></div>
+        <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="createCounselor()">建立諮詢師帳號</button></div>
+      </div>
+      <div id="counselorMsg" class="notice hidden"></div>
+
+      <hr class="section-divider">
+
+      <div class="subhead">
+        <div>
+          <h2>諮詢師帳號列表</h2>
+          <p>可查看每位諮詢師的剩餘額度、批次數與學員數，並重設密碼或刪除帳號。</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="left">
+          <input id="counselorSearchInput" placeholder="搜尋 Email、顯示名稱..." oninput="onCounselorFilterChange()">
+        </div>
+        <div class="right">
+          <button class="btn" onclick="loadCounselors()">重新整理</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Email</th><th>顯示名稱</th><th>角色</th><th>建立時間</th><th>剩餘額度</th><th>批次數</th><th>學員數</th><th>管理</th></tr>
+          </thead>
+          <tbody id="counselorRows"></tbody>
+        </table>
+      </div>
+      <div id="counselorPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="admin-common.js"></script>
 <script src="admin-auth.js"></script>
+<script src="admin-logs.js"></script>
 <script>
+let allCounselors=[];
+let counselorStats={};
+let counselorPage=1;
+const COUNSELOR_PAGE_SIZE=10;
+
 (async function init(){
   const auth=await requireOwner();
   if(!auth) return;
   renderAdminShell("counselors",{title:"諮詢師管理",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadCounselors();
 })();
+
+function onCounselorFilterChange(){
+  counselorPage=1;
+  renderCounselors();
+}
+
+async function loadCounselors(){
+  hideMsg("counselorMsg");
+  try{
+    const [listRes,batchesRes,submissionsRes,authRes,creditTxRes]=await Promise.all([
+      callAdminFunction({action:"list"}),
+      sb.from("batches").select("counselor_email"),
+      sb.from("submissions").select("counselor_email"),
+      sb.from("counselor_authorizations").select("counselor_email,purchased_quantity,used_quantity"),
+      sb.from("credit_transactions").select("counselor_email,delta")
+    ]);
+    allCounselors=listRes.profiles||[];
+    const batches=batchesRes.data||[];
+    const submissions=submissionsRes.data||[];
+    const balances=computeCounselorBalances(authRes.data||[],creditTxRes.data||[]);
+
+    counselorStats={};
+    allCounselors.forEach(p=>{
+      const email=(p.email||"").toLowerCase();
+      counselorStats[email]={
+        batchCount:batches.filter(b=>(b.counselor_email||"").toLowerCase()===email).length,
+        studentCount:submissions.filter(s=>(s.counselor_email||"").toLowerCase()===email).length,
+        balance:balances[email]||0
+      };
+    });
+    renderCounselors();
+  }catch(err){
+    showMsg("counselorMsg","帳號清單讀取失敗："+err.message,true);
+  }
+}
+function getFilteredCounselors(){
+  const q=document.getElementById("counselorSearchInput").value.trim().toLowerCase();
+  if(!q) return allCounselors;
+  return allCounselors.filter(p=>[p.email,p.display_name].some(v=>String(v||"").toLowerCase().includes(q)));
+}
+function renderCounselors(){
+  const filtered=getFilteredCounselors();
+  const {pageItems,page,totalPages}=paginate(filtered,counselorPage,COUNSELOR_PAGE_SIZE);
+  counselorPage=page;
+  document.getElementById("counselorRows").innerHTML=pageItems.length ? pageItems.map(p=>{
+    const isOwner=p.role==="owner";
+    const email=(p.email||"").toLowerCase();
+    const stats=counselorStats[email]||{batchCount:0,studentCount:0,balance:0};
+    return `<tr>
+      <td>${esc(p.email)}</td>
+      <td>${esc(p.display_name)}</td>
+      <td><span class="pill">${isOwner?"最高管理者":"諮詢師"}</span></td>
+      <td>${esc(fmtTime(p.created_at))}</td>
+      <td>${isOwner?"—":`<span class="pill${stats.balance<=5?" warn":" ok"}">${esc(stats.balance)}</span>`}</td>
+      <td>${isOwner?"—":esc(stats.batchCount)}</td>
+      <td>${isOwner?"—":esc(stats.studentCount)}</td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="resetCounselorPassword('${escAttr(p.id)}','${escAttr(p.email)}')">重設密碼</button>
+        <a class="btn" style="${isOwner?"opacity:.4;pointer-events:none":""}" href="batches.html?counselor=${encodeURIComponent(p.email||"")}">查看批次</a>
+        <a class="btn" style="${isOwner?"opacity:.4;pointer-events:none":""}" href="students.html?counselor=${encodeURIComponent(p.email||"")}">查看學員</a>
+        <button class="btn danger" style="${isOwner?"opacity:.4;pointer-events:none":""}" onclick="deleteCounselor('${escAttr(p.id)}','${escAttr(p.email)}')">刪除帳號</button>
+      </div></td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="8" class="empty-state">尚無符合條件的帳號。</td></tr>`;
+  renderPagination("counselorPagination",page,totalPages,p=>{counselorPage=p;renderCounselors();});
+}
+async function createCounselor(){
+  hideMsg("counselorMsg");
+  const email=document.getElementById("newCounselorEmail").value.trim().toLowerCase();
+  const displayName=document.getElementById("newCounselorName").value.trim();
+  const password=document.getElementById("newCounselorPass").value.trim();
+  if(!email||!password){showMsg("counselorMsg","請輸入 Email 與密碼。",true);return;}
+  if(password.length<8){showMsg("counselorMsg","密碼至少需要 8 個字元。",true);return;}
+  try{
+    await callAdminFunction({action:"create",email,displayName,password});
+    showHtmlMsg("counselorMsg",`<strong>諮詢師帳號已建立</strong><br>請將以下登入資訊提供給諮詢師：<br>登入網址：<a class="linkbox" href="./counselor-login.html" target="_blank">${SITE_BASE_URL}counselor-login.html</a><br>帳號：${esc(email)}　密碼：${esc(password)}`,"success");
+    await logAction({actionType:"create_counselor",targetType:"counselor",targetId:email,after:{email,display_name:displayName}});
+    document.getElementById("newCounselorEmail").value="";
+    document.getElementById("newCounselorName").value="";
+    document.getElementById("newCounselorPass").value="";
+    await loadCounselors();
+  }catch(err){
+    showMsg("counselorMsg","建立失敗："+err.message,true);
+  }
+}
+async function resetCounselorPassword(id,email){
+  const newPassword=prompt(`設定 ${email} 的新密碼（至少 8 個字元）`);
+  if(newPassword===null) return;
+  if(newPassword.length<8){showMsg("counselorMsg","密碼至少需要 8 個字元。",true);return;}
+  try{
+    await callAdminFunction({action:"resetPassword",id,newPassword});
+    showMsg("counselorMsg",`已重設 ${email} 的密碼，請告知對方新密碼：${newPassword}`);
+    await logAction({actionType:"reset_counselor_password",targetType:"counselor",targetId:email});
+  }catch(err){
+    showMsg("counselorMsg","重設失敗："+err.message,true);
+  }
+}
+async function deleteCounselor(id,email){
+  if(!confirm(`確定要刪除帳號 ${email}？刪除後該諮詢師將無法登入諮詢師後台。`)) return;
+  try{
+    await callAdminFunction({action:"delete",id});
+    showMsg("counselorMsg","帳號已刪除。");
+    await logAction({actionType:"delete_counselor",targetType:"counselor",targetId:email});
+    await loadCounselors();
+  }catch(err){
+    showMsg("counselorMsg","刪除失敗："+err.message,true);
+  }
+}
 </script>
 </body>
 </html>

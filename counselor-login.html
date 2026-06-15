@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>諮詢師後台登入｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <h1>諮詢師後台</h1>
+    <p>登入後可查看您負責批次的學員測驗資料、額度餘額與報告，並下載 PDF。</p>
+    <div class="links">
+      <a href="./index.html" target="_blank" rel="noopener">學員前台</a>
+      <a href="./admin-login.html" target="_blank" rel="noopener">管理後台</a>
+    </div>
+  </header>
+
+  <section id="loginPanel" class="panel login">
+    <h2>諮詢師登入</h2>
+    <div class="grid">
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="username" placeholder="請輸入登入 Email"></div>
+      <div class="field"><label>密碼</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="請輸入密碼"></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn primary" onclick="login()">登入後台</button></div>
+    <div class="contact-card"><div><strong>需要帳號或協助？</strong><span>請聯絡知己知途官方。</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="https://lin.ee/PbfeRUU" target="_blank" rel="noopener">加入官方 LINE</a><a class="mail" href="mailto:pucezhang@gmail.com">Email 聯絡</a></div></div>
+    <div id="loginMsg" class="notice hidden"></div>
+  </section>
+</div>
+
+<script src="counselor-common.js"></script>
+<script>
+async function login(){
+  hideMsg("loginMsg");
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPass").value;
+  if(!email||!password){showMsg("loginMsg","請輸入 Email 與密碼。",true);return;}
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){showMsg("loginMsg","登入失敗："+error.message,true);return;}
+  const {data:profile,error:perr}=await sb.from("profiles").select("role").eq("id",data.session.user.id).maybeSingle();
+  if(perr || !profile){
+    await sb.auth.signOut();
+    showMsg("loginMsg","登入失敗，找不到帳號資料，請聯絡管理者。",true);
+    return;
+  }
+  if(profile.role==="owner"){
+    location.href="dashboard.html";
+    return;
+  }
+  if(profile.role!=="consultant"){
+    await sb.auth.signOut();
+    showMsg("loginMsg","此帳號無諮詢師後台權限，請聯絡管理者。",true);
+    return;
+  }
+  location.href="counselor-dashboard.html";
+}
+
+(async function init(){
+  if(new URLSearchParams(location.search).get("denied")==="1"){
+    showMsg("loginMsg","此帳號無權限進入諮詢師後台，請聯絡管理者。",true);
+  }
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    const {data:profile}=await sb.from("profiles").select("role").eq("id",session.user.id).maybeSingle();
+    if(profile && profile.role==="consultant"){ location.href="counselor-dashboard.html"; return; }
+    if(profile && profile.role==="owner"){ location.href="dashboard.html"; return; }
+    await sb.auth.signOut();
+  }
+})();
+</script>
+</body>
+</html>

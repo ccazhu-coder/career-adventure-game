@@ -49,6 +49,11 @@ td{font-size:14px}
 .subhead h2{margin:0;color:var(--green)}
 .subhead p{margin:4px 0 0;color:var(--muted)}
 .batch-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.contact-card{margin-top:12px;background:#F1FAF4;border:1px solid #CFE8D7;border-radius:16px;padding:12px 14px;color:#1C473A;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.contact-card strong{display:block;color:#173F33}
+.contact-card span{font-size:13px;color:#49665A}
+.contact-card a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 12px;background:#173F33;color:#fff;text-decoration:none;font-weight:1000}
+.contact-card a.mail{background:#B8872E}
 .linkbox{font-size:13px;color:var(--muted);word-break:break-all}
 .advisor-report{margin-top:8px;background:#102A23;color:#F9EED7;border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}
 .case-report{margin-top:8px;background:#F7F3EA;color:#17382F;border:1px solid var(--line);border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}

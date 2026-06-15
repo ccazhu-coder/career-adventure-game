@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>額度查詢｜諮詢師後台｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="content">
+      <div class="notice">此頁面將於 Phase 11 開放（重構進行中）。</div>
+    </div>
+  </div>
+</div>
+<script src="counselor-common.js"></script>
+<script src="counselor-auth.js"></script>
+<script>
+(async function init(){
+  const auth=await requireConsultant();
+  if(!auth) return;
+  renderCounselorShell("counselor-credits",{title:"額度查詢",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+})();
+</script>
+</body>
+</html>

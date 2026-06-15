@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>儀表板｜諮詢師後台｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="content">
+
+      <div class="stats">
+        <div class="stat"><b id="statBalance">0</b><span>剩餘額度</span></div>
+        <div class="stat"><b id="statBatches">0</b><span>我的批次數</span></div>
+        <div class="stat"><b id="statStudents">0</b><span>學員總數</span></div>
+        <div class="stat"><b id="statMonth">0</b><span>本月新增測驗</span></div>
+      </div>
+
+      <hr class="section-divider">
+      <div class="subhead"><div><h2>最近批次</h2><p>最新 5 筆批次（完整列表請至「批次管理」）。</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>批次代號</th><th>批次名稱</th><th>短碼</th><th>狀態</th><th>建立時間</th></tr></thead>
+          <tbody id="recentBatchRows"></tbody>
+        </table>
+      </div>
+
+      <hr class="section-divider">
+      <div class="subhead"><div><h2>最新測驗紀錄</h2><p>最新 5 筆學員測驗（完整列表請至「學員資料」）。</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>送出時間</th><th>姓名</th><th>Email</th><th>批次/短碼</th><th>何倫碼</th></tr></thead>
+          <tbody id="recentSubmissionRows"></tbody>
+        </table>
+      </div>
+
+      <div id="dashMsg" class="notice hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script src="counselor-common.js"></script>
+<script src="counselor-auth.js"></script>
+<script>
+(async function init(){
+  const auth=await requireConsultant();
+  if(!auth) return;
+  renderCounselorShell("counselor-dashboard",{title:"儀表板",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadDashboard(auth.email);
+})();
+
+async function loadDashboard(email){
+  hideMsg("dashMsg");
+  const [batchesRes,submissionsRes,authRes,creditTxRes]=await Promise.all([
+    sb.from("batches").select("*").eq("counselor_email",email).order("created_at",{ascending:false}),
+    sb.from("submissions").select("id,created_at,name,email,batch_name,batch_code,short_code,holland_code").eq("counselor_email",email).order("created_at",{ascending:false}),
+    sb.from("counselor_authorizations").select("purchased_quantity,used_quantity").eq("counselor_email",email),
+    sb.from("credit_transactions").select("delta").eq("counselor_email",email)
+  ]);
+
+  if(batchesRes.error) showMsg("dashMsg","批次讀取失敗："+batchesRes.error.message,true);
+  else if(submissionsRes.error) showMsg("dashMsg","學員資料讀取失敗："+submissionsRes.error.message,true);
+
+  const batches=batchesRes.data||[];
+  const submissions=submissionsRes.data||[];
+  const authorizations=authRes.data||[];
+  const creditTx=creditTxRes.error?[]:(creditTxRes.data||[]);
+
+  document.getElementById("statBalance").textContent=sumBalance(authorizations,creditTx);
+  document.getElementById("statBatches").textContent=batches.length;
+  document.getElementById("statStudents").textContent=submissions.length;
+
+  const month=new Date().toISOString().slice(0,7);
+  document.getElementById("statMonth").textContent=submissions.filter(r=>String(r.created_at||"").slice(0,7)===month).length;
+
+  document.getElementById("recentBatchRows").innerHTML=batches.slice(0,5).map(b=>`<tr>
+    <td><strong>${esc(b.batch_code)}</strong></td>
+    <td>${esc(b.batch_name)}</td>
+    <td><span class="code">${esc(b.short_code)}</span></td>
+    <td><span class="pill">${esc(b.status)}</span></td>
+    <td>${esc(fmtTime(b.created_at))}</td>
+  </tr>`).join("") || `<tr><td colspan="5" class="muted">尚未建立批次，請至「批次管理」新增。</td></tr>`;
+
+  document.getElementById("recentSubmissionRows").innerHTML=submissions.slice(0,5).map(r=>`<tr>
+    <td>${esc(fmtTime(r.created_at))}</td>
+    <td>${esc(r.name)}</td>
+    <td>${esc(r.email)}</td>
+    <td>${esc(r.batch_name||r.batch_code||"")}<br><span class="code">${esc(r.short_code||"")}</span></td>
+    <td><span class="code">${esc(r.holland_code)}</span></td>
+  </tr>`).join("") || `<tr><td colspan="5" class="muted">尚無測驗紀錄。</td></tr>`;
+}
+</script>
+</body>
+</html>

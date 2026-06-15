@@ -74,7 +74,6 @@
     /* 報告 v2（紫色主題：個案／諮詢師報告）*/
     .rpt-doc{font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;color:#3F2E73;width:170mm;max-width:170mm;margin:0 auto;padding:0;line-height:1.6;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word}
     .rpt-header{border-bottom:4px solid #6B4FC9;padding-bottom:12px;margin-bottom:0;max-width:100%}
-    .rpt-pagebreak{page-break-before:always;break-before:page}
     .rpt-header .rpt-header-top{font-size:12px;color:#9B8FC4;font-weight:700}
     .rpt-header h1{margin:6px 0 8px;font-size:24px;color:#3F2E73;line-height:1.3;text-align:center;overflow-wrap:anywhere}
     .rpt-header .rpt-header-meta{font-size:12px;color:#6C7A72;display:flex;flex-wrap:wrap;gap:14px}
@@ -814,7 +813,7 @@ function rptHead(icon,title,sub){
 const RPT_AXIS_ROW='<div class="rpt-axis"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>';
 function rptBar(label,score,max,color){
   const pct=Math.min(100,Math.round(score/max*100));
-  return `<div class="rpt-bar-item"><div class="rpt-bar-top"><span class="rpt-bar-label">${escapeHtml(label)}</span><span class="rpt-bar-score" style="color:${color.text}">${score}</span></div><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${color.from},${color.to});"></div></div></div>`;
+  return `<div class="rpt-bar-item pdf-avoid"><div class="rpt-bar-top"><span class="rpt-bar-label">${escapeHtml(label)}</span><span class="rpt-bar-score" style="color:${color.text}">${score}</span></div><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${color.from},${color.to});"></div></div></div>`;
 }
 function pdfHeaderV2(reportLabel){
   const metaParts=[`✉️ Email：${escapeHtml(state.profile.email || '')}`,`📅 日期：${escapeHtml(state.profile.date || '')}`,`🔖 任務序號：${escapeHtml(accessInfo.serial || '未提供')}`];
@@ -865,19 +864,17 @@ function pdfRiasecCardV2(h){
   </div>`;
 }
 function pdfSuperCardV2(s){
-  return `<div class="rpt-card pdf-avoid">
-    ${rptHead('💎','SUPER 價值觀分數','了解自己在不同價值觀向度的重視程度，協助你探索職涯人生哲學發展方向。')}
-    ${RPT_AXIS_ROW}
+  return `<div class="rpt-card">
+    <div class="pdf-avoid">${rptHead('💎','SUPER 價值觀分數','了解自己在不同價值觀向度的重視程度，協助你探索職涯人生哲學發展方向。')}${RPT_AXIS_ROW}</div>
     ${s.ranking.map(v=>rptBar(`${v.emoji} ${v.name}`,v.score,20,RPT_SUPER_COLOR)).join('')}
   </div>`;
 }
 function pdfRankCardV2(top3,values){
-  const rankRow=(num,icon,title,desc,score,gold,longDesc)=>`<div class="rpt-rank-row ${gold?'gold':''}"><div class="rpt-rank-num">${String(num).padStart(2,'0')}</div><div class="rpt-rank-icon">${icon}</div><div class="rpt-rank-body"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span>${longDesc?`<span class="rpt-rank-desc">${escapeHtml(longDesc)}</span>`:''}</div><div class="rpt-rank-score">${score}分</div></div>`;
-  return `<div class="rpt-card pdf-avoid">
-    ${rptHead('🏅','前三型與價值觀說明')}
-    <div class="rpt-rank-group-head">⚙️ 何倫碼前3高</div>
+  const rankRow=(num,icon,title,desc,score,gold,longDesc)=>`<div class="rpt-rank-row pdf-avoid ${gold?'gold':''}"><div class="rpt-rank-num">${String(num).padStart(2,'0')}</div><div class="rpt-rank-icon">${icon}</div><div class="rpt-rank-body"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span>${longDesc?`<span class="rpt-rank-desc">${escapeHtml(longDesc)}</span>`:''}</div><div class="rpt-rank-score">${score}分</div></div>`;
+  return `<div class="rpt-card">
+    <div class="pdf-avoid">${rptHead('🏅','前三型與價值觀說明')}<div class="rpt-rank-group-head">⚙️ 何倫碼前3高</div></div>
     ${top3.map((x,i)=>rankRow(i+1,x.meta.emoji,`${x.type}型｜${x.meta.name}`,x.meta.role,x.score,false,x.meta.desc)).join('')}
-    <div class="rpt-rank-group-head" style="margin-top:12px">💎 SUPER工作價值觀前5高</div>
+    <div class="pdf-avoid rpt-rank-group-head" style="margin-top:12px">💎 SUPER工作價值觀前5高</div>
     ${values.map((v,i)=>rankRow(i+1,v.emoji,v.name,v.desc,v.score,true)).join('')}
   </div>`;
 }
@@ -998,10 +995,10 @@ async function pdfCaseReportHtml(){
     ${pdfHeaderV2('正式個案報告')}
     ${pdfRoleCardV2(h,role,top)}
     ${pdfSummaryCardV2(top3,values)}
+    ${pdfRiasecCardV2(h)}
     ${pdfHexCardV2(h)}
-    <div class="rpt-pagebreak">${pdfRiasecCardV2(h)}</div>
     ${pdfSuperCardV2(s)}
-    <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
+    ${pdfRankCardV2(top3,values)}
     ${hollandDb}
   </div>`;
 }
@@ -1017,15 +1014,15 @@ async function pdfCounselorReportHtml(){
     ${pdfHeaderV2('諮詢師報告')}
     ${pdfRoleCardV2(h,role,top)}
     ${pdfSummaryCardV2(top3,values)}
-    ${pdfHexCardV2(h)}
-    <div class="rpt-pagebreak">${pdfJudgmentCardV2(h,s)}</div>
     ${pdfRiasecCardV2(h)}
+    ${pdfHexCardV2(h)}
+    ${pdfJudgmentCardV2(h,s)}
     ${pdfSuperCardV2(s)}
-    <div class="rpt-pagebreak">${pdfRankCardV2(top3,values)}</div>
+    ${pdfRankCardV2(top3,values)}
     ${hollandDb}
     ${superDb}
     ${pdfEnvCardV2(env)}
-    <div class="rpt-pagebreak">${pdfBlocksCardV2(blocks)}</div>
+    ${pdfBlocksCardV2(blocks)}
     ${pdfFocusCardV2(focus)}
     ${pdfActionsCardV2(actionsList)}
     ${pdfNoticeCardV2()}

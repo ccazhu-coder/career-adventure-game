@@ -396,9 +396,10 @@ function renderRows(){
 }
 async function downloadPdf(path,filename){
   if(!path){showMsg("adminMsg","此筆資料尚無 PDF。",true);return;}
+  const win=window.open("","_blank");
   const {data,error}=await sb.storage.from("reports").createSignedUrl(path,3600,{download:filename||true});
-  if(error){showMsg("adminMsg","取得 PDF 連結失敗："+error.message,true);return;}
-  window.open(data.signedUrl,"_blank");
+  if(error){if(win)win.close();showMsg("adminMsg","取得 PDF 連結失敗："+error.message,true);return;}
+  if(win) win.location.href=data.signedUrl; else window.open(data.signedUrl,"_blank");
 }
 function copyBoxText(id,msgId){
   const text=document.getElementById(id)?.textContent||"";

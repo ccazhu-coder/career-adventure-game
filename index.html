@@ -146,7 +146,8 @@
     .rpt-foot{margin-top:6px;font-size:11px;color:#9B8FC4;border-top:1px solid #E6E1F7;padding-top:10px}
 
 </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -1028,30 +1029,83 @@ function waitForImages(el){
   const imgs=Array.from(el.querySelectorAll('img'));
   return Promise.all(imgs.map(img=>(img.complete && img.naturalWidth>0)?Promise.resolve():new Promise(res=>{img.onload=res;img.onerror=res;})));
 }
+const PDF_MARGIN_MM=12,PDF_CONTENT_W_MM=186,PDF_CONTENT_H_MM=273;
+function computePdfPageRanges(el){
+  const elRect=el.getBoundingClientRect();
+  const elWidth=elRect.width;
+  const elTop=elRect.top;
+  const pageHeightPx=elWidth*(PDF_CONTENT_H_MM/PDF_CONTENT_W_MM);
+  const elHeight=el.scrollHeight;
+  const breakBefore=Array.from(el.querySelectorAll('.rpt-pagebreak')).map(n=>n.getBoundingClientRect().top-elTop).filter(y=>y>0.5&&y<elHeight-0.5);
+  const avoidEls=Array.from(el.querySelectorAll('.pdf-avoid,.result-card,.rank-item,.counselor-note')).map(n=>{const r=n.getBoundingClientRect();return{top:r.top-elTop,bottom:r.bottom-elTop};}).filter(r=>(r.bottom-r.top)<=pageHeightPx+0.5);
+  const ranges=[];
+  let y=0,guard=0;
+  while(y<elHeight-0.5&&guard++<200){
+    let end=Math.min(y+pageHeightPx,elHeight);
+    for(const b of breakBefore){if(b>y+0.5&&b<end-0.5)end=Math.min(end,b);}
+    for(const r of avoidEls){if(r.top<end-0.5&&r.bottom>end+0.5&&r.top>y+0.5)end=Math.min(end,r.top);}
+    if(end<=y+0.5)end=Math.min(y+pageHeightPx,elHeight);
+    ranges.push([y,end]);
+    y=end;
+  }
+  return ranges.length?ranges:[[0,elHeight]];
+}
+async function renderPdfFromEl(el){
+  const ranges=computePdfPageRanges(el);
+  const elWidth=el.getBoundingClientRect().width;
+  const pageWrap=document.createElement('div');
+  pageWrap.style.width=elWidth+'px';
+  pageWrap.style.overflow='hidden';
+  pageWrap.style.position='relative';
+  pageWrap.style.background='#fff';
+  el.parentNode.insertBefore(pageWrap,el);
+  pageWrap.appendChild(el);
+  el.style.position='relative';
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  for(let i=0;i<ranges.length;i++){
+    const [y0,y1]=ranges[i];
+    pageWrap.style.height=(y1-y0)+'px';
+    el.style.marginTop=(-y0)+'px';
+    const canvas=await html2canvas(pageWrap,{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true});
+    const imgData=canvas.toDataURL('image/jpeg',1);
+    if(i>0)pdf.addPage();
+    const hMM=(y1-y0)*(PDF_CONTENT_W_MM/elWidth);
+    pdf.addImage(imgData,'JPEG',PDF_MARGIN_MM,PDF_MARGIN_MM,PDF_CONTENT_W_MM,hMM);
+  }
+  pageWrap.replaceWith(el);
+  el.style.marginTop='';el.style.position='';
+  return pdf;
+}
 async function createPdfBlob(type='case'){
-  if(!window.html2pdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
+  if(!window.html2canvas||!window.jspdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
   const el=document.createElement('div');
   el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();
   el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
+  const prevOverflowX=document.documentElement.style.overflowX;
+  const savedX=window.scrollX,savedY=window.scrollY;
+  document.documentElement.style.overflowX='hidden';
   document.body.appendChild(el);
   await waitForImages(el);
   try{
-    const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
-    return await html2pdf().set(opt).from(el).outputPdf('blob');
-  }finally{el.remove();}
+    const pdf=await renderPdfFromEl(el);
+    return pdf.output('blob');
+  }finally{el.remove();document.documentElement.style.overflowX=prevOverflowX;window.scrollTo(savedX,savedY);}
 }
 function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob);});}
 async function downloadPdf(btn,type='case'){
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF產生中...';}
   let el=null;
+  const prevOverflowX=document.documentElement.style.overflowX;
+  const savedX=window.scrollX,savedY=window.scrollY;
   try{
-    if(!window.html2pdf){window.print();return;}
-    el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.body.appendChild(el);
+    if(!window.html2canvas||!window.jspdf){window.print();return;}
+    el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.documentElement.style.overflowX='hidden';document.body.appendChild(el);
     await waitForImages(el);
-    const opt={margin:[12,12,12,12],filename:pdfFileName(type),image:{type:'jpeg',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.pdf-avoid','.result-card','.rank-item','.counselor-note']}};
-    await html2pdf().set(opt).from(el).save();toast('PDF 已產生');
+    const pdf=await renderPdfFromEl(el);
+    pdf.save(pdfFileName(type));toast('PDF 已產生');
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
-  finally{if(el) el.remove();if(btn){btn.disabled=false;btn.textContent=old;}}
+  finally{if(el) el.remove();document.documentElement.style.overflowX=prevOverflowX;window.scrollTo(savedX,savedY);if(btn){btn.disabled=false;btn.textContent=old;}}
 }
 function buildResultRecord(h,s,fileName,status){
   const record={};

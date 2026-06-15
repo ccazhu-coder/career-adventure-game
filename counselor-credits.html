@@ -13,18 +13,143 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 11 開放（重構進行中）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>額度查詢</h2>
+          <p>顯示您目前的授權額度與異動紀錄（唯讀）。如需新增、調整額度，請聯繫主辦單位。</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="statBalance">0</b><span>目前剩餘額度</span></div>
+        <div class="stat"><b id="statLegacy">0</b><span>原始授權剩餘</span></div>
+        <div class="stat"><b id="statLedger">0</b><span>額度異動加總</span></div>
+      </div>
+      <div id="creditMsg" class="notice hidden"></div>
+
+      <hr class="section-divider">
+
+      <div class="subhead">
+        <div>
+          <h2>授權方案記錄</h2>
+          <p>以下為主辦單位核發給您的授權方案記錄（唯讀）。</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>方案名稱</th><th>金額</th><th>購買數量</th><th>已使用</th><th>剩餘</th><th>狀態</th><th>備註</th><th>建立時間</th></tr>
+          </thead>
+          <tbody id="authRows"></tbody>
+        </table>
+      </div>
+      <div id="authPagination" class="pagination"></div>
+
+      <hr class="section-divider">
+
+      <div class="subhead">
+        <div>
+          <h2>額度異動紀錄</h2>
+          <p>以下為您額度的新增／扣除／補回等異動紀錄（唯讀）。</p>
+        </div>
+      </div>
+      <div id="txTableWrap" class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>時間</th><th>類型</th><th>異動量</th><th>原因</th><th>操作者</th></tr>
+          </thead>
+          <tbody id="txRows"></tbody>
+        </table>
+      </div>
+      <div id="txPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="counselor-common.js"></script>
 <script src="counselor-auth.js"></script>
+<script src="counselor-logs.js"></script>
 <script>
+const TX_TYPE_LABELS={grant:"新增額度",deduct:"扣除額度",restore:"補回額度",adjust:"調整",batch_create:"建立批次扣除"};
+let allAuthorizations=[];
+let allTx=[];
+let authPage=1;
+let txPage=1;
+let counselorEmail="";
+const AUTH_PAGE_SIZE=10;
+const TX_PAGE_SIZE=10;
+
 (async function init(){
   const auth=await requireConsultant();
   if(!auth) return;
+  counselorEmail=auth.email;
   renderCounselorShell("counselor-credits",{title:"額度查詢",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadAll();
 })();
+
+async function loadAll(){
+  hideMsg("creditMsg");
+  await Promise.all([loadAuthorizations(),loadCreditTransactions()]);
+  renderStats();
+  renderAuthorizations();
+  renderTx();
+}
+async function loadAuthorizations(){
+  const {data,error}=await sb.from("counselor_authorizations").select("*").eq("counselor_email",counselorEmail).order("created_at",{ascending:false});
+  if(error){showMsg("creditMsg","授權方案讀取失敗："+error.message,true);allAuthorizations=[];return;}
+  allAuthorizations=data||[];
+}
+async function loadCreditTransactions(){
+  const {data,error}=await sb.from("credit_transactions").select("*").eq("counselor_email",counselorEmail).order("created_at",{ascending:false});
+  if(error){
+    allTx=[];
+    document.getElementById("txTableWrap").innerHTML='<div class="empty-state">額度異動紀錄表尚未建立或無權限讀取，暫無資料。</div>';
+    return;
+  }
+  allTx=data||[];
+}
+function renderStats(){
+  const legacy=allAuthorizations.reduce((s,a)=>s+((a.purchased_quantity||0)-(a.used_quantity||0)),0);
+  const ledger=allTx.reduce((s,t)=>s+(t.delta||0),0);
+  document.getElementById("statLegacy").textContent=legacy;
+  document.getElementById("statLedger").textContent=(ledger>0?"+":"")+ledger;
+  document.getElementById("statBalance").textContent=sumBalance(allAuthorizations,allTx);
+}
+function renderAuthorizations(){
+  const {pageItems,page,totalPages}=paginate(allAuthorizations,authPage,AUTH_PAGE_SIZE);
+  authPage=page;
+  document.getElementById("authRows").innerHTML=pageItems.length ? pageItems.map(a=>{
+    const remain=(a.purchased_quantity||0)-(a.used_quantity||0);
+    return `<tr>
+      <td>${esc(a.plan_name)}</td>
+      <td>${esc(a.amount)}</td>
+      <td>${esc(a.purchased_quantity)}</td>
+      <td>${esc(a.used_quantity)}</td>
+      <td>${esc(remain)}</td>
+      <td><span class="pill">${esc(a.status||"")}</span></td>
+      <td>${esc(a.note||"")}</td>
+      <td>${esc(fmtTime(a.created_at))}</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="8" class="empty-state">目前尚無授權方案記錄。</td></tr>`;
+  renderPagination("authPagination",page,totalPages,p=>{authPage=p;renderAuthorizations();});
+}
+function renderTx(){
+  if(!document.getElementById("txRows")) return;
+  const {pageItems,page,totalPages}=paginate(allTx,txPage,TX_PAGE_SIZE);
+  txPage=page;
+  document.getElementById("txRows").innerHTML=pageItems.length ? pageItems.map(t=>{
+    const delta=t.delta||0;
+    return `<tr>
+      <td>${esc(fmtTime(t.created_at))}</td>
+      <td>${esc(TX_TYPE_LABELS[t.type]||t.type||"")}</td>
+      <td>${delta>0?"+":""}${esc(delta)}</td>
+      <td>${esc(t.reason||"")}</td>
+      <td>${esc(t.created_by_name||"")}</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="5" class="empty-state">目前尚無額度異動紀錄。</td></tr>`;
+  renderPagination("txPagination",page,totalPages,p=>{txPage=p;renderTx();});
+}
 </script>
 </body>
 </html>

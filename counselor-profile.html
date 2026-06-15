@@ -13,18 +13,126 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 11 開放（重構進行中）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>帳號資料</h2>
+          <p>查看您的帳號資訊，並可修改顯示名稱或變更登入密碼。Email、角色、額度由主辦單位管理，無法自行修改。</p>
+        </div>
+      </div>
+
+      <div class="batch-grid">
+        <div class="field"><label>Email</label><input id="acctEmail" disabled></div>
+        <div class="field"><label>角色</label><input id="acctRole" disabled></div>
+        <div class="field"><label>加入時間</label><input id="acctCreated" disabled></div>
+        <div class="field"><label>目前剩餘額度</label><input id="acctBalance" disabled></div>
+      </div>
+      <p class="muted" style="margin-top:8px"><a href="counselor-credits.html">查看額度明細與異動紀錄 →</a></p>
+
+      <hr class="section-divider">
+
+      <div class="subhead">
+        <div>
+          <h2>顯示名稱</h2>
+          <p>此名稱會顯示於後台介面與操作紀錄中。</p>
+        </div>
+      </div>
+      <div class="batch-grid">
+        <div class="field"><label>顯示名稱</label><input id="displayName" placeholder="例如 王老師"></div>
+        <div class="field"><label>&nbsp;</label><button id="saveNameBtn" class="btn primary" onclick="saveDisplayName()">儲存顯示名稱</button></div>
+      </div>
+      <div id="nameMsg" class="notice hidden"></div>
+
+      <hr class="section-divider">
+
+      <div class="subhead">
+        <div>
+          <h2>變更密碼</h2>
+          <p>建議使用至少 8 個字元，包含英數字組合。變更後請使用新密碼重新登入。</p>
+        </div>
+      </div>
+      <div class="batch-grid">
+        <div class="field"><label>新密碼</label><input id="newPassword" type="password" placeholder="至少 6 個字元"></div>
+        <div class="field"><label>確認新密碼</label><input id="confirmPassword" type="password" placeholder="再輸入一次"></div>
+        <div class="field"><label>&nbsp;</label><button id="savePasswordBtn" class="btn primary" onclick="savePassword()">更新密碼</button></div>
+      </div>
+      <div id="passwordMsg" class="notice hidden"></div>
+
     </div>
   </div>
 </div>
+
 <script src="counselor-common.js"></script>
 <script src="counselor-auth.js"></script>
+<script src="counselor-logs.js"></script>
 <script>
+let counselorEmail="";
+
 (async function init(){
   const auth=await requireConsultant();
   if(!auth) return;
+  counselorEmail=auth.email;
   renderCounselorShell("counselor-profile",{title:"帳號資料",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+
+  document.getElementById("acctEmail").value=auth.profile.email||auth.session.user.email||"";
+  document.getElementById("acctRole").value="諮詢師";
+  document.getElementById("acctCreated").value=fmtTime(auth.profile.created_at);
+  document.getElementById("displayName").value=auth.profile.display_name||"";
+
+  await loadBalance();
 })();
+
+async function loadBalance(){
+  const [authRes,txRes]=await Promise.all([
+    sb.from("counselor_authorizations").select("*").eq("counselor_email",counselorEmail),
+    sb.from("credit_transactions").select("*").eq("counselor_email",counselorEmail)
+  ]);
+  const authorizations=authRes.error?[]:(authRes.data||[]);
+  const creditTx=txRes.error?[]:(txRes.data||[]);
+  document.getElementById("acctBalance").value=sumBalance(authorizations,creditTx);
+}
+
+async function saveDisplayName(){
+  hideMsg("nameMsg");
+  const name=document.getElementById("displayName").value.trim();
+  if(!name){showMsg("nameMsg","顯示名稱不可空白。",true);return;}
+  const btn=document.getElementById("saveNameBtn");
+  btn.disabled=true;btn.textContent="儲存中...";
+  try{
+    const before={display_name:currentProfile?.display_name||""};
+    const {error}=await sb.from("profiles").update({display_name:name}).eq("id",currentSession.user.id);
+    if(error) throw new Error(error.message);
+    if(currentProfile) currentProfile.display_name=name;
+    showMsg("nameMsg","顯示名稱已更新。");
+    await logAction({actionType:"update_profile",targetType:"profile",targetId:currentSession.user.id,before,after:{display_name:name}});
+  }catch(err){
+    showMsg("nameMsg","更新失敗："+(err.message||"請稍後再試"),true);
+  }finally{
+    btn.disabled=false;btn.textContent="儲存顯示名稱";
+  }
+}
+
+async function savePassword(){
+  hideMsg("passwordMsg");
+  const pw=document.getElementById("newPassword").value;
+  const confirm=document.getElementById("confirmPassword").value;
+  if(!pw || pw.length<6){showMsg("passwordMsg","新密碼至少需 6 個字元。",true);return;}
+  if(pw!==confirm){showMsg("passwordMsg","兩次輸入的密碼不一致。",true);return;}
+  const btn=document.getElementById("savePasswordBtn");
+  btn.disabled=true;btn.textContent="更新中...";
+  try{
+    const {error}=await sb.auth.updateUser({password:pw});
+    if(error) throw new Error(error.message);
+    document.getElementById("newPassword").value="";
+    document.getElementById("confirmPassword").value="";
+    showMsg("passwordMsg","密碼已更新，下次登入請使用新密碼。");
+    await logAction({actionType:"update_profile",targetType:"profile",targetId:currentSession.user.id,after:{password_changed:true}});
+  }catch(err){
+    showMsg("passwordMsg","更新失敗："+(err.message||"請稍後再試"),true);
+  }finally{
+    btn.disabled=false;btn.textContent="更新密碼";
+  }
+}
 </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 :root{--bg:#F3EFE4;--paper:#FFFDF8;--ink:#162B25;--muted:#68776F;--green:#173F33;--green2:#2E6B55;--gold:#B8872E;--line:#E0D3BD;--bad:#8E4A35;--shadow:0 18px 48px rgba(26,43,35,.12)}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:linear-gradient(135deg,#F7F1E2 0%,#F3EFE4 48%,#EAF1EA 100%);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.55}
+body{margin:0;min-height:100vh;background:linear-gradient(135deg,#F7F1E2 0%,#F3EFE4 48%,#EAF1EA 100%);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 button,input,select{font:inherit}
 button{cursor:pointer}
 
@@ -10,17 +10,17 @@ button{cursor:pointer}
 .hero h1{margin:0;font-size:clamp(28px,4vw,42px);letter-spacing:0}
 .hero p{margin:8px 0 0;color:#F8ECD1}
 .hero .links{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-.hero .links a{color:#FFE9B5;font-weight:900;text-decoration:none;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;background:rgba(255,255,255,.08)}
+.hero .links a{color:#FFE9B5;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;background:rgba(255,255,255,.08)}
 .panel{margin-top:18px;background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
 .login{max-width:480px}
 
 /* ---- 共用元件 ---- */
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field label{font-weight:900;color:#354F45}
+.field label{font-weight:700;color:#354F45}
 input,select,textarea{width:100%;min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px 13px;background:#fff;color:var(--ink);outline:0}
 input:focus,select:focus,textarea:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(46,107,85,.12)}
-.btn{border:0;border-radius:999px;padding:11px 16px;font-weight:1000;background:#E8DDC4;color:#17382F}
+.btn{border:0;border-radius:999px;padding:11px 16px;font-weight:700;background:#E8DDC4;color:#17382F}
 .btn.primary{background:linear-gradient(135deg,#143B30,#24624E);color:#fff}
 .btn.gold{background:linear-gradient(135deg,#805414,#BF8E32);color:#fff}
 .btn.danger{background:var(--bad);color:#fff}
@@ -36,8 +36,8 @@ table{width:100%;border-collapse:collapse;min-width:980px}
 th,td{padding:11px 12px;border-bottom:1px solid #EEE4D6;text-align:left;vertical-align:top}
 th{position:sticky;top:0;background:#F8F2E6;color:#354F45;font-size:13px;z-index:1}
 td{font-size:14px}
-.code{font-weight:1000;color:var(--gold);letter-spacing:.08em}
-.pill{display:inline-flex;border:1px solid #D8C8A6;background:#FBF2D8;color:#6B501E;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900}
+.code{font-weight:700;color:var(--gold);letter-spacing:.08em}
+.pill{display:inline-flex;border:1px solid #D8C8A6;background:#FBF2D8;color:#6B501E;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700}
 .pill.warn{border-color:#E2B5A2;background:#F8E8E1;color:#7A3828}
 .pill.ok{border-color:#BFD9C2;background:#EEF7EF;color:#23684E}
 .muted{color:var(--muted)}
@@ -52,13 +52,13 @@ td{font-size:14px}
 .contact-card{margin-top:12px;background:#F1FAF4;border:1px solid #CFE8D7;border-radius:16px;padding:12px 14px;color:#1C473A;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 .contact-card strong{display:block;color:#173F33}
 .contact-card span{font-size:13px;color:#49665A}
-.contact-card a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 12px;background:#173F33;color:#fff;text-decoration:none;font-weight:1000}
+.contact-card a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 12px;background:#173F33;color:#fff;text-decoration:none;font-weight:700}
 .contact-card a.mail{background:#B8872E}
 .linkbox{font-size:13px;color:var(--muted);word-break:break-all}
 .advisor-report{margin-top:8px;background:#102A23;color:#F9EED7;border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}
 .case-report{margin-top:8px;background:#F7F3EA;color:#17382F;border:1px solid var(--line);border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}
 details.advisor-box,details.case-box{margin-top:8px}
-details.advisor-box summary,details.case-box summary{cursor:pointer;color:var(--green);font-weight:1000;margin-bottom:6px}
+details.advisor-box summary,details.case-box summary{cursor:pointer;color:var(--green);font-weight:700;margin-bottom:6px}
 .batch-actions{display:grid;gap:6px;min-width:92px}
 .batch-actions .btn{width:100%;padding:8px 10px;font-size:13px}
 .section-divider{margin:28px 0 0;border:0;border-top:1px dashed var(--line)}
@@ -70,10 +70,10 @@ details.advisor-box summary,details.case-box summary{cursor:pointer;color:var(--
 /* ---- 後台版型（固定左側 Sidebar + 上方 Header） ---- */
 .admin-shell{display:flex;min-height:100vh;align-items:stretch}
 .sidebar{flex:0 0 220px;width:220px;background:linear-gradient(180deg,#102A23,#173F33 60%,#1F4A3C);color:#fff;padding:20px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;box-sizing:border-box}
-.sidebar .brand{font-size:18px;font-weight:1000;color:#FCEFD2;line-height:1.4}
+.sidebar .brand{font-size:18px;font-weight:700;color:#FCEFD2;line-height:1.4}
 .sidebar .brand small{display:block;font-size:12px;font-weight:700;color:#CDE6D8;margin-top:2px}
 .sidebar nav{margin-top:18px;display:flex;flex-direction:column;gap:4px}
-.sidebar nav a{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;color:#E7F2EC;text-decoration:none;font-weight:900;font-size:14px}
+.sidebar nav a{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;color:#E7F2EC;text-decoration:none;font-weight:700;font-size:14px}
 .sidebar nav a:hover{background:rgba(255,255,255,.08)}
 .sidebar nav a.active{background:linear-gradient(135deg,#805414,#BF8E32);color:#fff}
 .sidebar nav a.logout-link{margin-top:14px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px;color:#FBD8C8}

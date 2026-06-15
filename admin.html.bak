@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理後台｜知己知途</title>
+  <style>
+    :root{--bg:#F3EFE4;--paper:#FFFDF8;--ink:#162B25;--muted:#68776F;--green:#173F33;--green2:#2E6B55;--gold:#B8872E;--line:#E0D3BD;--bad:#8E4A35;--shadow:0 18px 48px rgba(26,43,35,.12)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:linear-gradient(135deg,#F7F1E2 0%,#F3EFE4 48%,#EAF1EA 100%);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.55}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:1240px;margin:0 auto;padding:24px 16px 64px}
+    .hero{background:linear-gradient(135deg,#102A23,#173F33 68%,#80601F 150%);color:#fff;border-radius:26px;padding:24px 26px;box-shadow:var(--shadow)}
+    .hero h1{margin:0;font-size:clamp(28px,4vw,42px);letter-spacing:0}
+    .hero p{margin:8px 0 0;color:#F8ECD1}
+    .hero .links{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+    .hero .links a{color:#FFE9B5;font-weight:900;text-decoration:none;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;background:rgba(255,255,255,.08)}
+    .panel{margin-top:18px;background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+    .login{max-width:480px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .field label{font-weight:900;color:#354F45}
+    input,select{width:100%;min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px 13px;background:#fff;color:var(--ink);outline:0}
+    input:focus,select:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(46,107,85,.12)}
+    .btn{border:0;border-radius:999px;padding:11px 16px;font-weight:1000;background:#E8DDC4;color:#17382F}
+    .btn.primary{background:linear-gradient(135deg,#143B30,#24624E);color:#fff}
+    .btn.gold{background:linear-gradient(135deg,#805414,#BF8E32);color:#fff}
+    .btn.danger{background:var(--bad);color:#fff}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+    .toolbar .left,.toolbar .right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+    .stat{background:#F7F3EA;border:1px solid var(--line);border-radius:16px;padding:12px}
+    .stat b{display:block;font-size:24px;color:var(--green)}
+    .stat span{font-size:13px;color:var(--muted)}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff}
+    table{width:100%;border-collapse:collapse;min-width:980px}
+    th,td{padding:11px 12px;border-bottom:1px solid #EEE4D6;text-align:left;vertical-align:top}
+    th{position:sticky;top:0;background:#F8F2E6;color:#354F45;font-size:13px;z-index:1}
+    td{font-size:14px}
+    .code{font-weight:1000;color:var(--gold);letter-spacing:.08em}
+    .pill{display:inline-flex;border:1px solid #D8C8A6;background:#FBF2D8;color:#6B501E;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900}
+    .muted{color:var(--muted)}
+    .hidden{display:none!important}
+    .notice{border:1px solid #E4C778;background:#FFF7E4;color:#6B501E;border-radius:16px;padding:11px 13px;margin-top:12px}
+    .error{border-color:#E2B5A2;background:#F8E8E1;color:#7A3828}
+    .success{border-color:#BFD9C2;background:#EEF7EF;color:#23684E}
+    .subhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+    .subhead h2{margin:0;color:var(--green)}
+    .subhead p{margin:4px 0 0;color:var(--muted)}
+    .batch-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .linkbox{font-size:13px;color:var(--muted);word-break:break-all}
+    .advisor-report{margin-top:8px;background:#102A23;color:#F9EED7;border-radius:14px;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7;min-width:320px}
+    details.advisor-box{margin-top:8px}
+    details.advisor-box summary{cursor:pointer;color:var(--green);font-weight:1000;margin-bottom:6px}
+    .batch-actions{display:grid;gap:6px;min-width:92px}
+    .batch-actions .btn{width:100%;padding:8px 10px;font-size:13px}
+    .section-divider{margin:28px 0 0;border:0;border-top:1px dashed var(--line)}
+    @media(max-width:900px){.batch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:720px){.app{padding:14px 10px 44px}.hero{border-radius:20px;padding:20px}.grid,.stats,.batch-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .left,.toolbar .right{display:grid;grid-template-columns:1fr;width:100%}.btn,input{width:100%}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <h1>管理後台</h1>
+    <p>最高權限：批次管理、全部學員資料、諮詢師帳號管理。</p>
+    <div class="links">
+      <a href="./index.html" target="_blank" rel="noopener">學員前台</a>
+      <a href="./counselor.html" target="_blank" rel="noopener">諮詢師後台</a>
+    </div>
+  </header>
+
+  <section id="loginPanel" class="panel login">
+    <h2>管理者登入</h2>
+    <div class="grid">
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="username" placeholder="管理者 Email"></div>
+      <div class="field"><label>密碼</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="密碼"></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn primary" onclick="login()">登入管理後台</button></div>
+    <div id="loginMsg" class="notice hidden"></div>
+  </section>
+
+  <section id="adminPanel" class="panel hidden">
+    <div class="toolbar">
+      <div class="left"><span class="pill" id="sessionLabel">已登入</span></div>
+      <div class="right">
+        <button class="btn" onclick="loadAll()">重新整理</button>
+        <button class="btn danger" onclick="logout()">登出</button>
+      </div>
+    </div>
+
+    <!-- 批次管理 -->
+    <div class="subhead">
+      <div>
+        <h2>批次管理</h2>
+        <p>建立後系統會自動產生短碼，學員使用「測驗網址 + ?c=短碼」進入測驗。</p>
+      </div>
+    </div>
+    <div class="batch-grid">
+      <div class="field"><label>批次代號</label><input id="batchCode" placeholder="例如 LG260613"></div>
+      <div class="field"><label>批次名稱</label><input id="batchName" placeholder="例如 2026/06/13 鹿港場"></div>
+      <div class="field"><label>數量（0=不限）</label><input id="batchQuantity" type="number" min="0" value="30"></div>
+      <div class="field"><label>狀態</label><select id="batchStatus"><option>啟用</option><option>停用</option></select></div>
+      <div class="field"><label>開始時間</label><input id="batchStart" type="datetime-local"></div>
+      <div class="field"><label>結束時間</label><input id="batchEnd" type="datetime-local"></div>
+      <div class="field"><label>諮詢師 Email</label><input id="batchCounselorEmail" type="email" placeholder="收件 Email（必填）"></div>
+      <div class="field"><label>&nbsp;</label><button id="createBatchBtn" class="btn primary" onclick="createBatch()">建立批次短碼</button></div>
+    </div>
+    <div id="batchMsg" class="notice hidden"></div>
+    <div class="table-wrap" style="margin:16px 0 18px">
+      <table>
+        <thead>
+          <tr><th>批次代號</th><th>批次名稱</th><th>短碼</th><th>數量</th><th>已完成</th><th>時間</th><th>諮詢師 Email</th><th>狀態</th><th>測驗連結</th><th>管理</th></tr>
+        </thead>
+        <tbody id="batchRows"></tbody>
+      </table>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- 學員資料 -->
+    <div class="subhead">
+      <div>
+        <h2>學員資料</h2>
+        <p>所有批次的學員測驗結果，可下載 PDF、查看諮詢師專用分析。</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="left"><input id="searchInput" oninput="renderSubmissions()" placeholder="搜尋姓名、Email、短碼、何倫碼..."></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="totalCount">0</b><span>總測驗紀錄</span></div>
+      <div class="stat"><b id="sentCount">0</b><span>PDF 已寄送</span></div>
+      <div class="stat"><b id="todayCount">0</b><span>今日新增</span></div>
+      <div class="stat"><b id="visibleCount">0</b><span>目前顯示</span></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>送出時間</th><th>姓名</th><th>Email</th><th>批次/短碼</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
+        </thead>
+        <tbody id="submissionRows"></tbody>
+      </table>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- 授權與收費管理 -->
+    <div class="subhead">
+      <div>
+        <h2>授權方案</h2>
+        <p>管理可販售的授權方案（金額、數量），作為諮詢師購買額度時的對照表。</p>
+      </div>
+    </div>
+    <div class="batch-grid">
+      <div class="field"><label>方案名稱</label><input id="planName" placeholder="例如 單次測驗授權" value="單次測驗授權"></div>
+      <div class="field"><label>金額</label><input id="planAmount" type="number" min="0" value="100"></div>
+      <div class="field"><label>數量</label><input id="planQuantity" type="number" min="1" value="1"></div>
+      <div class="field"><label>狀態</label><select id="planStatus"><option>啟用</option><option>停用</option></select></div>
+      <div class="field" style="grid-column:1/-1"><label>備註</label><input id="planNote" placeholder="例如：單次測驗 100 元"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="saveLicensePlan()">新增授權方案</button></div>
+    </div>
+    <div id="planMsg" class="notice hidden"></div>
+    <div class="table-wrap" style="margin:14px 0 18px">
+      <table>
+        <thead><tr><th>方案名稱</th><th>金額</th><th>數量</th><th>狀態</th><th>備註</th><th>建立時間</th><th>管理</th></tr></thead>
+        <tbody id="planRows"></tbody>
+      </table>
+    </div>
+
+    <div class="subhead">
+      <div>
+        <h2>諮詢師額度</h2>
+        <p>記錄每位諮詢師已購買的方案、金額與數量，剩餘額度自動計算。密碼重設請至下方「諮詢師帳號管理」。</p>
+      </div>
+    </div>
+    <div class="batch-grid">
+      <div class="field"><label>諮詢師 Email</label><input id="authEmail" type="email" placeholder="counselor@example.com"></div>
+      <div class="field"><label>方案名稱</label><input id="authPlanName" placeholder="例如 單次測驗授權" value="單次測驗授權"></div>
+      <div class="field"><label>金額</label><input id="authAmount" type="number" min="0" value="100"></div>
+      <div class="field"><label>購買數量</label><input id="authQuantity" type="number" min="1" value="30"></div>
+      <div class="field"><label>已使用數量</label><input id="authUsed" type="number" min="0" value="0"></div>
+      <div class="field"><label>狀態</label><select id="authStatus"><option>啟用</option><option>停用</option></select></div>
+      <div class="field" style="grid-column:1/-1"><label>備註</label><input id="authNote" placeholder="例如：已付款 3000 元，開通 30 人"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="saveCounselorAuthorization()">新增額度紀錄</button></div>
+    </div>
+    <div id="authMsg" class="notice hidden"></div>
+    <div class="table-wrap" style="margin-top:14px">
+      <table>
+        <thead><tr><th>諮詢師 Email</th><th>方案名稱</th><th>金額</th><th>購買數量</th><th>已使用</th><th>剩餘</th><th>狀態</th><th>備註</th><th>管理</th></tr></thead>
+        <tbody id="authRows"></tbody>
+      </table>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- 諮詢師帳號管理 -->
+    <div class="subhead">
+      <div>
+        <h2>諮詢師帳號管理</h2>
+        <p>建立諮詢師登入帳號後，諮詢師即可用「Email + 密碼」登入「諮詢師後台」，僅能看到自己 Email 對應批次的學員資料。</p>
+      </div>
+    </div>
+    <div class="batch-grid">
+      <div class="field"><label>諮詢師 Email</label><input id="newCounselorEmail" type="email" placeholder="counselor@example.com"></div>
+      <div class="field"><label>顯示名稱</label><input id="newCounselorName" placeholder="諮詢師姓名"></div>
+      <div class="field"><label>登入密碼</label><input id="newCounselorPass" placeholder="至少 8 個字元"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="createCounselor()">建立諮詢師帳號</button></div>
+    </div>
+    <div id="counselorMsg" class="notice hidden"></div>
+    <div class="table-wrap" style="margin-top:14px">
+      <table>
+        <thead><tr><th>Email</th><th>顯示名稱</th><th>角色</th><th>建立時間</th><th>管理</th></tr></thead>
+        <tbody id="counselorRows"></tbody>
+      </table>
+    </div>
+
+    <div id="adminMsg" class="notice hidden"></div>
+  </section>
+</div>
+
+<script>
+const SUPABASE_URL = "https://bkovbcdqhljrnpyhfqdq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrb3ZiY2RxaGxqcm5weWhmcWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzgwMjAsImV4cCI6MjA5NjcxNDAyMH0.zp5poRNp3f1Dsuehaatkqj4etXA61aNBLoGew57FGY4";
+const ADMIN_FUNCTION_URL = SUPABASE_URL + "/functions/v1/admin-counselors";
+const SITE_BASE_URL = "https://ccazhu-coder.github.io/career-adventure-game/";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let allBatches = [];
+let allSubmissions = [];
+let allCounselors = [];
+let allLicensePlans = [];
+let allAuthorizations = [];
+
+function esc(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));}
+function escAttr(v){return esc(v).replace(/'/g,"&#39;");}
+function fmtTime(v){return v ? String(v).replace("T"," ").slice(0,19) : "";}
+function showMsg(id,msg,bad=false){
+  const el=document.getElementById(id);
+  el.textContent=msg;
+  el.className="notice"+(bad?" error":" success");
+  el.classList.remove("hidden");
+}
+function showHtmlMsg(id,html,kind=""){
+  const el=document.getElementById(id);
+  el.innerHTML=html;
+  el.className="notice"+(kind==="error"?" error":(kind==="success"?" success":""));
+  el.classList.remove("hidden");
+}
+function hideMsg(id){document.getElementById(id).classList.add("hidden");}
+
+function genShortCode(prefix){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s="";
+  for(let i=0;i<4;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  const p=String(prefix||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  return (p?p+"-":"")+s;
+}
+function toTimestamptz(localValue){
+  if(!localValue) return null;
+  return localValue.length===16 ? localValue+":00+08:00" : localValue+"+08:00";
+}
+function toLocalInput(tzValue){
+  if(!tzValue) return "";
+  const d=new Date(tzValue);
+  if(isNaN(d.getTime())) return "";
+  const tz=new Date(d.getTime()+8*3600*1000);
+  return tz.toISOString().slice(0,16);
+}
+
+// ------------------------------------------------------------
+// 登入 / 登出
+// ------------------------------------------------------------
+async function login(){
+  hideMsg("loginMsg");
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPass").value;
+  if(!email||!password){showMsg("loginMsg","請輸入 Email 與密碼。",true);return;}
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){showMsg("loginMsg","登入失敗："+error.message,true);return;}
+  const ok=await checkOwnerAndEnter(data.session);
+  if(!ok){
+    await sb.auth.signOut();
+    showMsg("loginMsg","此帳號非管理者帳號，請改用「諮詢師後台」登入。",true);
+  }
+}
+async function checkOwnerAndEnter(session){
+  if(!session) return false;
+  const {data:profile,error}=await sb.from("profiles").select("role,display_name").eq("id",session.user.id).maybeSingle();
+  if(error || !profile || profile.role!=="owner") return false;
+  document.getElementById("sessionLabel").textContent=`已登入：${profile.display_name||session.user.email}`;
+  document.getElementById("loginPanel").classList.add("hidden");
+  document.getElementById("adminPanel").classList.remove("hidden");
+  await loadAll();
+  return true;
+}
+async function logout(){
+  await sb.auth.signOut();
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("loginPanel").classList.remove("hidden");
+  document.getElementById("loginPass").value="";
+}
+async function loadAll(){
+  await Promise.all([loadBatches(),loadSubmissions(),loadCounselors(),loadLicensePlans(),loadCounselorAuthorizations()]);
+}
+
+// ------------------------------------------------------------
+// 批次管理
+// ------------------------------------------------------------
+async function loadBatches(){
+  hideMsg("batchMsg");
+  const {data,error}=await sb.from("batches").select("*").order("created_at",{ascending:false});
+  if(error){showMsg("batchMsg","批次讀取失敗："+error.message,true);return;}
+  allBatches=data||[];
+  renderBatches();
+}
+function renderBatches(){
+  document.getElementById("batchRows").innerHTML=allBatches.map(b=>{
+    const link=SITE_BASE_URL+"?c="+encodeURIComponent(b.short_code||"");
+    return `<tr>
+      <td><strong>${esc(b.batch_code)}</strong></td>
+      <td>${esc(b.batch_name)}</td>
+      <td><span class="code">${esc(b.short_code)}</span></td>
+      <td>${esc(b.quantity)}</td>
+      <td>${esc(b.completed_count||0)}</td>
+      <td>${esc(fmtTime(b.start_time))}<br>${esc(fmtTime(b.end_time))}</td>
+      <td>${esc(b.counselor_email)}</td>
+      <td><span class="pill">${esc(b.status)}</span></td>
+      <td><a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a>
+        <br><button class="btn" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="copyText('${escAttr(link)}','batchMsg')">複製連結</button></td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="editBatch('${escAttr(b.id)}')">修改</button>
+        <button class="btn" onclick="setBatchStatus('${escAttr(b.id)}','啟用')">啟用</button>
+        <button class="btn" onclick="setBatchStatus('${escAttr(b.id)}','停用')">停用</button>
+        <button class="btn danger" onclick="deleteBatch('${escAttr(b.id)}')">刪除</button>
+      </div></td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="10" class="muted">尚未建立批次。</td></tr>`;
+}
+function findBatch(id){return allBatches.find(b=>String(b.id)===String(id))||null;}
+async function createBatch(){
+  hideMsg("batchMsg");
+  const btn=document.getElementById("createBatchBtn");
+  const batchCode=document.getElementById("batchCode").value.trim();
+  const batchName=document.getElementById("batchName").value.trim();
+  const quantity=parseInt(document.getElementById("batchQuantity").value,10)||0;
+  const startTime=toTimestamptz(document.getElementById("batchStart").value);
+  const endTime=toTimestamptz(document.getElementById("batchEnd").value);
+  const counselorEmail=document.getElementById("batchCounselorEmail").value.trim().toLowerCase();
+  const status=document.getElementById("batchStatus").value;
+  const missing=[];
+  if(!batchCode) missing.push("批次代號");
+  if(!batchName) missing.push("批次名稱");
+  if(!counselorEmail) missing.push("諮詢師 Email");
+  if(missing.length){
+    showHtmlMsg("batchMsg",`<strong>尚未建立批次</strong><br>請先補齊：${missing.map(esc).join("、")}。`,"error");
+    return;
+  }
+  if(btn){btn.disabled=true;btn.textContent="建立中...";}
+  try{
+    let lastErr=null;
+    for(let i=0;i<5;i++){
+      const shortCode=genShortCode(batchCode);
+      const {data,error}=await sb.from("batches").insert({
+        batch_code:batchCode,batch_name:batchName,short_code:shortCode,quantity,
+        start_time:startTime,end_time:endTime,counselor_email:counselorEmail,status
+      }).select("*").single();
+      if(!error){
+        const link=SITE_BASE_URL+"?c="+encodeURIComponent(data.short_code);
+        showHtmlMsg("batchMsg",`<strong>建立成功</strong><br>短碼：<span class="code">${esc(data.short_code)}</span><br>測驗連結：<a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a><br><button class="btn" style="margin-top:8px" onclick="copyText('${escAttr(link)}','batchMsg')">複製測驗連結</button>`,"success");
+        document.getElementById("batchCode").value="";
+        document.getElementById("batchName").value="";
+        await loadBatches();
+        lastErr=null;
+        break;
+      }
+      lastErr=error;
+      if(error.code!=="23505") break; // 非短碼重複，直接跳出
+    }
+    if(lastErr) throw new Error(lastErr.message);
+  }catch(err){
+    showHtmlMsg("batchMsg",`<strong>建立失敗</strong><br>${esc(err.message||"請稍後再試")}`,"error");
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent="建立批次短碼";}
+  }
+}
+async function editBatch(id){
+  const b=findBatch(id);
+  if(!b){showMsg("batchMsg","找不到此批次，請重新整理。",true);return;}
+  const batchName=prompt("批次名稱",b.batch_name||"");
+  if(batchName===null) return;
+  const quantity=prompt("數量（0=不限）",b.quantity??0);
+  if(quantity===null) return;
+  const startLocal=prompt("開始時間（格式 2026-06-13T08:00，留空=不限）",toLocalInput(b.start_time));
+  if(startLocal===null) return;
+  const endLocal=prompt("結束時間（格式 2026-06-15T18:00，留空=不限）",toLocalInput(b.end_time));
+  if(endLocal===null) return;
+  const counselorEmail=prompt("諮詢師 Email",b.counselor_email||"");
+  if(counselorEmail===null) return;
+  await updateBatch(id,{
+    batch_name:batchName,
+    quantity:parseInt(quantity,10)||0,
+    start_time:toTimestamptz(startLocal.trim()),
+    end_time:toTimestamptz(endLocal.trim()),
+    counselor_email:counselorEmail.trim().toLowerCase()
+  });
+}
+async function setBatchStatus(id,status){
+  await updateBatch(id,{status});
+}
+async function updateBatch(id,patch){
+  hideMsg("batchMsg");
+  showHtmlMsg("batchMsg","<strong>正在更新批次...</strong>","");
+  const {error}=await sb.from("batches").update(patch).eq("id",id);
+  if(error){showHtmlMsg("batchMsg",`<strong>更新失敗</strong><br>${esc(error.message)}`,"error");return;}
+  showHtmlMsg("batchMsg","<strong>更新成功</strong>","success");
+  await loadBatches();
+}
+async function deleteBatch(id){
+  const b=findBatch(id);
+  if(!b){showMsg("batchMsg","找不到此批次，請重新整理。",true);return;}
+  if(!confirm(`確定要刪除批次 ${b.batch_code||""} / 短碼 ${b.short_code||""}？`)) return;
+  hideMsg("batchMsg");
+  const {error}=await sb.from("batches").delete().eq("id",id);
+  if(error){
+    showHtmlMsg("batchMsg","<strong>刪除失敗</strong><br>此批次已有學員資料，無法刪除，請改為「停用」。","error");
+    return;
+  }
+  showHtmlMsg("batchMsg","<strong>已刪除</strong>","success");
+  await loadBatches();
+}
+
+// ------------------------------------------------------------
+// 學員資料
+// ------------------------------------------------------------
+async function loadSubmissions(){
+  hideMsg("adminMsg");
+  const {data,error}=await sb.from("submissions").select("*").order("created_at",{ascending:false});
+  if(error){showMsg("adminMsg","學員資料讀取失敗："+error.message,true);return;}
+  allSubmissions=data||[];
+  renderSubmissions();
+}
+function renderSubmissions(){
+  const q=document.getElementById("searchInput").value.trim().toLowerCase();
+  const rows=allSubmissions.filter(r=>{
+    if(!q) return true;
+    return [r.name,r.email,r.holland_code,r.primary_type,r.secondary_type,r.third_type,r.batch_code,r.short_code].some(v=>String(v||"").toLowerCase().includes(q));
+  });
+  document.getElementById("totalCount").textContent=allSubmissions.length;
+  document.getElementById("sentCount").textContent=allSubmissions.filter(r=>String(r.pdf_send_status||"").includes("成功")).length;
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById("todayCount").textContent=allSubmissions.filter(r=>String(r.created_at||"").slice(0,10)===today).length;
+  document.getElementById("visibleCount").textContent=rows.length;
+  document.getElementById("submissionRows").innerHTML=rows.map(r=>{
+    const valueTop=Array.isArray(r.value_top)?r.value_top.join("、"):"";
+    const advisorReport=r.counselor_report||"";
+    const reportId=`advisorReport_${escAttr(r.id)}`;
+    const hasPdf=!!r.pdf_path;
+    const hasCounselorPdf=!!r.counselor_pdf_path;
+    return `<tr>
+      <td>${esc(fmtTime(r.created_at))}</td>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${esc(r.email)}</td>
+      <td>${esc(r.batch_name||r.batch_code||"")}<br><span class="code">${esc(r.short_code||"")}</span></td>
+      <td><span class="code">${esc(r.holland_code)}</span></td>
+      <td>${esc(r.primary_type)}<br>${esc(r.secondary_type)}<br>${esc(r.third_type)}</td>
+      <td>${esc(valueTop)}</td>
+      <td>${esc(r.complete_pct)}%</td>
+      <td>${esc(r.pdf_send_status||"")}</td>
+      <td>
+        <button class="btn gold" style="${hasPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.pdf_path||"")}','${escAttr(r.pdf_filename||"報告.pdf")}')">下載個案報告</button>
+        <button class="btn gold" style="margin-top:6px;${hasCounselorPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadPdf('${escAttr(r.counselor_pdf_path||"")}','${escAttr(r.counselor_pdf_filename||"諮詢師報告.pdf")}')">下載諮詢報告</button>
+        <button class="btn" style="margin-top:6px;${advisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyAdvisorReport('${reportId}')">複製諮詢建議</button>
+        ${advisorReport?`<details class="advisor-box"><summary>查看諮詢師專用分析</summary><div id="${reportId}" class="advisor-report">${esc(advisorReport)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無諮詢分析</div>`}
+      </td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="10" class="muted">目前沒有資料。</td></tr>`;
+}
+async function downloadPdf(path,filename){
+  if(!path){showMsg("adminMsg","此筆資料尚無 PDF。",true);return;}
+  const win=window.open("","_blank");
+  const {data,error}=await sb.storage.from("reports").createSignedUrl(path,3600,{download:filename||true});
+  if(error){if(win)win.close();showMsg("adminMsg","取得 PDF 連結失敗："+error.message,true);return;}
+  if(win) win.location.href=data.signedUrl; else window.open(data.signedUrl,"_blank");
+}
+function copyAdvisorReport(id){
+  const text=document.getElementById(id)?.innerText||"";
+  if(!text){showMsg("adminMsg","這筆資料尚無諮詢師專用分析。",true);return;}
+  navigator.clipboard.writeText(text).then(()=>showMsg("adminMsg","已複製諮詢師專用分析。")).catch(()=>showMsg("adminMsg","無法自動複製，請手動選取文字。",true));
+}
+function copyText(text,msgId){
+  navigator.clipboard.writeText(text).then(()=>showMsg(msgId,"連結已複製。")).catch(()=>showMsg(msgId,"無法自動複製，請手動選取連結。",true));
+}
+
+// ------------------------------------------------------------
+// 授權方案
+// ------------------------------------------------------------
+async function loadLicensePlans(){
+  hideMsg("planMsg");
+  const {data,error}=await sb.from("license_plans").select("*").order("created_at",{ascending:false});
+  if(error){showMsg("planMsg","授權方案讀取失敗："+error.message,true);return;}
+  allLicensePlans=data||[];
+  renderLicensePlans();
+}
+function renderLicensePlans(){
+  document.getElementById("planRows").innerHTML=allLicensePlans.map(p=>`<tr>
+    <td><strong>${esc(p.plan_name)}</strong></td>
+    <td>${esc(p.amount)}</td>
+    <td>${esc(p.quantity)}</td>
+    <td><span class="pill">${esc(p.status)}</span></td>
+    <td>${esc(p.note||"")}</td>
+    <td>${esc(fmtTime(p.created_at))}</td>
+    <td><div class="batch-actions">
+      <button class="btn" onclick="editLicensePlan('${escAttr(p.id)}')">修改</button>
+      <button class="btn danger" onclick="deleteLicensePlan('${escAttr(p.id)}')">刪除</button>
+    </div></td>
+  </tr>`).join("") || `<tr><td colspan="7" class="muted">尚未建立授權方案。</td></tr>`;
+}
+async function saveLicensePlan(){
+  hideMsg("planMsg");
+  const planName=document.getElementById("planName").value.trim();
+  const amount=parseFloat(document.getElementById("planAmount").value)||0;
+  const quantity=parseInt(document.getElementById("planQuantity").value,10)||1;
+  const status=document.getElementById("planStatus").value;
+  const note=document.getElementById("planNote").value.trim();
+  if(!planName){showMsg("planMsg","請輸入方案名稱。",true);return;}
+  const {error}=await sb.from("license_plans").insert({plan_name:planName,amount,quantity,status,note});
+  if(error){showMsg("planMsg","新增失敗："+error.message,true);return;}
+  showMsg("planMsg","授權方案已新增。");
+  document.getElementById("planNote").value="";
+  await loadLicensePlans();
+}
+function findLicensePlan(id){return allLicensePlans.find(p=>String(p.id)===String(id))||null;}
+async function editLicensePlan(id){
+  const p=findLicensePlan(id);
+  if(!p){showMsg("planMsg","找不到此方案，請重新整理。",true);return;}
+  const planName=prompt("方案名稱",p.plan_name||"");
+  if(planName===null) return;
+  const amount=prompt("金額",p.amount??0);
+  if(amount===null) return;
+  const quantity=prompt("數量",p.quantity??1);
+  if(quantity===null) return;
+  const status=prompt("狀態：啟用 或 停用",p.status||"啟用");
+  if(status===null) return;
+  const note=prompt("備註",p.note||"");
+  if(note===null) return;
+  const {error}=await sb.from("license_plans").update({
+    plan_name:planName,amount:parseFloat(amount)||0,quantity:parseInt(quantity,10)||1,status,note
+  }).eq("id",id);
+  if(error){showMsg("planMsg","更新失敗："+error.message,true);return;}
+  showMsg("planMsg","授權方案已更新。");
+  await loadLicensePlans();
+}
+async function deleteLicensePlan(id){
+  const p=findLicensePlan(id);
+  if(!p){showMsg("planMsg","找不到此方案，請重新整理。",true);return;}
+  if(!confirm(`確定要刪除方案「${p.plan_name||""}」？`)) return;
+  const {error}=await sb.from("license_plans").delete().eq("id",id);
+  if(error){showMsg("planMsg","刪除失敗："+error.message,true);return;}
+  showMsg("planMsg","已刪除。");
+  await loadLicensePlans();
+}
+
+// ------------------------------------------------------------
+// 諮詢師額度
+// ------------------------------------------------------------
+async function loadCounselorAuthorizations(){
+  hideMsg("authMsg");
+  const {data,error}=await sb.from("counselor_authorizations").select("*").order("created_at",{ascending:false});
+  if(error){showMsg("authMsg","諮詢師額度讀取失敗："+error.message,true);return;}
+  allAuthorizations=data||[];
+  renderCounselorAuthorizations();
+}
+function renderCounselorAuthorizations(){
+  document.getElementById("authRows").innerHTML=allAuthorizations.map(a=>{
+    const remaining=(a.purchased_quantity||0)-(a.used_quantity||0);
+    return `<tr>
+      <td>${esc(a.counselor_email)}</td>
+      <td>${esc(a.plan_name||"")}</td>
+      <td>${esc(a.amount)}</td>
+      <td>${esc(a.purchased_quantity)}</td>
+      <td>${esc(a.used_quantity)}</td>
+      <td>${esc(remaining)}</td>
+      <td><span class="pill">${esc(a.status)}</span></td>
+      <td>${esc(a.note||"")}</td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="editCounselorAuthorization('${escAttr(a.id)}')">修改</button>
+        <button class="btn danger" onclick="deleteCounselorAuthorization('${escAttr(a.id)}')">刪除</button>
+      </div></td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="9" class="muted">尚未開通諮詢師額度。</td></tr>`;
+}
+async function saveCounselorAuthorization(){
+  hideMsg("authMsg");
+  const counselorEmail=document.getElementById("authEmail").value.trim().toLowerCase();
+  const planName=document.getElementById("authPlanName").value.trim();
+  const amount=parseFloat(document.getElementById("authAmount").value)||0;
+  const purchasedQuantity=parseInt(document.getElementById("authQuantity").value,10)||0;
+  const usedQuantity=parseInt(document.getElementById("authUsed").value,10)||0;
+  const status=document.getElementById("authStatus").value;
+  const note=document.getElementById("authNote").value.trim();
+  if(!counselorEmail){showMsg("authMsg","請輸入諮詢師 Email。",true);return;}
+  const {error}=await sb.from("counselor_authorizations").insert({
+    counselor_email:counselorEmail,plan_name:planName,amount,
+    purchased_quantity:purchasedQuantity,used_quantity:usedQuantity,status,note
+  });
+  if(error){showMsg("authMsg","新增失敗："+error.message,true);return;}
+  showMsg("authMsg","諮詢師額度已新增。");
+  document.getElementById("authNote").value="";
+  await loadCounselorAuthorizations();
+}
+function findAuthorization(id){return allAuthorizations.find(a=>String(a.id)===String(id))||null;}
+async function editCounselorAuthorization(id){
+  const a=findAuthorization(id);
+  if(!a){showMsg("authMsg","找不到此筆額度，請重新整理。",true);return;}
+  const planName=prompt("方案名稱",a.plan_name||"");
+  if(planName===null) return;
+  const amount=prompt("金額",a.amount??0);
+  if(amount===null) return;
+  const purchasedQuantity=prompt("購買數量",a.purchased_quantity??0);
+  if(purchasedQuantity===null) return;
+  const usedQuantity=prompt("已使用數量",a.used_quantity??0);
+  if(usedQuantity===null) return;
+  const status=prompt("狀態：啟用 或 停用",a.status||"啟用");
+  if(status===null) return;
+  const note=prompt("備註",a.note||"");
+  if(note===null) return;
+  const {error}=await sb.from("counselor_authorizations").update({
+    plan_name:planName,amount:parseFloat(amount)||0,
+    purchased_quantity:parseInt(purchasedQuantity,10)||0,
+    used_quantity:parseInt(usedQuantity,10)||0,status,note
+  }).eq("id",id);
+  if(error){showMsg("authMsg","更新失敗："+error.message,true);return;}
+  showMsg("authMsg","諮詢師額度已更新。");
+  await loadCounselorAuthorizations();
+}
+async function deleteCounselorAuthorization(id){
+  const a=findAuthorization(id);
+  if(!a){showMsg("authMsg","找不到此筆額度，請重新整理。",true);return;}
+  if(!confirm(`確定要刪除 ${a.counselor_email||""} 的這筆額度紀錄？`)) return;
+  const {error}=await sb.from("counselor_authorizations").delete().eq("id",id);
+  if(error){showMsg("authMsg","刪除失敗："+error.message,true);return;}
+  showMsg("authMsg","已刪除。");
+  await loadCounselorAuthorizations();
+}
+
+// ------------------------------------------------------------
+// 諮詢師帳號管理
+// ------------------------------------------------------------
+async function callAdminFunction(payload){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session) throw new Error("登入已逾時，請重新登入");
+  const res=await fetch(ADMIN_FUNCTION_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json",apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+session.access_token},
+    body:JSON.stringify(payload)
+  });
+  const json=await res.json();
+  if(!json.ok) throw new Error(json.error||"操作失敗");
+  return json;
+}
+async function loadCounselors(){
+  hideMsg("counselorMsg");
+  try{
+    const res=await callAdminFunction({action:"list"});
+    allCounselors=res.profiles||[];
+    renderCounselors();
+  }catch(err){
+    showMsg("counselorMsg","帳號清單讀取失敗："+err.message,true);
+  }
+}
+function renderCounselors(){
+  document.getElementById("counselorRows").innerHTML=allCounselors.map(p=>{
+    const isOwner=p.role==="owner";
+    return `<tr>
+      <td>${esc(p.email)}</td>
+      <td>${esc(p.display_name)}</td>
+      <td><span class="pill">${isOwner?"最高管理者":"諮詢師"}</span></td>
+      <td>${esc(fmtTime(p.created_at))}</td>
+      <td><div class="batch-actions">
+        <button class="btn" onclick="resetCounselorPassword('${escAttr(p.id)}','${escAttr(p.email)}')">重設密碼</button>
+        <button class="btn danger" style="${isOwner?"opacity:.4;pointer-events:none":""}" onclick="deleteCounselor('${escAttr(p.id)}','${escAttr(p.email)}')">刪除帳號</button>
+      </div></td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="5" class="muted">尚無帳號。</td></tr>`;
+}
+async function createCounselor(){
+  hideMsg("counselorMsg");
+  const email=document.getElementById("newCounselorEmail").value.trim().toLowerCase();
+  const displayName=document.getElementById("newCounselorName").value.trim();
+  const password=document.getElementById("newCounselorPass").value.trim();
+  if(!email||!password){showMsg("counselorMsg","請輸入 Email 與密碼。",true);return;}
+  if(password.length<8){showMsg("counselorMsg","密碼至少需要 8 個字元。",true);return;}
+  try{
+    await callAdminFunction({action:"create",email,displayName,password});
+    showHtmlMsg("counselorMsg",`<strong>諮詢師帳號已建立</strong><br>請將以下登入資訊提供給諮詢師：<br>登入網址：<a class="linkbox" href="./counselor.html" target="_blank">${SITE_BASE_URL}counselor.html</a><br>帳號：${esc(email)}　密碼：${esc(password)}`,"success");
+    document.getElementById("newCounselorEmail").value="";
+    document.getElementById("newCounselorName").value="";
+    document.getElementById("newCounselorPass").value="";
+    await loadCounselors();
+  }catch(err){
+    showMsg("counselorMsg","建立失敗："+err.message,true);
+  }
+}
+async function resetCounselorPassword(id,email){
+  const newPassword=prompt(`設定 ${email} 的新密碼（至少 8 個字元）`);
+  if(newPassword===null) return;
+  if(newPassword.length<8){showMsg("counselorMsg","密碼至少需要 8 個字元。",true);return;}
+  try{
+    await callAdminFunction({action:"resetPassword",id,newPassword});
+    showMsg("counselorMsg",`已重設 ${email} 的密碼，請告知對方新密碼：${newPassword}`);
+  }catch(err){
+    showMsg("counselorMsg","重設失敗："+err.message,true);
+  }
+}
+async function deleteCounselor(id,email){
+  if(!confirm(`確定要刪除帳號 ${email}？刪除後該諮詢師將無法登入諮詢師後台。`)) return;
+  try{
+    await callAdminFunction({action:"delete",id});
+    showMsg("counselorMsg","帳號已刪除。");
+    await loadCounselors();
+  }catch(err){
+    showMsg("counselorMsg","刪除失敗："+err.message,true);
+  }
+}
+
+// ------------------------------------------------------------
+// 初始化：若已有登入 session，直接驗證並進入
+// ------------------------------------------------------------
+(async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    const ok=await checkOwnerAndEnter(session);
+    if(!ok) await sb.auth.signOut();
+  }
+})();
+</script>
+</body>
+</html>

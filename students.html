@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>學員資料｜管理後台｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="content">
+      <div class="notice">此頁面將於 Phase 3 開放（重構進行中，目前請先使用 <a href="./admin.html">admin.html</a> 對應功能）。</div>
+    </div>
+  </div>
+</div>
+<script src="admin-common.js"></script>
+<script src="admin-auth.js"></script>
+<script>
+(async function init(){
+  const auth=await requireOwner();
+  if(!auth) return;
+  renderAdminShell("students",{title:"學員資料",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+})();
+</script>
+</body>
+</html>

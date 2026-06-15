@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>儀表板｜管理後台｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="content">
+      <div class="stats">
+        <div class="stat"><b id="statToday">0</b><span>今日新增測驗數</span></div>
+        <div class="stat"><b id="statMonth">0</b><span>本月測驗數</span></div>
+        <div class="stat"><b id="statCounselors">0</b><span>諮詢師總數</span></div>
+        <div class="stat"><b id="statBatches">0</b><span>已建立批次數</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="statMonthCredits">0</b><span>本月使用額度</span></div>
+        <div class="stat" style="grid-column:span 3">
+          <span class="muted">剩餘額度異常提醒（剩餘 ≤ 5）</span>
+          <div id="lowCreditAlert" style="margin-top:6px"></div>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+      <div class="subhead"><div><h2>最近建立批次</h2><p>最新 5 筆批次（僅顯示，請至「批次管理」操作）。</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>批次代號</th><th>批次名稱</th><th>短碼</th><th>諮詢師 Email</th><th>建立時間</th></tr></thead>
+          <tbody id="recentBatchRows"></tbody>
+        </table>
+      </div>
+
+      <hr class="section-divider">
+      <div class="subhead"><div><h2>最近操作紀錄</h2><p>最新 5 筆系統操作（完整紀錄請至「系統紀錄」）。</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>時間</th><th>操作者</th><th>動作</th><th>對象</th></tr></thead>
+          <tbody id="recentLogRows"></tbody>
+        </table>
+      </div>
+
+      <div id="dashMsg" class="notice hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script src="admin-common.js"></script>
+<script src="admin-auth.js"></script>
+<script src="admin-logs.js"></script>
+<script>
+(async function init(){
+  const auth=await requireOwner();
+  if(!auth) return;
+  renderAdminShell("dashboard",{title:"儀表板",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadDashboard();
+})();
+
+async function loadDashboard(){
+  hideMsg("dashMsg");
+  const [batchesRes,submissionsRes,authRes,creditTxRes,logsRes,countersRes]=await Promise.all([
+    sb.from("batches").select("*").order("created_at",{ascending:false}),
+    sb.from("submissions").select("id,created_at,counselor_email"),
+    sb.from("counselor_authorizations").select("*"),
+    sb.from("credit_transactions").select("*"),
+    sb.from("logs").select("*").order("created_at",{ascending:false}).limit(5),
+    callAdminFunction({action:"list"}).catch(()=>({profiles:[]}))
+  ]);
+
+  if(batchesRes.error) showMsg("dashMsg","批次讀取失敗："+batchesRes.error.message,true);
+  else if(submissionsRes.error) showMsg("dashMsg","學員資料讀取失敗："+submissionsRes.error.message,true);
+
+  const batches=batchesRes.data||[];
+  const submissions=submissionsRes.data||[];
+  const authorizations=authRes.data||[];
+  const creditTx=creditTxRes.data||[];
+  const logs=logsRes.data||[];
+  const counselors=(countersRes.profiles||[]).filter(p=>p.role!=="owner");
+
+  const today=new Date().toISOString().slice(0,10);
+  const month=today.slice(0,7);
+  document.getElementById("statToday").textContent=submissions.filter(r=>String(r.created_at||"").slice(0,10)===today).length;
+  document.getElementById("statMonth").textContent=submissions.filter(r=>String(r.created_at||"").slice(0,7)===month).length;
+  document.getElementById("statCounselors").textContent=counselors.length;
+  document.getElementById("statBatches").textContent=batches.length;
+
+  const monthCredits=creditTx.filter(t=>(t.delta||0)<0 && String(t.created_at||"").slice(0,7)===month)
+    .reduce((sum,t)=>sum+Math.abs(t.delta),0);
+  document.getElementById("statMonthCredits").textContent=monthCredits;
+
+  // 剩餘額度異常提醒：既有 counselor_authorizations 快照 + 新 credit_transactions 帳本
+  const balances={};
+  authorizations.forEach(a=>{
+    const email=(a.counselor_email||"").toLowerCase();
+    if(!email) return;
+    balances[email]=(balances[email]||0)+((a.purchased_quantity||0)-(a.used_quantity||0));
+  });
+  creditTx.forEach(t=>{
+    const email=(t.counselor_email||"").toLowerCase();
+    if(!email) return;
+    balances[email]=(balances[email]||0)+(t.delta||0);
+  });
+  const lowEmails=Object.entries(balances).filter(([,bal])=>bal<=5);
+  const alertEl=document.getElementById("lowCreditAlert");
+  alertEl.innerHTML=lowEmails.length
+    ? lowEmails.map(([email,bal])=>`<span class="pill warn" style="margin:2px">${esc(email)}：剩餘 ${esc(bal)}</span>`).join("")
+    : `<span class="pill ok">目前無額度異常</span>`;
+
+  document.getElementById("recentBatchRows").innerHTML=batches.slice(0,5).map(b=>`<tr>
+    <td><strong>${esc(b.batch_code)}</strong></td>
+    <td>${esc(b.batch_name)}</td>
+    <td><span class="code">${esc(b.short_code)}</span></td>
+    <td>${esc(b.counselor_email)}</td>
+    <td>${esc(fmtTime(b.created_at))}</td>
+  </tr>`).join("") || `<tr><td colspan="5" class="muted">尚未建立批次。</td></tr>`;
+
+  document.getElementById("recentLogRows").innerHTML=logs.map(l=>`<tr>
+    <td>${esc(fmtTime(l.created_at))}</td>
+    <td>${esc(l.operator_name||"")}</td>
+    <td>${esc(l.action_type)}</td>
+    <td>${esc(l.target_type||"")}${l.target_id?(" #"+esc(l.target_id)):""}</td>
+  </tr>`).join("") || `<tr><td colspan="4" class="muted">尚無操作紀錄（需先於 Supabase 執行 database/admin-backend-new-tables.sql）。</td></tr>`;
+}
+</script>
+</body>
+</html>

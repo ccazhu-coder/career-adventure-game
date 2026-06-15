@@ -13,18 +13,108 @@
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <div class="content">
-      <div class="notice">此頁面將於 Phase 8 開放（重構進行中，目前請先使用 <a href="./admin.html">admin.html</a> 對應功能）。</div>
+
+      <div class="subhead">
+        <div>
+          <h2>系統紀錄</h2>
+          <p>記錄後台所有建立／修改／刪除／下載／複製等操作（唯讀），可依操作者、動作類型、對象與時間區間查詢。</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="left">
+          <input id="logSearchInput" placeholder="搜尋操作者、對象ID..." oninput="onLogFilterChange()">
+          <select id="logActionFilter" onchange="onLogFilterChange()"><option value="">全部動作</option></select>
+          <input id="logStartDate" type="date" onchange="onLogFilterChange()">
+          <input id="logEndDate" type="date" onchange="onLogFilterChange()">
+        </div>
+        <div class="right"><button class="btn" onclick="loadLogs()">重新整理</button></div>
+      </div>
+      <div id="logMsg" class="notice hidden"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>時間</th><th>操作者</th><th>角色</th><th>動作</th><th>對象</th><th>詳細</th></tr></thead>
+          <tbody id="logRows"></tbody>
+        </table>
+      </div>
+      <div id="logPagination" class="pagination"></div>
+
     </div>
   </div>
 </div>
+
 <script src="admin-common.js"></script>
 <script src="admin-auth.js"></script>
+<script src="admin-logs.js"></script>
 <script>
+let allLogs=[];
+let logPage=1;
+const LOG_PAGE_SIZE=20;
+const ROLE_LABELS={owner:"最高管理者",consultant:"諮詢師"};
+
 (async function init(){
   const auth=await requireOwner();
   if(!auth) return;
   renderAdminShell("logs",{title:"系統紀錄",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadLogs();
 })();
+
+function onLogFilterChange(){
+  logPage=1;
+  renderLogs();
+}
+async function loadLogs(){
+  hideMsg("logMsg");
+  const {data,error}=await sb.from("logs").select("*").order("created_at",{ascending:false}).limit(2000);
+  if(error){
+    showMsg("logMsg","系統紀錄讀取失敗（可能尚未執行 database/admin-backend-new-tables.sql）："+error.message,true);
+    allLogs=[];
+    renderLogs();
+    return;
+  }
+  allLogs=data||[];
+  populateActionFilter();
+  renderLogs();
+}
+function populateActionFilter(){
+  const sel=document.getElementById("logActionFilter");
+  const cur=sel.value;
+  const actions=new Set(allLogs.map(l=>l.action_type).filter(Boolean));
+  sel.innerHTML='<option value="">全部動作</option>'+[...actions].sort().map(a=>`<option value="${escAttr(a)}">${esc(a)}</option>`).join("");
+  if(cur && actions.has(cur)) sel.value=cur;
+}
+function getFilteredLogs(){
+  const q=document.getElementById("logSearchInput").value.trim().toLowerCase();
+  const actionFilter=document.getElementById("logActionFilter").value;
+  const startDate=document.getElementById("logStartDate").value;
+  const endDate=document.getElementById("logEndDate").value;
+  return allLogs.filter(l=>{
+    if(actionFilter && l.action_type!==actionFilter) return false;
+    const day=String(l.created_at||"").slice(0,10);
+    if(startDate && day<startDate) return false;
+    if(endDate && day>endDate) return false;
+    if(!q) return true;
+    return [l.operator_name,l.target_type,l.target_id,l.action_type].some(v=>String(v||"").toLowerCase().includes(q));
+  });
+}
+function renderLogs(){
+  const filtered=getFilteredLogs();
+  const {pageItems,page,totalPages}=paginate(filtered,logPage,LOG_PAGE_SIZE);
+  logPage=page;
+  document.getElementById("logRows").innerHTML=pageItems.length ? pageItems.map(l=>{
+    const detailId=`logDetail_${escAttr(l.id)}`;
+    const hasDetail=l.before_data||l.after_data;
+    const detail=hasDetail?JSON.stringify({before:l.before_data,after:l.after_data},null,2):"";
+    return `<tr>
+      <td>${esc(fmtTime(l.created_at))}</td>
+      <td>${esc(l.operator_name||"")}</td>
+      <td><span class="pill">${esc(ROLE_LABELS[l.operator_role]||l.operator_role||"")}</span></td>
+      <td><span class="code">${esc(l.action_type)}</span></td>
+      <td>${esc(l.target_type||"")}${l.target_id?(" #"+esc(l.target_id)):""}</td>
+      <td>${hasDetail?`<details><summary>查看</summary><div id="${detailId}" class="case-report" style="max-height:160px">${esc(detail)}</div></details>`:`<span class="muted">—</span>`}</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="6" class="empty-state">尚無符合條件的系統紀錄。</td></tr>`;
+  renderPagination("logPagination",page,totalPages,p=>{logPage=p;renderLogs();});
+}
 </script>
 </body>
 </html>

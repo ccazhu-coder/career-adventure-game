@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>學員檔案｜管理後台｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    .test-cell{display:flex;flex-direction:column;gap:3px;min-width:130px;}
+    .test-date{font-size:12px;color:#888;}
+    .test-code{font-weight:700;font-size:15px;letter-spacing:.5px;color:#3a2e00;}
+    .test-vals{font-size:12px;color:#555;}
+    .test-empty{color:#bbb;font-size:13px;}
+    .repeat-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;background:#d4edda;color:#155724;}
+    .more-tests{font-size:11px;color:#999;margin-top:2px;}
+    .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+    .filter-row select, .filter-row input{height:36px;padding:0 10px;border:1px solid #d4c9a0;border-radius:6px;background:#fff;font-size:14px;}
+    .export-btn{margin-left:auto;}
+  </style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="content">
+
+      <div class="subhead">
+        <div>
+          <h2>學員檔案</h2>
+          <p>以 Email 為單位彙整每位學員的測驗紀錄，追蹤何倫碼與價值觀跨時間的變化，並可匯出名單供行銷使用。</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b id="statTotal">0</b><span>學員人數</span></div>
+        <div class="stat"><b id="statRepeat">0</b><span>有複測（≥2次）</span></div>
+        <div class="stat"><b id="statSingle">0</b><span>僅測1次</span></div>
+        <div class="stat"><b id="statTotal3">0</b><span>測驗總筆數</span></div>
+      </div>
+
+      <div id="memberMsg" class="notice hidden"></div>
+
+      <div class="filter-row">
+        <input id="searchInput" oninput="onFilterChange()" placeholder="搜尋姓名、Email、何倫碼...">
+        <select id="counselorFilter" onchange="onFilterChange()"><option value="">全部諮詢師</option></select>
+        <select id="repeatFilter" onchange="onFilterChange()">
+          <option value="">全部學員</option>
+          <option value="repeat">複測（≥2次）</option>
+          <option value="single">僅測1次</option>
+        </select>
+        <select id="hollandFilter" onchange="onFilterChange()">
+          <option value="">全部何倫碼首碼</option>
+          <option value="R">R（實用型）</option>
+          <option value="I">I（研究型）</option>
+          <option value="A">A（藝術型）</option>
+          <option value="S">S（社會型）</option>
+          <option value="E">E（企業型）</option>
+          <option value="C">C（事務型）</option>
+        </select>
+        <button class="btn export-btn" onclick="exportCsv()">匯出 CSV</button>
+        <button class="btn" onclick="loadMembers()">重新整理</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>姓名</th>
+              <th>諮詢師</th>
+              <th style="text-align:center">測驗次數</th>
+              <th>第 1 次測驗</th>
+              <th>第 2 次測驗</th>
+            </tr>
+          </thead>
+          <tbody id="memberRows"></tbody>
+        </table>
+      </div>
+      <div id="memberPagination" class="pagination"></div>
+
+    </div>
+  </div>
+</div>
+
+<script src="admin-common.js"></script>
+<script src="admin-auth.js"></script>
+<script src="admin-logs.js"></script>
+<script>
+let allMembers=[];
+let filteredMembers=[];
+let memberPage=1;
+const PAGE_SIZE=25;
+
+(async function init(){
+  const auth=await requireOwner();
+  if(!auth) return;
+  renderAdminShell("members",{title:"學員檔案",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
+  await loadMembers();
+})();
+
+async function loadMembers(){
+  hideMsg("memberMsg");
+  const {data,error}=await sb.from("submissions")
+    .select("id,created_at,name,email,counselor_email,holland_code,primary_type,value_top")
+    .order("created_at",{ascending:true});
+  if(error){showMsg("memberMsg","學員資料讀取失敗："+error.message,true);return;}
+  allMembers=buildMemberList(data||[]);
+  populateCounselorFilter();
+  updateStats();
+  onFilterChange();
+}
+
+function buildMemberList(submissions){
+  const map=new Map();
+  submissions.forEach(r=>{
+    const key=(r.email||"").toLowerCase().trim();
+    if(!key) return;
+    if(!map.has(key)) map.set(key,{email:key,name:"",counselorEmail:"",tests:[]});
+    const m=map.get(key);
+    if(r.name) m.name=r.name;
+    if(r.counselor_email) m.counselorEmail=r.counselor_email;
+    const vals=Array.isArray(r.value_top)?r.value_top:[];
+    m.tests.push({date:r.created_at,hollandCode:r.holland_code||"",primaryType:r.primary_type||"",valueTop2:vals.slice(0,2)});
+  });
+  return [...map.values()].sort((a,b)=>{
+    const aD=a.tests[a.tests.length-1]?.date||"";
+    const bD=b.tests[b.tests.length-1]?.date||"";
+    return bD.localeCompare(aD);
+  });
+}
+
+function populateCounselorFilter(){
+  const sel=document.getElementById("counselorFilter");
+  const cur=sel.value;
+  const set=new Set(allMembers.map(m=>m.counselorEmail).filter(Boolean));
+  sel.innerHTML='<option value="">全部諮詢師</option>'+[...set].sort().map(e=>`<option value="${escAttr(e)}">${esc(e)}</option>`).join("");
+  if(cur && set.has(cur)) sel.value=cur;
+}
+
+function updateStats(){
+  const repeat=allMembers.filter(m=>m.tests.length>=2).length;
+  document.getElementById("statTotal").textContent=allMembers.length;
+  document.getElementById("statRepeat").textContent=repeat;
+  document.getElementById("statSingle").textContent=allMembers.length-repeat;
+  document.getElementById("statTotal3").textContent=allMembers.reduce((s,m)=>s+m.tests.length,0);
+}
+
+function onFilterChange(){
+  memberPage=1;
+  const q=document.getElementById("searchInput").value.trim().toLowerCase();
+  const counselor=document.getElementById("counselorFilter").value;
+  const repeat=document.getElementById("repeatFilter").value;
+  const holland=document.getElementById("hollandFilter").value;
+  filteredMembers=allMembers.filter(m=>{
+    if(counselor && m.counselorEmail!==counselor) return false;
+    if(repeat==="repeat" && m.tests.length<2) return false;
+    if(repeat==="single" && m.tests.length!==1) return false;
+    if(holland && !m.tests.some(t=>t.primaryType===holland)) return false;
+    if(!q) return true;
+    return [m.email,m.name,...m.tests.map(t=>t.hollandCode)].some(v=>String(v||"").toLowerCase().includes(q));
+  });
+  renderMembers();
+}
+
+function renderMembers(){
+  const {pageItems,page,totalPages}=paginate(filteredMembers,memberPage,PAGE_SIZE);
+  memberPage=page;
+  document.getElementById("memberRows").innerHTML=pageItems.length ? pageItems.map(m=>{
+    const t1=m.tests[0]||null;
+    const t2=m.tests[1]||null;
+    const extra=m.tests.length>2?m.tests.length-2:0;
+    const isRepeat=m.tests.length>=2;
+    return `<tr>
+      <td>${esc(m.email)}</td>
+      <td>${esc(m.name)}</td>
+      <td style="font-size:13px">${esc(m.counselorEmail||"—")}</td>
+      <td style="text-align:center">
+        ${isRepeat?`<span class="repeat-badge">複測 ${m.tests.length}次</span>`:`<span style="color:#888;font-size:13px">${m.tests.length}次</span>`}
+      </td>
+      <td>${t1?`<div class="test-cell">
+        <span class="test-date">${esc(fmtTime(t1.date).slice(0,10))}</span>
+        <span class="test-code">${esc(t1.hollandCode)}</span>
+        <span class="test-vals">${t1.valueTop2.length?esc(t1.valueTop2.join("、")):"—"}</span>
+      </div>`:'<span class="test-empty">—</span>'}</td>
+      <td>${t2?`<div class="test-cell">
+        <span class="test-date">${esc(fmtTime(t2.date).slice(0,10))}</span>
+        <span class="test-code">${esc(t2.hollandCode)}</span>
+        <span class="test-vals">${t2.valueTop2.length?esc(t2.valueTop2.join("、")):"—"}</span>
+        ${extra?`<span class="more-tests">+ 另有 ${extra} 筆</span>`:""}
+      </div>`:'<span class="test-empty">—</span>'}</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="6" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
+  renderPagination("memberPagination",page,totalPages,p=>{memberPage=p;renderMembers();});
+}
+
+function exportCsv(){
+  const rows=filteredMembers;
+  const headers=["Email","姓名","諮詢師","測驗次數","第1次日期","第1次何倫碼","第1次價值觀前2","第2次日期","第2次何倫碼","第2次價值觀前2"];
+  const csvRows=rows.map(m=>{
+    const t1=m.tests[0]||null;
+    const t2=m.tests[1]||null;
+    return [
+      m.email,
+      m.name,
+      m.counselorEmail||"",
+      m.tests.length,
+      t1?fmtTime(t1.date).slice(0,10):"",
+      t1?t1.hollandCode:"",
+      t1?(t1.valueTop2.join("、")):"",
+      t2?fmtTime(t2.date).slice(0,10):"",
+      t2?t2.hollandCode:"",
+      t2?(t2.valueTop2.join("、")):"",
+    ];
+  });
+  const csv=[headers,...csvRows].map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const date=new Date().toISOString().slice(0,10);
+  a.href=url;a.download=`學員檔案_${date}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  logAction({actionType:"export_members",targetType:"members",after:{count:rows.length}});
+}
+</script>
+</body>
+</html>

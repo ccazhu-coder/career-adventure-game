@@ -144,6 +144,7 @@ const ADMIN_NAV=[
   {key:"dashboard",label:"儀表板",href:"dashboard.html"},
   {key:"batches",label:"批次管理",href:"batches.html"},
   {key:"students",label:"學員資料",href:"students.html"},
+  {key:"members",label:"學員檔案",href:"members.html"},
   {key:"counselors",label:"諮詢師管理",href:"counselors.html"},
   {key:"credits",label:"額度管理",href:"credits.html"},
   {key:"plans",label:"授權方案",href:"plans.html"},

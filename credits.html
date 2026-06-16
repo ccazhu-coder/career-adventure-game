@@ -171,7 +171,7 @@ async function loadAll(){
 async function loadCounselorProfiles(){
   try{
     const res=await callAdminFunction({action:"list"});
-    allCounselorProfiles=(res.profiles||[]).filter(p=>p.role==="consultant"||p.role==="pending");
+    allCounselorProfiles=(res.profiles||[]).filter(p=>p.role!=="owner");
   }catch(e){ allCounselorProfiles=[]; }
 }
 async function loadCreditTx(){

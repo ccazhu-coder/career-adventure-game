@@ -192,7 +192,7 @@ function buildMemberList(submissions){
     if(r.name) m.name=r.name;
     if(r.counselor_email) m.counselorEmail=r.counselor_email;
     const vals=Array.isArray(r.value_top)?r.value_top:[];
-    m.tests.push({id:r.id,date:r.created_at,hollandCode:r.holland_code||"",primaryType:r.primary_type||"",valueTop2:vals.slice(0,2)});
+    m.tests.push({id:r.id,date:r.created_at,name:r.name||"",hollandCode:r.holland_code||"",primaryType:r.primary_type||"",valueTop2:vals.slice(0,2)});
   });
   return [...map.values()].sort((a,b)=>{
     const aD=a.tests[a.tests.length-1]?.date||"";
@@ -273,15 +273,26 @@ function renderMembers(){
           <div class="detail-info">諮詢師：${esc(m.counselorEmail||"—")}</div>
           ${m.tests.length?`
           <table class="inner-table">
-            <thead><tr><th>#</th><th>測驗日期</th><th>何倫碼</th><th>價值觀前2</th><th>操作</th></tr></thead>
+            <thead><tr><th>#</th><th>測驗日期</th><th>姓名（本筆）</th><th>何倫碼</th><th>價值觀前2</th><th>操作</th></tr></thead>
             <tbody>
               ${m.tests.map((t,ti)=>`
               <tr>
                 <td style="color:#aaa">${ti+1}</td>
                 <td>${esc(String(t.date||"").slice(0,10))}</td>
+                <td>
+                  <span id="tn-v-${li}-${ti}">${esc(t.name)}</span>
+                  <span id="tn-e-${li}-${ti}" style="display:none">
+                    <input class="name-input" id="tn-i-${li}-${ti}" value="${escAttr(t.name)}" style="width:80px">
+                    <button class="icon-btn green" onclick="saveTestEdit('${li}','${ti}','${escAttr(t.id)}','${escAttr(m.email)}')" title="儲存">✓</button>
+                    <button class="icon-btn red" onclick="cancelTestEdit('${li}','${ti}','${escAttr(t.name)}')" title="取消">✗</button>
+                  </span>
+                  <button class="icon-btn" id="tn-eb-${li}-${ti}" onclick="startTestEdit('${li}','${ti}')" title="編輯姓名">✏</button>
+                </td>
                 <td><span class="test-code">${esc(t.hollandCode)}</span></td>
                 <td>${t.valueTop2.length?esc(t.valueTop2.join("、")):"—"}</td>
-                <td><button class="btn danger" style="padding:4px 10px;font-size:12px" onclick="deleteTest('${escAttr(t.id)}','${escAttr(m.email)}')">刪除此筆</button></td>
+                <td style="white-space:nowrap">
+                  <button class="btn danger" style="padding:4px 10px;font-size:12px" onclick="deleteTest('${escAttr(t.id)}','${escAttr(m.email)}')">刪除</button>
+                </td>
               </tr>`).join("")}
             </tbody>
           </table>`:`<div class="no-tests">尚無測驗記錄。</div>`}
@@ -333,24 +344,52 @@ async function saveEdit(ri,email){
   const newName=document.getElementById(`ni-${ri}`).value.trim();
   if(!newName){showMsg("memberMsg","姓名不可空白。",true);return;}
   hideMsg("memberMsg");
-  const {error}=await sb.from("submissions").update({name:newName}).eq("email",email);
-  if(error){showMsg("memberMsg","更新失敗："+error.message,true);return;}
-  if(selectedMembers.has(email)) selectedMembers.set(email,{email,name:newName});
-  expandedEmails.add(email);
-  showMsg("memberMsg","姓名已更新。");
-  await loadMembers();
+  try{
+    await callAdminFunction({action:"update_member_name",email,name:newName});
+    if(selectedMembers.has(email)) selectedMembers.set(email,{email,name:newName});
+    expandedEmails.add(email);
+    showMsg("memberMsg","姓名已更新。");
+    await loadMembers();
+  }catch(err){showMsg("memberMsg","更新失敗："+err.message,true);}
+}
+
+// ── 個別測驗記錄行內編輯 ──────────────────────────────────────────────────────
+function startTestEdit(li,ti){
+  document.getElementById(`tn-v-${li}-${ti}`).style.display="none";
+  document.getElementById(`tn-e-${li}-${ti}`).style.display="";
+  document.getElementById(`tn-eb-${li}-${ti}`).style.display="none";
+  const inp=document.getElementById(`tn-i-${li}-${ti}`);
+  inp.focus();inp.select();
+}
+function cancelTestEdit(li,ti,origName){
+  document.getElementById(`tn-i-${li}-${ti}`).value=origName;
+  document.getElementById(`tn-v-${li}-${ti}`).style.display="";
+  document.getElementById(`tn-e-${li}-${ti}`).style.display="none";
+  document.getElementById(`tn-eb-${li}-${ti}`).style.display="";
+}
+async function saveTestEdit(li,ti,testId,email){
+  const newName=document.getElementById(`tn-i-${li}-${ti}`).value.trim();
+  if(!newName){showMsg("memberMsg","姓名不可空白。",true);return;}
+  hideMsg("memberMsg");
+  try{
+    await callAdminFunction({action:"update_submission_name",id:testId,name:newName});
+    expandedEmails.add(email);
+    showMsg("memberMsg","姓名已更新。");
+    await loadMembers();
+  }catch(err){showMsg("memberMsg","更新失敗："+err.message,true);}
 }
 
 // ── 刪除單筆測驗 ──────────────────────────────────────────────────────────────
 async function deleteTest(submissionId,email){
   if(!confirm("確定刪除此筆測驗記錄？此操作無法復原。")) return;
   hideMsg("memberMsg");
-  const {error}=await sb.from("submissions").delete().eq("id",submissionId);
-  if(error){showMsg("memberMsg","刪除失敗："+error.message,true);return;}
-  expandedEmails.add(email);
-  showMsg("memberMsg","測驗記錄已刪除。");
-  await logAction({actionType:"delete_submission",targetType:"submission",targetId:submissionId,after:{email}});
-  await loadMembers();
+  try{
+    await callAdminFunction({action:"delete_submission",id:submissionId});
+    expandedEmails.add(email);
+    showMsg("memberMsg","測驗記錄已刪除。");
+    await logAction({actionType:"delete_submission",targetType:"submission",targetId:submissionId,after:{email}});
+    await loadMembers();
+  }catch(err){showMsg("memberMsg","刪除失敗："+err.message,true);}
 }
 
 // ── 勾選管理 ──────────────────────────────────────────────────────────────────

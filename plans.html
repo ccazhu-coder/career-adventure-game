@@ -6,6 +6,22 @@
   <title>授權方案｜管理後台｜知己知途</title>
   <link rel="stylesheet" href="admin-layout.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    .grant-card{background:#fff;border:2px solid #b8860b;border-radius:10px;padding:24px;margin-bottom:20px;}
+    .grant-card h3{margin:0 0 16px;color:#3a2e00;font-size:16px;font-weight:700;}
+    .grant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end;}
+    @media(max-width:600px){.grant-grid{grid-template-columns:1fr;}}
+    .plan-preview{background:#f8f3e6;border-radius:8px;padding:14px 16px;margin-top:14px;display:none;}
+    .plan-preview dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0;font-size:14px;}
+    .plan-preview dt{color:#888;font-weight:600;}
+    .plan-preview dd{margin:0;color:#333;}
+    .balance-chip{display:inline-block;padding:3px 12px;border-radius:12px;font-size:13px;font-weight:700;}
+    .balance-ok{background:#d4edda;color:#155724;}
+    .balance-low{background:#fff3cd;color:#856404;}
+    .balance-zero{background:#f8d7da;color:#721c24;}
+    .history-type-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:#d4edda;color:#155724;}
+    select.full-w{width:100%;height:40px;padding:0 10px;border:1px solid #d4c9a0;border-radius:6px;background:#fff;font-size:14px;}
+  </style>
 </head>
 <body>
 <div class="admin-shell">
@@ -14,31 +30,92 @@
     <header class="topbar" id="topbar"></header>
     <div class="content">
 
+      <!-- ── 授權給諮詢師 ─────────────────────────────────────────────── -->
       <div class="subhead">
         <div>
-          <h2>授權方案</h2>
-          <p>管理可販售的授權方案（金額、數量），作為諮詢師購買額度時的對照表。</p>
+          <h2>授權給諮詢師</h2>
+          <p>選擇諮詢師與方案，點擊「授權」即新增額度（寫入額度帳本）。</p>
+        </div>
+      </div>
+
+      <div class="grant-card">
+        <h3>新增授權</h3>
+        <div class="grant-grid">
+          <div class="field">
+            <label>選擇諮詢師</label>
+            <select class="full-w" id="grantCounselor" onchange="onCounselorChange()">
+              <option value="">-- 請選擇諮詢師 --</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>選擇方案</label>
+            <select class="full-w" id="grantPlan" onchange="onPlanChange()">
+              <option value="">-- 請選擇方案 --</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 預覽區 -->
+        <div id="planPreview" class="plan-preview">
+          <dl>
+            <dt>方案名稱</dt><dd id="prevPlanName">—</dd>
+            <dt>金額</dt><dd id="prevPlanAmount">—</dd>
+            <dt>授予次數</dt><dd id="prevPlanQty">—</dd>
+            <dt>備註</dt><dd id="prevPlanNote">—</dd>
+            <dt>諮詢師目前餘額</dt><dd id="prevBalance">—</dd>
+          </dl>
+        </div>
+
+        <div style="margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <button class="btn gold" id="grantBtn" onclick="doGrant()" disabled>授權</button>
+          <span id="grantMsg" class="notice hidden" style="margin:0"></span>
+        </div>
+      </div>
+
+      <!-- ── 授權紀錄 ─────────────────────────────────────────────────── -->
+      <div class="subhead" style="margin-top:8px">
+        <div>
+          <h2>授權紀錄</h2>
+          <p>所有透過「授權方案」發放的額度紀錄。</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="left"><input id="histSearchInput" placeholder="搜尋諮詢師 Email..." oninput="renderHistory()"></div>
+        <div class="right"><button class="btn" onclick="loadAll()">重新整理</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>時間</th><th>諮詢師</th><th>方案</th><th>授予次數</th><th>管理</th></tr></thead>
+          <tbody id="histRows"></tbody>
+        </table>
+      </div>
+      <div id="histPagination" class="pagination"></div>
+
+      <hr class="section-divider">
+
+      <!-- ── 授權方案型錄 ───────────────────────────────────────────────── -->
+      <div class="subhead">
+        <div>
+          <h2>授權方案型錄</h2>
+          <p>管理可販售的授權方案（金額、數量），作為發放額度時的對照表。</p>
         </div>
       </div>
       <div class="batch-grid">
         <div class="field"><label>方案名稱</label><input id="planName" placeholder="例如 單次測驗授權" value="單次測驗授權"></div>
-        <div class="field"><label>金額</label><input id="planAmount" type="number" min="0" value="100"></div>
-        <div class="field"><label>數量</label><input id="planQuantity" type="number" min="1" value="1"></div>
+        <div class="field"><label>金額（元）</label><input id="planAmount" type="number" min="0" value="100"></div>
+        <div class="field"><label>授予次數</label><input id="planQuantity" type="number" min="1" value="1"></div>
         <div class="field"><label>狀態</label><select id="planStatus"><option>啟用</option><option>停用</option></select></div>
-        <div class="field" style="grid-column:1/-1"><label>備註</label><input id="planNote" placeholder="例如：單次測驗 100 元"></div>
-        <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="saveLicensePlan()">新增授權方案</button></div>
+        <div class="field" style="grid-column:1/-1"><label>備註</label><input id="planNote" placeholder="例如：購買後可使用 1 次測驗授權"></div>
+        <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="saveLicensePlan()">新增方案</button></div>
       </div>
       <div id="planMsg" class="notice hidden"></div>
 
-      <hr class="section-divider">
-
-      <div class="toolbar">
+      <div class="toolbar" style="margin-top:16px">
         <div class="left"><input id="planSearchInput" placeholder="搜尋方案名稱..." oninput="onPlanFilterChange()"></div>
-        <div class="right"><button class="btn" onclick="loadLicensePlans()">重新整理</button></div>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>方案名稱</th><th>金額</th><th>數量</th><th>狀態</th><th>備註</th><th>建立時間</th><th>管理</th></tr></thead>
+          <thead><tr><th>方案名稱</th><th>金額</th><th>授予次數</th><th>狀態</th><th>備註</th><th>建立時間</th><th>管理</th></tr></thead>
           <tbody id="planRows"></tbody>
         </table>
       </div>
@@ -53,27 +130,193 @@
 <script src="admin-logs.js"></script>
 <script>
 let allLicensePlans=[];
+let allCounselorProfiles=[];
+let allGrantHistory=[];    // credit_transactions where type="grant" and reason LIKE "授權方案：%"
+let allCreditTx=[];        // all credit_transactions (for balance calc)
+let allAuthorizations=[];  // counselor_authorizations (legacy balance)
 let planPage=1;
-const PLAN_PAGE_SIZE=10;
+let histPage=1;
+const PAGE_SIZE=10;
 
 (async function init(){
   const auth=await requireOwner();
   if(!auth) return;
   renderAdminShell("plans",{title:"授權方案",sessionLabel:`已登入：${auth.profile.display_name||auth.session.user.email}`});
-  await loadLicensePlans();
+  await loadAll();
 })();
 
-function onPlanFilterChange(){
-  planPage=1;
-  renderLicensePlans();
+async function loadAll(){
+  await Promise.all([loadLicensePlans(),loadCounselorProfiles(),loadCreditTx(),loadAuthorizations()]);
+  buildGrantHistory();
+  populateCounselorDropdown();
+  populatePlanDropdown();
+  renderHistory();
+}
+
+async function loadCounselorProfiles(){
+  try{
+    const res=await callAdminFunction({action:"list"});
+    allCounselorProfiles=(res.profiles||[]).filter(p=>p.role==="consultant"||p.role==="pending");
+  }catch(e){ allCounselorProfiles=[]; }
+}
+async function loadCreditTx(){
+  const {data}=await sb.from("credit_transactions").select("*").order("created_at",{ascending:false});
+  allCreditTx=data||[];
+}
+async function loadAuthorizations(){
+  const {data}=await sb.from("counselor_authorizations").select("*");
+  allAuthorizations=data||[];
 }
 async function loadLicensePlans(){
-  hideMsg("planMsg");
   const {data,error}=await sb.from("license_plans").select("*").order("created_at",{ascending:false});
   if(error){showMsg("planMsg","授權方案讀取失敗："+error.message,true);return;}
   allLicensePlans=data||[];
   renderLicensePlans();
 }
+
+function buildGrantHistory(){
+  allGrantHistory=allCreditTx.filter(t=>
+    t.type==="grant" && String(t.reason||"").startsWith("授權方案：")
+  );
+}
+
+// ── 諮詢師餘額計算 ─────────────────────────────────────────────────────────
+function getCounselorBalance(email){
+  const e=(email||"").toLowerCase();
+  const legacy=(allAuthorizations||[])
+    .filter(a=>(a.counselor_email||"").toLowerCase()===e)
+    .reduce((s,a)=>s+((a.purchased_quantity||0)-(a.used_quantity||0)),0);
+  const ledger=(allCreditTx||[])
+    .filter(t=>(t.counselor_email||"").toLowerCase()===e)
+    .reduce((s,t)=>s+(t.delta||0),0);
+  return legacy+ledger;
+}
+
+// ── 下拉選單填充 ────────────────────────────────────────────────────────────
+function populateCounselorDropdown(){
+  const sel=document.getElementById("grantCounselor");
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- 請選擇諮詢師 --</option>'+
+    allCounselorProfiles.map(p=>{
+      const bal=getCounselorBalance(p.email);
+      const label=`${esc(p.display_name||p.email)}（${esc(p.email)}）`;
+      return `<option value="${escAttr(p.email)}">${label}　目前餘額：${bal}</option>`;
+    }).join("");
+  if(cur) sel.value=cur;
+}
+function populatePlanDropdown(){
+  const sel=document.getElementById("grantPlan");
+  const cur=sel.value;
+  const active=allLicensePlans.filter(p=>p.status==="啟用");
+  sel.innerHTML='<option value="">-- 請選擇方案 --</option>'+
+    active.map(p=>`<option value="${escAttr(String(p.id))}">${esc(p.plan_name)}（${p.quantity}次 / $${p.amount}元）</option>`).join("");
+  if(cur) sel.value=cur;
+  updateGrantBtn();
+}
+
+// ── 選擇事件 ────────────────────────────────────────────────────────────────
+function onCounselorChange(){
+  updatePreview();
+  updateGrantBtn();
+}
+function onPlanChange(){
+  updatePreview();
+  updateGrantBtn();
+}
+function updatePreview(){
+  const email=document.getElementById("grantCounselor").value;
+  const planId=document.getElementById("grantPlan").value;
+  const preview=document.getElementById("planPreview");
+  if(!email||!planId){preview.style.display="none";return;}
+  const plan=allLicensePlans.find(p=>String(p.id)===planId);
+  if(!plan){preview.style.display="none";return;}
+  const bal=getCounselorBalance(email);
+  preview.style.display="";
+  document.getElementById("prevPlanName").textContent=plan.plan_name||"—";
+  document.getElementById("prevPlanAmount").textContent=`$${plan.amount} 元`;
+  document.getElementById("prevPlanQty").textContent=`${plan.quantity} 次`;
+  document.getElementById("prevPlanNote").textContent=plan.note||"—";
+  const balEl=document.getElementById("prevBalance");
+  balEl.innerHTML=`<span class="balance-chip ${bal>5?"balance-ok":(bal>0?"balance-low":"balance-zero")}">${bal} 次</span>`;
+}
+function updateGrantBtn(){
+  const ok=!!document.getElementById("grantCounselor").value&&!!document.getElementById("grantPlan").value;
+  document.getElementById("grantBtn").disabled=!ok;
+}
+
+// ── 執行授權 ─────────────────────────────────────────────────────────────────
+async function doGrant(){
+  hideMsg("grantMsg");
+  const email=document.getElementById("grantCounselor").value.trim().toLowerCase();
+  const planId=document.getElementById("grantPlan").value;
+  if(!email||!planId){showMsg("grantMsg","請選擇諮詢師與方案。",true);return;}
+  const plan=allLicensePlans.find(p=>String(p.id)===planId);
+  if(!plan){showMsg("grantMsg","找不到方案，請重新整理。",true);return;}
+  const counselorName=allCounselorProfiles.find(p=>(p.email||"").toLowerCase()===email)?.display_name||email;
+  if(!confirm(`確定將「${plan.plan_name}（${plan.quantity}次）」授權給 ${counselorName}（${email}）？`)) return;
+  const btn=document.getElementById("grantBtn");
+  btn.disabled=true;btn.textContent="授權中...";
+  const reason=`授權方案：${plan.plan_name}（${plan.quantity}次）`;
+  const {data,error}=await sb.from("credit_transactions").insert({
+    counselor_email:email,
+    delta:plan.quantity,
+    type:"grant",
+    reason,
+    created_by:currentSession?.user?.id||null,
+    created_by_name:currentProfile?.display_name||null
+  }).select("*").single();
+  if(error){showMsg("grantMsg","授權失敗："+error.message,true);btn.disabled=false;btn.textContent="授權";return;}
+  showMsg("grantMsg",`✅ 已授權 ${plan.quantity} 次給 ${counselorName}。`,false);
+  await logAction({actionType:"grant_plan",targetType:"credit_transaction",targetId:data.id,after:{email,plan:plan.plan_name,qty:plan.quantity}});
+  btn.textContent="授權";
+  await loadCreditTx();
+  await loadAuthorizations();
+  buildGrantHistory();
+  populateCounselorDropdown();
+  renderHistory();
+  updatePreview();
+  updateGrantBtn();
+}
+
+// ── 授權紀錄渲染 ─────────────────────────────────────────────────────────────
+function renderHistory(){
+  const q=document.getElementById("histSearchInput").value.trim().toLowerCase();
+  const filtered=allGrantHistory.filter(t=>!q||String(t.counselor_email||"").toLowerCase().includes(q));
+  const {pageItems,page,totalPages}=paginate(filtered,histPage,PAGE_SIZE);
+  histPage=page;
+  document.getElementById("histRows").innerHTML=filtered.length?pageItems.map(t=>{
+    const match=String(t.reason||"").match(/授權方案：(.+?)（(\d+)次）/);
+    const planName=match?match[1]:t.reason||"";
+    const qty=match?match[2]:String(t.delta||"");
+    const counselor=allCounselorProfiles.find(p=>(p.email||"").toLowerCase()===(t.counselor_email||"").toLowerCase());
+    const nameLabel=counselor?(counselor.display_name||counselor.email):t.counselor_email;
+    return `<tr>
+      <td style="font-size:13px">${esc(fmtTime(t.created_at))}</td>
+      <td><strong>${esc(nameLabel)}</strong><br><span style="font-size:12px;color:#888">${esc(t.counselor_email)}</span></td>
+      <td>${esc(planName)}</td>
+      <td><span class="history-type-badge">+${esc(qty)} 次</span></td>
+      <td><button class="btn danger" style="padding:4px 10px;font-size:12px" onclick="revokeGrant('${escAttr(t.id)}')">撤銷</button></td>
+    </tr>`;
+  }).join(""):`<tr><td colspan="5" class="empty-state">尚無授權紀錄。</td></tr>`;
+  renderPagination("histPagination",page,totalPages,p=>{histPage=p;renderHistory();});
+}
+async function revokeGrant(id){
+  const t=allGrantHistory.find(r=>String(r.id)===String(id));
+  if(!t){showMsg("grantMsg","找不到此筆紀錄，請重新整理。",true);return;}
+  if(!confirm(`確定撤銷此授權？\n諮詢師：${t.counselor_email}\n${t.reason}\n\n注意：撤銷後對方額度將減少 ${t.delta} 次。`)) return;
+  const {error}=await sb.from("credit_transactions").delete().eq("id",id);
+  if(error){showMsg("grantMsg","撤銷失敗："+error.message,true);return;}
+  showMsg("grantMsg","已撤銷此授權。");
+  await logAction({actionType:"revoke_grant",targetType:"credit_transaction",targetId:id,before:t});
+  await loadCreditTx();
+  buildGrantHistory();
+  populateCounselorDropdown();
+  renderHistory();
+  updatePreview();
+}
+
+// ── 授權方案型錄 ─────────────────────────────────────────────────────────────
+function onPlanFilterChange(){planPage=1;renderLicensePlans();}
 function getFilteredPlans(){
   const q=document.getElementById("planSearchInput").value.trim().toLowerCase();
   if(!q) return allLicensePlans;
@@ -81,20 +324,20 @@ function getFilteredPlans(){
 }
 function renderLicensePlans(){
   const filtered=getFilteredPlans();
-  const {pageItems,page,totalPages}=paginate(filtered,planPage,PLAN_PAGE_SIZE);
+  const {pageItems,page,totalPages}=paginate(filtered,planPage,PAGE_SIZE);
   planPage=page;
-  document.getElementById("planRows").innerHTML=pageItems.length ? pageItems.map(p=>`<tr>
+  document.getElementById("planRows").innerHTML=pageItems.length?pageItems.map(p=>`<tr>
     <td><strong>${esc(p.plan_name)}</strong></td>
-    <td>${esc(p.amount)}</td>
-    <td>${esc(p.quantity)}</td>
+    <td>$${esc(p.amount)} 元</td>
+    <td>${esc(p.quantity)} 次</td>
     <td><span class="pill">${esc(p.status)}</span></td>
     <td>${esc(p.note||"")}</td>
-    <td>${esc(fmtTime(p.created_at))}</td>
+    <td style="font-size:12px">${esc(fmtTime(p.created_at))}</td>
     <td><div class="batch-actions">
       <button class="btn" onclick="editLicensePlan('${escAttr(p.id)}')">修改</button>
       <button class="btn danger" onclick="deleteLicensePlan('${escAttr(p.id)}')">刪除</button>
     </div></td>
-  </tr>`).join("") : `<tr><td colspan="7" class="empty-state">尚未建立授權方案。</td></tr>`;
+  </tr>`).join(""):`<tr><td colspan="7" class="empty-state">尚未建立授權方案。</td></tr>`;
   renderPagination("planPagination",page,totalPages,p=>{planPage=p;renderLicensePlans();});
 }
 async function saveLicensePlan(){
@@ -111,6 +354,7 @@ async function saveLicensePlan(){
   document.getElementById("planNote").value="";
   await logAction({actionType:"create_plan",targetType:"license_plan",targetId:data.id,after:data});
   await loadLicensePlans();
+  populatePlanDropdown();
 }
 function findLicensePlan(id){return allLicensePlans.find(p=>String(p.id)===String(id))||null;}
 async function editLicensePlan(id){
@@ -118,22 +362,21 @@ async function editLicensePlan(id){
   if(!p){showMsg("planMsg","找不到此方案，請重新整理。",true);return;}
   const planName=prompt("方案名稱",p.plan_name||"");
   if(planName===null) return;
-  const amount=prompt("金額",p.amount??0);
+  const amount=prompt("金額（元）",p.amount??0);
   if(amount===null) return;
-  const quantity=prompt("數量",p.quantity??1);
+  const quantity=prompt("授予次數",p.quantity??1);
   if(quantity===null) return;
   const status=prompt("狀態：啟用 或 停用",p.status||"啟用");
   if(status===null) return;
   const note=prompt("備註",p.note||"");
   if(note===null) return;
-  const patch={
-    plan_name:planName,amount:parseFloat(amount)||0,quantity:parseInt(quantity,10)||1,status,note
-  };
+  const patch={plan_name:planName,amount:parseFloat(amount)||0,quantity:parseInt(quantity,10)||1,status,note};
   const {error}=await sb.from("license_plans").update(patch).eq("id",id);
   if(error){showMsg("planMsg","更新失敗："+error.message,true);return;}
   showMsg("planMsg","授權方案已更新。");
   await logAction({actionType:"update_plan",targetType:"license_plan",targetId:id,before:p,after:patch});
   await loadLicensePlans();
+  populatePlanDropdown();
 }
 async function deleteLicensePlan(id){
   const p=findLicensePlan(id);
@@ -144,6 +387,7 @@ async function deleteLicensePlan(id){
   showMsg("planMsg","已刪除。");
   await logAction({actionType:"delete_plan",targetType:"license_plan",targetId:id,before:p});
   await loadLicensePlans();
+  populatePlanDropdown();
 }
 </script>
 </body>

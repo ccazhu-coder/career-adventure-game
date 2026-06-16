@@ -218,7 +218,7 @@ function renderSummary(){
 
   document.getElementById("summaryRows").innerHTML=rows.length?pageItems.map(p=>{
     const bal=getBalance(p.email);
-    const roleLabel=p.role==="consultant"?"諮詢師":(p.role==="pending"?"待審核":p.role||"—");
+    const roleLabel={"consultant":"諮詢師","counselor":"諮詢師","pending":"待審核"}[p.role]||"諮詢師";
     return `<tr>
       <td><strong>${esc(p.display_name||"—")}</strong></td>
       <td style="font-size:13px">${esc(p.email)}</td>

@@ -18,6 +18,7 @@
     </div>
   </header>
 
+  <!-- 登入面板 -->
   <section id="loginPanel" class="panel login">
     <h2>諮詢師登入</h2>
     <div class="grid">
@@ -25,13 +26,62 @@
       <div class="field"><label>密碼</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="請輸入密碼"></div>
     </div>
     <div style="margin-top:14px"><button class="btn primary" onclick="login()">登入後台</button></div>
-    <div class="contact-card"><div><strong>需要帳號或協助？</strong><span>請聯絡知己知途官方。</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="https://lin.ee/PbfeRUU" target="_blank" rel="noopener">加入官方 LINE</a><a class="mail" href="mailto:pucezhang@gmail.com">Email 聯絡</a></div></div>
+    <div style="margin-top:16px;text-align:center;font-size:14px;color:#666">
+      還沒有帳號？<button class="btn-link" onclick="showPanel('register')">申請成為諮詢師</button>
+    </div>
+    <div class="contact-card"><div><strong>需要協助？</strong><span>請聯絡知己知途官方。</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="https://lin.ee/PbfeRUU" target="_blank" rel="noopener">加入官方 LINE</a><a class="mail" href="mailto:pucezhang@gmail.com">Email 聯絡</a></div></div>
     <div id="loginMsg" class="notice hidden"></div>
+  </section>
+
+  <!-- 註冊申請面板 -->
+  <section id="registerPanel" class="panel login" style="display:none">
+    <h2>申請諮詢師帳號</h2>
+    <p style="color:#666;font-size:14px;margin-bottom:16px">送出申請後，請聯絡我們開通方案，開通後即可登入使用。</p>
+    <div class="grid">
+      <div class="field"><label>您的姓名</label><input id="regName" placeholder="請輸入真實姓名" autocomplete="name"></div>
+      <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="此 Email 將作為登入帳號" autocomplete="username"></div>
+      <div class="field"><label>密碼</label><input id="regPass" type="password" placeholder="至少 8 個字元" autocomplete="new-password"></div>
+      <div class="field"><label>確認密碼</label><input id="regPass2" type="password" placeholder="再次輸入密碼" autocomplete="new-password"></div>
+    </div>
+    <div style="margin-top:14px"><button id="regBtn" class="btn primary" onclick="register()">送出申請</button></div>
+    <div style="margin-top:16px;text-align:center;font-size:14px;color:#666">
+      已有帳號？<button class="btn-link" onclick="showPanel('login')">返回登入</button>
+    </div>
+    <div id="regMsg" class="notice hidden"></div>
+  </section>
+
+  <!-- 申請成功面板 -->
+  <section id="successPanel" class="panel login" style="display:none">
+    <div style="text-align:center;padding:8px 0 24px">
+      <div style="font-size:40px;margin-bottom:12px">✅</div>
+      <h2 style="margin-bottom:8px">申請已送出！</h2>
+      <p style="color:#555;margin-bottom:24px">帳號建立成功。<br>請透過以下方式聯絡我們，我們將協助您開通方案後即可登入。</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn primary" href="https://lin.ee/PbfeRUU" target="_blank" rel="noopener">加入官方 LINE</a>
+        <a class="btn" href="mailto:pucezhang@gmail.com">Email 聯絡</a>
+      </div>
+      <div style="margin-top:20px">
+        <button class="btn-link" onclick="showPanel('login')">返回登入頁</button>
+      </div>
+    </div>
   </section>
 </div>
 
+<style>
+.btn-link{background:none;border:none;color:#7a5c00;cursor:pointer;font-size:inherit;padding:0;text-decoration:underline;}
+.btn-link:hover{color:#b8860b;}
+</style>
+
 <script src="counselor-common.js"></script>
 <script>
+const COUNSELOR_FUNCTION_URL = SUPABASE_URL + "/functions/v1/admin-counselors";
+
+function showPanel(name){
+  ["loginPanel","registerPanel","successPanel"].forEach(id=>{
+    document.getElementById(id).style.display = id===name+"Panel" ? "" : "none";
+  });
+}
+
 async function login(){
   hideMsg("loginMsg");
   const email=document.getElementById("loginEmail").value.trim();
@@ -45,12 +95,44 @@ async function login(){
     showMsg("loginMsg","登入失敗，找不到帳號資料，請聯絡管理者。",true);
     return;
   }
+  if(profile.role==="pending"){
+    await sb.auth.signOut();
+    showHtmlMsg("loginMsg","您的帳號尚待開通，請透過 <a href='https://lin.ee/PbfeRUU' target='_blank' rel='noopener'>LINE</a> 或 <a href='mailto:pucezhang@gmail.com'>Email</a> 聯絡我們確認開通狀態。","");
+    return;
+  }
   if(profile.role!=="consultant" && profile.role!=="owner"){
     await sb.auth.signOut();
     showMsg("loginMsg","此帳號無諮詢師後台權限，請聯絡管理者。",true);
     return;
   }
   location.href="counselor-dashboard.html";
+}
+
+async function register(){
+  hideMsg("regMsg");
+  const name=document.getElementById("regName").value.trim();
+  const email=document.getElementById("regEmail").value.trim();
+  const pass=document.getElementById("regPass").value;
+  const pass2=document.getElementById("regPass2").value;
+  if(!name||!email||!pass||!pass2){showMsg("regMsg","請填寫所有欄位。",true);return;}
+  if(pass.length<8){showMsg("regMsg","密碼至少需要 8 個字元。",true);return;}
+  if(pass!==pass2){showMsg("regMsg","兩次密碼輸入不一致。",true);return;}
+  const btn=document.getElementById("regBtn");
+  if(btn){btn.disabled=true;btn.textContent="送出中...";}
+  try{
+    const res=await fetch(COUNSELOR_FUNCTION_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY},
+      body:JSON.stringify({action:"register",name,email,password:pass})
+    });
+    const json=await res.json();
+    if(!json.ok) throw new Error(json.error||"送出失敗");
+    showPanel("success");
+  }catch(err){
+    showMsg("regMsg","送出失敗："+err.message,true);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent="送出申請";}
+  }
 }
 
 (async function init(){

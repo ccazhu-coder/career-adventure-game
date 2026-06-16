@@ -1065,7 +1065,9 @@ async function renderPdfFromEl(el){
   const pageWrap=document.createElement('div');
   pageWrap.style.width=elWidth+'px';
   pageWrap.style.overflow='hidden';
-  pageWrap.style.position='relative';
+  pageWrap.style.position='fixed';
+  pageWrap.style.left='-9999px';
+  pageWrap.style.top='0';
   pageWrap.style.background='#fff';
   el.parentNode.insertBefore(pageWrap,el);
   pageWrap.appendChild(el);
@@ -1090,31 +1092,26 @@ async function createPdfBlob(type='case'){
   if(!window.html2canvas||!window.jspdf) throw new Error('PDF 功能尚未載入，請確認網路連線或改用列印另存 PDF。');
   const el=document.createElement('div');
   el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();
-  el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';
-  const prevOverflowX=document.documentElement.style.overflowX;
-  const savedX=window.scrollX,savedY=window.scrollY;
-  document.documentElement.style.overflowX='hidden';
+  el.style.cssText='position:fixed;left:-9999px;top:0;width:170mm;max-width:170mm;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;';
   document.body.appendChild(el);
   await waitForImages(el);
   try{
     const pdf=await renderPdfFromEl(el);
     return pdf.output('blob');
-  }finally{el.remove();document.documentElement.style.overflowX=prevOverflowX;window.scrollTo(savedX,savedY);}
+  }finally{el.remove();}
 }
 function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob);});}
 async function downloadPdf(btn,type='case'){
   const old=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='PDF產生中...';}
   let el=null;
-  const prevOverflowX=document.documentElement.style.overflowX;
-  const savedX=window.scrollX,savedY=window.scrollY;
   try{
     if(!window.html2canvas||!window.jspdf){window.print();return;}
-    el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.width='170mm';el.style.maxWidth='170mm';el.style.background='#fff';el.style.boxSizing='border-box';el.style.overflowWrap='anywhere';document.documentElement.style.overflowX='hidden';document.body.appendChild(el);
+    el=document.createElement('div');el.innerHTML=type==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();el.style.cssText='position:fixed;left:-9999px;top:0;width:170mm;max-width:170mm;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;';document.body.appendChild(el);
     await waitForImages(el);
     const pdf=await renderPdfFromEl(el);
     pdf.save(pdfFileName(type));toast('PDF 已產生');
   }catch(err){console.error(err);alert('PDF 產生失敗，請改用瀏覽器列印／另存 PDF。');}
-  finally{if(el) el.remove();document.documentElement.style.overflowX=prevOverflowX;window.scrollTo(savedX,savedY);if(btn){btn.disabled=false;btn.textContent=old;}}
+  finally{if(el) el.remove();if(btn){btn.disabled=false;btn.textContent=old;}}
 }
 function buildResultRecord(h,s,fileName,status){
   const record={};

@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>諮詢師操作說明書｜知己知途</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #2c2c2c;
+      background: #faf9f6;
+    }
+
+    /* ── Cover ─────────────────────────────────── */
+    .cover {
+      background: linear-gradient(135deg, #2d4a2d 0%, #4a7a4a 60%, #7aad7a 100%);
+      color: #fff;
+      padding: 56px 32px 48px;
+      text-align: center;
+    }
+    .cover .badge {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: 13px;
+      letter-spacing: .08em;
+      margin-bottom: 18px;
+    }
+    .cover h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .cover h2 { font-size: 16px; font-weight: 400; opacity: .85; margin-bottom: 24px; }
+    .cover .meta { font-size: 13px; opacity: .7; }
+
+    /* ── Layout ────────────────────────────────── */
+    .page { max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
+
+    /* ── TOC ────────────────────────────────────── */
+    .toc {
+      background: #fff;
+      border: 1px solid #dde8d4;
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 32px 0;
+    }
+    .toc h3 { font-size: 14px; color: #5a7a5a; letter-spacing: .1em; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin: 5px 0; }
+    .toc a { color: #2d6a2d; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── Section headings ───────────────────────── */
+    .section {
+      background: #fff;
+      border: 1px solid #e8ede0;
+      border-radius: 12px;
+      padding: 28px 30px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #eef4e8;
+    }
+    .section-title .icon {
+      width: 36px; height: 36px;
+      background: #2d4a2d;
+      color: #fff;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .section-title h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e3a1e;
+    }
+    .section-title .num {
+      font-size: 11px;
+      color: #7a9a6a;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    /* ── Sub-section ────────────────────────────── */
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2d4a2d;
+      margin: 20px 0 8px;
+      padding-left: 10px;
+      border-left: 3px solid #7aad7a;
+    }
+
+    p { margin-bottom: 10px; color: #3c3c3c; }
+    ul, ol { padding-left: 22px; margin-bottom: 10px; }
+    li { margin: 4px 0; }
+
+    /* ── Steps ──────────────────────────────────── */
+    .steps { counter-reset: step; list-style: none; padding-left: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      min-width: 26px; height: 26px;
+      background: #2d4a2d;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .steps li .step-body { flex: 1; }
+    .steps li strong { display: block; margin-bottom: 2px; }
+
+    /* ── Note / Warning / Tip boxes ─────────────── */
+    .note, .warn, .tip {
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .note { background: #e8f4e8; border-left: 4px solid #4a9a4a; color: #1e4a1e; }
+    .warn { background: #fff8e0; border-left: 4px solid #e6ac00; color: #5a4000; }
+    .tip  { background: #e8f0ff; border-left: 4px solid #4a6ae0; color: #1e2e6a; }
+    .note::before { content: "ℹ"; font-size: 16px; flex-shrink: 0; }
+    .warn::before { content: "⚠"; font-size: 16px; flex-shrink: 0; }
+    .tip::before  { content: "💡"; font-size: 16px; flex-shrink: 0; }
+
+    /* ── Table ──────────────────────────────────── */
+    .tbl-wrap { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      background: #2d4a2d;
+      color: #fff;
+      font-weight: 600;
+      padding: 9px 12px;
+      text-align: left;
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid #e8ede0; vertical-align: top; }
+    tr:nth-child(even) td { background: #f5f9f0; }
+
+    /* ── Code / URL chips ───────────────────────── */
+    code {
+      background: #f0f4e8;
+      border: 1px solid #d0dcb8;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: #2d4a2d;
+      word-break: break-all;
+    }
+    .url-box {
+      background: #f0f7f0;
+      border: 1px solid #b8d8b8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: #1e4a1e;
+      margin: 8px 0;
+      word-break: break-all;
+    }
+
+    /* ── Feature card grid ──────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .feat-card {
+      background: #f7fbf2;
+      border: 1px solid #d0e4c0;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .feat-card .fc-icon { font-size: 24px; margin-bottom: 6px; }
+    .feat-card .fc-title { font-weight: 700; font-size: 14px; color: #1e3a1e; margin-bottom: 4px; }
+    .feat-card .fc-desc { font-size: 13px; color: #5a7a5a; line-height: 1.5; }
+
+    /* ── Flow strip ─────────────────────────────── */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin: 14px 0;
+      align-items: stretch;
+    }
+    .flow-step {
+      background: #2d4a2d;
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 100px;
+      flex: 1;
+      position: relative;
+    }
+    .flow-step:not(:last-child)::after {
+      content: "▶";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #7aad7a;
+      font-size: 14px;
+      z-index: 1;
+    }
+    .flow-step .fs-num {
+      font-size: 11px;
+      font-weight: 400;
+      opacity: .7;
+      margin-bottom: 2px;
+    }
+    .flow-step .fs-label { font-size: 13px; }
+    .flow-step .fs-sub { font-size: 11px; opacity: .75; margin-top: 2px; }
+
+    /* ── FAQ ────────────────────────────────────── */
+    details {
+      border: 1px solid #d8e8c8;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    summary {
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      background: #f5f9f0;
+      color: #1e3a1e;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "▶"; font-size: 10px; color: #7aad7a; transition: transform .2s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    details .faq-body { padding: 12px 16px; font-size: 14px; color: #3c3c3c; }
+
+    /* ── Footer ─────────────────────────────────── */
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #9aaa8a;
+      padding: 24px 0 40px;
+      border-top: 1px solid #e8ede0;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .cover { padding: 40px 20px 32px; }
+      .cover h1 { font-size: 22px; }
+      .section { padding: 20px 16px; }
+      .flow-step { min-width: 72px; font-size: 12px; padding: 8px 8px; }
+      .flow-step .fs-sub { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="badge">知己知途｜荷倫興趣 × SUPER 工作價值觀測驗</div>
+  <h1>諮詢師操作說明書</h1>
+  <h2>後台管理 × 學員引導完整流程</h2>
+  <div class="meta">版本：2026-06-16 ／ 適用對象：諮詢師</div>
+</div>
+
+<div class="page">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>目 錄</h3>
+    <ol>
+      <li><a href="#overview">系統概覽</a></li>
+      <li><a href="#login">登入後台</a></li>
+      <li><a href="#dashboard">儀表板</a></li>
+      <li><a href="#batches">建立施測批次</a></li>
+      <li><a href="#guide-student">引導學員作答（前台流程）</a></li>
+      <li><a href="#students">查看學員資料與下載報告</a></li>
+      <li><a href="#reports">報告查詢</a></li>
+      <li><a href="#credits">額度查詢</a></li>
+      <li><a href="#profile">帳號與密碼管理</a></li>
+      <li><a href="#faq">常見問題</a></li>
+    </ol>
+  </div>
+
+
+  <!-- 1. 系統概覽 -->
+  <div class="section" id="overview">
+    <div class="section-title">
+      <div class="icon">🗺</div>
+      <h2>系統概覽 <span class="num">第一章</span></h2>
+    </div>
+
+    <p>「知己知途」是一套結合<strong>荷倫職業興趣測驗</strong>與 <strong>SUPER 工作價值觀量表</strong>的線上施測平台，測驗完成後自動寄出 PDF 報告，諮詢師可在後台管理批次、查閱學員資料並下載諮詢師專用報告。</p>
+
+    <div class="card-grid">
+      <div class="feat-card">
+        <div class="fc-icon">🧑‍🎓</div>
+        <div class="fc-title">學員前台</div>
+        <div class="fc-desc">學員作答的網頁，共 5 關 262 題，完成後自動寄出 PDF。</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon">🧑‍💼</div>
+        <div class="fc-title">諮詢師後台</div>
+        <div class="fc-desc">建立批次、查看學員測驗結果、下載諮詢師報告、查詢額度。</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon">📄</div>
+        <div class="fc-title">個案報告（3頁）</div>
+        <div class="fc-desc">測驗完成後自動產生並寄給學員，內含荷倫碼與 SUPER 前三高解析。</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon">📋</div>
+        <div class="fc-title">諮詢師報告（10頁）</div>
+        <div class="fc-desc">含晤談切入問題、深度解讀、職業方向建議，僅諮詢師後台可下載。</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>網址</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>https://ccazhu-coder.github.io/career-adventure-game/</code></td>
+            <td>學員作答前台</td>
+          </tr>
+          <tr>
+            <td><code>https://ccazhu-coder.github.io/career-adventure-game/counselor-login.html</code></td>
+            <td>諮詢師後台登入</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- 2. 登入後台 -->
+  <div class="section" id="login">
+    <div class="section-title">
+      <div class="icon">🔑</div>
+      <h2>登入後台 <span class="num">第二章</span></h2>
+    </div>
+
+    <h3>一般登入</h3>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <strong>開啟登入頁</strong>
+          瀏覽器前往下方網址：
+          <div class="url-box">https://ccazhu-coder.github.io/career-adventure-game/counselor-login.html</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>輸入帳號密碼</strong>
+          填入您的 Email（登入帳號）與密碼，按「登入後台」。
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>進入儀表板</strong>
+          驗證成功後自動跳轉至儀表板（counselor-dashboard.html）。
+        </div>
+      </li>
+    </ol>
+
+    <div class="warn">帳號尚待開通時會看到「帳號尚待開通」提示，請聯絡主辦單位確認開通狀態。</div>
+
+    <h3>忘記密碼</h3>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          在登入頁按「忘記密碼？」連結。
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>輸入 Email</strong>，按「寄送重設連結」。
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          收到 Email 後點擊連結，即可在新頁面設定新密碼（至少 8 個字元）。
+        </div>
+      </li>
+    </ol>
+
+    <div class="note">重設連結有時效限制，若連結失效請重新申請。</div>
+
+    <h3>申請新帳號</h3>
+    <p>在登入頁點「申請成為諮詢師」，填寫姓名、Email 與密碼後送出，接著透過官方 LINE 或 Email 聯絡主辦單位開通方案，開通後即可登入。</p>
+  </div>
+
+
+  <!-- 3. 儀表板 -->
+  <div class="section" id="dashboard">
+    <div class="section-title">
+      <div class="icon">📊</div>
+      <h2>儀表板 <span class="num">第三章</span></h2>
+    </div>
+
+    <p>登入後第一個畫面即為儀表板，顯示您帳號的整體概況：</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>數字卡</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>剩餘額度</td><td>目前可供學員作答的剩餘名額總數</td></tr>
+          <tr><td>我的批次數</td><td>指派給您的批次總數</td></tr>
+          <tr><td>學員總數</td><td>您負責批次下的所有測驗筆數</td></tr>
+          <tr><td>本月新增測驗</td><td>當月學員完成測驗的筆數</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>畫面下方另有「最近批次」（最新 5 筆）與「最新測驗紀錄」（最新 5 筆），方便快速確認近況。若需要完整資料，請點選左側選單分別進入「批次管理」或「學員資料」。</p>
+  </div>
+
+
+  <!-- 4. 建立施測批次 -->
+  <div class="section" id="batches">
+    <div class="section-title">
+      <div class="icon">📂</div>
+      <h2>建立施測批次 <span class="num">第四章</span></h2>
+    </div>
+
+    <p>每一場活動（或每一位個案）建議建立一個「批次」。建立後系統會自動產生一組<strong>短碼</strong>，學員使用「測驗網址＋?c=短碼」即可進入屬於這個批次的測驗。</p>
+
+    <h3>建立新批次</h3>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          點選左側選單「批次管理」。
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>填寫批次資訊：</strong>
+          <ul>
+            <li><strong>批次代號：</strong>自訂英數組合，建議包含場次日期，例如 <code>LG260613</code>（鹿港場 2026/06/13）。</li>
+            <li><strong>批次名稱：</strong>中文說明，例如「2026/06/13 鹿港場」。</li>
+            <li><strong>數量：</strong>此批次最多可測驗人數；填 <code>0</code> 代表不限制。</li>
+            <li><strong>狀態：</strong>「啟用」讓學員可進入；「停用」則暫停此批次。</li>
+            <li><strong>開始／結束時間（選填）：</strong>限制學員只能在特定時段作答；留空代表不限時段。</li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          按「建立批次短碼」，成功後頁面會顯示<strong>短碼</strong>與<strong>完整測驗連結</strong>。
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>複製測驗連結或下載 QR Code</strong>，提供給學員掃描/點擊即可進入測驗。
+        </div>
+      </li>
+    </ol>
+
+    <div class="note">短碼是系統自動產生的亂數碼（如 <code>LG260613-001</code>），不可手動指定，但可透過批次代號區分場次。</div>
+
+    <h3>管理現有批次</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>操作</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>修改</td><td>可更改批次名稱、數量、施測時段</td></tr>
+          <tr><td>啟用 / 停用</td><td>控制學員能否進入測驗</td></tr>
+          <tr><td>複製連結</td><td>一鍵複製測驗網址傳給學員</td></tr>
+          <tr><td>⬇ 下載 QR</td><td>下載 QR Code 圖檔供投影或印刷使用</td></tr>
+          <tr><td>查看學員</td><td>跳至「學員資料」並自動篩選此批次</td></tr>
+          <tr><td>匯出資料</td><td>將批次基本資訊匯出為 CSV</td></tr>
+          <tr><td>刪除</td><td>刪除批次（有學員資料時無法刪除，請改為「停用」）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn">已有學員完成測驗的批次無法刪除，若不想讓新學員繼續加入，改為「停用」即可。</div>
+  </div>
+
+
+  <!-- 5. 引導學員作答 -->
+  <div class="section" id="guide-student">
+    <div class="section-title">
+      <div class="icon">🧭</div>
+      <h2>引導學員作答（前台流程） <span class="num">第五章</span></h2>
+    </div>
+
+    <h3>測驗整體流程</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="fs-num">第 1 關</div>
+        <div class="fs-label">短碼驗證</div>
+        <div class="fs-sub">輸入姓名/Email</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">第 2 關</div>
+        <div class="fs-label">荷倫興趣</div>
+        <div class="fs-sub">198 題</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">第 3 關</div>
+        <div class="fs-label">天賦雷達</div>
+        <div class="fs-sub">12 題能力自評</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">第 4 關</div>
+        <div class="fs-label">SUPER 價值觀</div>
+        <div class="fs-sub">52 題</div>
+      </div>
+      <div class="flow-step">
+        <div class="fs-num">第 5 關</div>
+        <div class="fs-label">結果頁</div>
+        <div class="fs-sub">PDF 自動寄出</div>
+      </div>
+    </div>
+    <p>全程共 <strong>262 題</strong>，建議預留 <strong>20～30 分鐘</strong>填答時間。</p>
+
+    <h3>步驟一：提供測驗連結給學員</h3>
+    <p>將測驗連結傳給學員（或投影 QR Code），格式如下：</p>
+    <div class="url-box">https://ccazhu-coder.github.io/career-adventure-game/?c=<strong>短碼</strong></div>
+    <p>短碼可在「批次管理」→ 對應批次的「測驗連結」欄位中找到，也可直接按「複製連結」或讓學員掃 QR Code。</p>
+
+    <h3>步驟二：學員進入第 1 關（短碼驗證）</h3>
+    <p>開啟連結後，學員需填寫：</p>
+    <ul>
+      <li><strong>姓名：</strong>真實姓名，報告與後台皆會顯示</li>
+      <li><strong>Email：</strong>測驗完成後 PDF 報告將寄送至此信箱，請確認填寫正確</li>
+    </ul>
+    <div class="warn">同一個 Email 在同一批次只能收到一次 PDF（重複送出會略過寄信，不影響學員前台流程，但郵件不會重複寄出）。若需重新收報告，請使用不同 Email。</div>
+
+    <h3>步驟三：第 2 關 荷倫興趣測驗（198 題）</h3>
+    <p>每題以 1~5 分表示對該活動的興趣程度，提醒學員：</p>
+    <ul>
+      <li>以「這件事對我的吸引力有多大」為依據，不需要考慮自己是否擅長。</li>
+      <li>第一直覺作答，不用想太久。</li>
+      <li>每道題皆要作答，不可跳過。</li>
+    </ul>
+
+    <h3>步驟四：第 3 關 天賦雷達（12 題能力自評）</h3>
+    <p>共 12 項能力，學員評估自己在各項能力的程度（1～5 分）。</p>
+    <div class="warn">這 12 題是常見漏填的地方！若學員回報「已做完但無法送出」，很可能是這一關有題目沒填。請提醒學員：<strong>12 題每一題都要填寫</strong>。</div>
+
+    <h3>步驟五：第 4 關 SUPER 工作價值觀（52 題）</h3>
+    <p>每題評估這個工作特質對自己的重要程度（1～5 分），提醒學員：</p>
+    <ul>
+      <li>想像「理想工作」時，這個因素有多重要？</li>
+      <li>不需要參照現況，完全以理想狀態作答。</li>
+    </ul>
+
+    <h3>步驟六：第 5 關 結果頁與 PDF 寄送</h3>
+    <p>填答完成後進入結果頁，頁面會顯示荷倫碼、SUPER 前三高工作價值觀等摘要。系統在<strong>約 6～15 秒內</strong>自動產生並寄出 PDF 報告：</p>
+    <ul>
+      <li><strong>個案報告（3 頁）</strong>：直接寄送至學員的 Email 信箱。</li>
+      <li><strong>諮詢師報告（10 頁）</strong>：同步上傳至後台，可在「學員資料」或「報告查詢」下載。</li>
+    </ul>
+    <div class="tip">送出後頁面會從「PDF 產生與寄送中」變為「PDF 已寄送到 XXX@XXX」，確認後即可告知學員測驗完成。若超過 30 秒仍未收到報告，請至後台「報告查詢」確認狀態，再視情況聯絡主辦單位。</div>
+  </div>
+
+
+  <!-- 6. 學員資料 -->
+  <div class="section" id="students">
+    <div class="section-title">
+      <div class="icon">👥</div>
+      <h2>查看學員資料與下載報告 <span class="num">第六章</span></h2>
+    </div>
+
+    <p>點選左側「學員資料」，即可查看您負責批次下所有已完成測驗的學員。</p>
+
+    <h3>搜尋與篩選</h3>
+    <ul>
+      <li><strong>搜尋欄：</strong>可輸入姓名、Email、短碼、何倫碼等關鍵字。</li>
+      <li><strong>批次篩選：</strong>選擇特定批次快速縮小範圍。</li>
+      <li>按「重新整理」可更新最新資料。</li>
+    </ul>
+
+    <h3>數字統計列</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>統計項目</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>總測驗紀錄</td><td>所有批次累計測驗筆數</td></tr>
+          <tr><td>PDF 已寄送</td><td>成功寄出個案 PDF 的筆數</td></tr>
+          <tr><td>今日新增</td><td>當日完成測驗的筆數</td></tr>
+          <tr><td>目前顯示</td><td>套用篩選後的結果筆數</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>可執行的操作</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>按鈕</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>下載個案報告</td>
+            <td>下載該學員的 3 頁個案 PDF（與學員收到的報告相同）</td>
+          </tr>
+          <tr>
+            <td>下載諮詢報告</td>
+            <td>下載 10 頁諮詢師專用 PDF，內含深度解讀與晤談問題</td>
+          </tr>
+          <tr>
+            <td>複製諮詢建議</td>
+            <td>複製諮詢師專用文字分析，方便貼入其他文件</td>
+          </tr>
+          <tr>
+            <td>複製文字報告</td>
+            <td>複製個案文字版報告，方便貼入對話或文件</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">按鈕若呈現半透明（無法點擊），代表該筆資料尚無原始答案紀錄，無法產生 PDF。請確認學員是否完整完成所有 262 題。</div>
+  </div>
+
+
+  <!-- 7. 報告查詢 -->
+  <div class="section" id="reports">
+    <div class="section-title">
+      <div class="icon">🔍</div>
+      <h2>報告查詢 <span class="num">第七章</span></h2>
+    </div>
+
+    <p>點選左側「報告查詢」，可集中確認所有學員的 PDF 產出狀態，特別適合在活動結束後統一核查是否有漏報告的學員。</p>
+
+    <h3>狀態篩選器</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>篩選選項</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>全部報告狀態</td><td>顯示所有學員</td></tr>
+          <tr><td>尚缺個案報告 PDF</td><td>尚未產出個案報告的學員</td></tr>
+          <tr><td>尚缺諮詢師報告 PDF</td><td>尚未產出諮詢師報告的學員</td></tr>
+          <tr><td>任一報告尚未產出</td><td>兩份報告中有任何一份未產出</td></tr>
+          <tr><td>報告皆已產出</td><td>個案與諮詢師報告皆已完成</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip">活動結束後建議先選「任一報告尚未產出」，確認是否有學員遺漏，再對照補下載。</div>
+  </div>
+
+
+  <!-- 8. 額度查詢 -->
+  <div class="section" id="credits">
+    <div class="section-title">
+      <div class="icon">💳</div>
+      <h2>額度查詢 <span class="num">第八章</span></h2>
+    </div>
+
+    <p>點選左側「額度查詢」，可確認您目前的可用名額。</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>欄位</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>目前剩餘額度</td><td>現在可供學員使用的總名額數</td></tr>
+          <tr><td>原始授權剩餘</td><td>主辦單位授權方案中尚未消耗的名額</td></tr>
+          <tr><td>額度異動加總</td><td>手動增減的累計結果（正數=補回，負數=扣除）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>下方「授權方案記錄」顯示主辦單位核發的各次方案細節；「額度異動紀錄」顯示每一次的增減時間與原因。此頁僅供查閱，若需增加額度請聯絡主辦單位。</p>
+  </div>
+
+
+  <!-- 9. 帳號與密碼管理 -->
+  <div class="section" id="profile">
+    <div class="section-title">
+      <div class="icon">⚙️</div>
+      <h2>帳號與密碼管理 <span class="num">第九章</span></h2>
+    </div>
+
+    <p>點選左側「帳號資料」，可執行以下操作：</p>
+
+    <h3>顯示名稱</h3>
+    <p>修改後台介面與操作紀錄中顯示的名稱，例如「王老師」，修改後按「儲存顯示名稱」即可。</p>
+
+    <h3>變更密碼</h3>
+    <ol class="steps">
+      <li><div class="step-body">在「新密碼」欄位填入新密碼（至少 6 個字元，建議 8 字元以上並包含英數）。</div></li>
+      <li><div class="step-body">在「確認新密碼」欄位再輸入一次相同密碼。</div></li>
+      <li><div class="step-body">按「更新密碼」，成功後下次登入請使用新密碼。</div></li>
+    </ol>
+
+    <div class="note">Email、角色、額度由主辦單位管理，無法在此頁自行修改。</div>
+  </div>
+
+
+  <!-- 10. 常見問題 -->
+  <div class="section" id="faq">
+    <div class="section-title">
+      <div class="icon">❓</div>
+      <h2>常見問題 <span class="num">第十章</span></h2>
+    </div>
+
+    <details>
+      <summary>學員說「完成了但沒辦法送出」怎麼辦？</summary>
+      <div class="faq-body">
+        最常見原因是<strong>第 3 關「天賦雷達」12 題有漏填</strong>。請學員回到第 3 關，確認 12 道能力自評題全部都有填寫，每題都要選 1～5 分，送出後才能進入第 5 關。
+      </div>
+    </details>
+
+    <details>
+      <summary>學員說「沒收到 PDF 報告」怎麼辦？</summary>
+      <div class="faq-body">
+        <ul>
+          <li>請學員先確認垃圾郵件匣。</li>
+          <li>請至後台「報告查詢」搜尋該學員，確認「PDF 已寄送」欄位的狀態。</li>
+          <li>同一個 Email 在同一批次只會寄出一次，若曾以同信箱完成過測驗，系統會標記「略過：此 Email 已寄過」而不重複寄信。</li>
+          <li>若確認 PDF 已上傳（「個案報告：已產出」），可直接在後台替學員下載後轉寄。</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>學員填到一半離開，可以繼續嗎？</summary>
+      <div class="faq-body">
+        <strong>不支援暫存/中斷續答</strong>。測驗必須在同一次瀏覽器工作階段中完成。若學員關閉瀏覽器或離開頁面，下次需要重新從第 1 關開始填寫。建議學員預留連續的作答時間（35～45 分鐘）。
+      </div>
+    </details>
+
+    <details>
+      <summary>批次數量已達上限，還有學員想做測驗怎麼辦？</summary>
+      <div class="faq-body">
+        請先到「額度查詢」確認剩餘額度是否足夠，若額度不足請聯絡主辦單位補充；若只是批次數量設定太少，可到「批次管理」→「修改」，調整該批次的「數量」欄位（填 0 = 不限）。
+      </div>
+    </details>
+
+    <details>
+      <summary>想把學員移到另一個批次，可以嗎？</summary>
+      <div class="faq-body">
+        目前後台不支援自行移動學員批次，如有需要請聯絡主辦單位協助處理。
+      </div>
+    </details>
+
+    <details>
+      <summary>下載 PDF 時只打開了空白頁，怎麼辦？</summary>
+      <div class="faq-body">
+        若使用 <strong>Safari 或 Firefox</strong>，有時需要允許網站開啟彈出視窗。請在瀏覽器的「封鎖彈出視窗」通知中選擇「允許」，再重新按下載按鈕。建議使用 <strong>Chrome</strong> 以獲得最佳體驗。
+      </div>
+    </details>
+
+    <details>
+      <summary>如何聯絡主辦單位？</summary>
+      <div class="faq-body">
+        <ul>
+          <li><strong>官方 LINE：</strong><a href="https://lin.ee/PbfeRUU" target="_blank" rel="noopener">https://lin.ee/PbfeRUU</a></li>
+          <li><strong>Email：</strong><a href="mailto:pucezhang@gmail.com">pucezhang@gmail.com</a></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+</div><!-- .page -->
+
+<footer>
+  知己知途｜荷倫興趣 × SUPER 工作價值觀測驗平台<br>
+  諮詢師操作說明書 v2026-06-16
+</footer>
+
+</body>
+</html>

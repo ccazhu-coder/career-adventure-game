@@ -111,6 +111,7 @@ const COUNSELOR_NAV=[
   {key:"counselor-reports",label:"報告查詢",href:"counselor-reports.html"},
   {key:"counselor-credits",label:"額度查詢",href:"counselor-credits.html"},
   {key:"counselor-profile",label:"帳號資料",href:"counselor-profile.html"},
+  {key:"counselor-guide",label:"操作說明書",href:"counselor-guide.html",external:true},
 ];
 
 function renderCounselorShell(activeKey,opts={}){
@@ -120,7 +121,7 @@ function renderCounselorShell(activeKey,opts={}){
     sidebar.innerHTML=`
       <div class="brand">知己知途<small>諮詢師後台</small></div>
       <nav>
-        ${COUNSELOR_NAV.map(item=>`<a href="${item.href}" class="${item.key===activeKey?"active":""}">${esc(item.label)}</a>`).join("")}
+        ${COUNSELOR_NAV.map(item=>`<a href="${item.href}" class="${item.key===activeKey?"active":""}${item.external?" guide-link":""}"${item.external?' target="_blank" rel="noopener"':""}>${esc(item.label)}</a>`).join("")}
         <a href="#" class="logout-link" onclick="counselorLogout();return false;">登出</a>
       </nav>`;
   }

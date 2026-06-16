@@ -24,7 +24,7 @@ async function requireConsultant(){
     location.href=COUNSELOR_LOGIN_PAGE+"?denied=1";
     return null;
   }
-  if(profile.role!=="consultant" && profile.role!=="owner"){
+  if(profile.role!=="consultant" && profile.role!=="counselor" && profile.role!=="owner"){
     await sb.auth.signOut();
     location.href=COUNSELOR_LOGIN_PAGE+"?denied=1";
     return null;

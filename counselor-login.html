@@ -134,7 +134,7 @@ async function login(){
     showHtmlMsg("loginMsg","您的帳號尚待開通，請透過 <a href='https://lin.ee/PbfeRUU' target='_blank' rel='noopener'>LINE</a> 或 <a href='mailto:pucezhang@gmail.com'>Email</a> 聯絡我們確認開通狀態。","");
     return;
   }
-  if(profile.role!=="consultant" && profile.role!=="owner"){
+  if(profile.role!=="consultant" && profile.role!=="counselor" && profile.role!=="owner"){
     await sb.auth.signOut();
     showMsg("loginMsg","此帳號無諮詢師後台權限，請聯絡管理者。",true);
     return;
@@ -176,7 +176,7 @@ async function register(){
   const {data:{session}}=await sb.auth.getSession();
   if(session){
     const {data:profile}=await sb.from("profiles").select("role").eq("id",session.user.id).maybeSingle();
-    if(profile && (profile.role==="consultant"||profile.role==="owner")){ location.href="counselor-dashboard.html"; return; }
+    if(profile && (profile.role==="consultant"||profile.role==="counselor"||profile.role==="owner")){ location.href="counselor-dashboard.html"; return; }
     await sb.auth.signOut();
   }
 })();

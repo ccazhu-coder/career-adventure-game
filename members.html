@@ -9,13 +9,9 @@
   <style>
     .repeat-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;background:#d4edda;color:#155724;}
     .cnt-badge{color:#888;font-size:13px;}
-
-    /* 展開按鈕 */
     .expand-btn{background:#f0ead8;border:1px solid #d4c9a0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;white-space:nowrap;}
     .expand-btn:hover{background:#e5dcbf;}
     .expand-btn.open{background:#3a2e00;color:#fff;border-color:#3a2e00;}
-
-    /* 展開的測驗明細列 */
     .detail-row td{padding:0 !important;}
     .detail-inner{padding:0 16px 14px 48px;border-bottom:2px solid #e8dfc0;}
     .detail-info{font-size:12px;color:#888;margin-bottom:8px;}
@@ -25,17 +21,32 @@
     .inner-table tr:last-child td{border-bottom:none;}
     .test-code{font-weight:700;font-size:14px;letter-spacing:.5px;}
     .no-tests{color:#bbb;font-size:13px;padding:10px 0;}
-
-    /* 姓名行內編輯 */
     .name-input{width:120px;padding:3px 6px;border:1px solid #b8860b;border-radius:4px;font-size:14px;}
     .icon-btn{background:none;border:none;cursor:pointer;padding:2px 4px;font-size:13px;color:#7a5c00;}
     .icon-btn:hover{color:#b8860b;}
     .icon-btn.green{color:#155724;}
     .icon-btn.red{color:#721c24;}
-
-    /* filter-row */
     .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
     .filter-row select,.filter-row input{height:36px;padding:0 10px;border:1px solid #d4c9a0;border-radius:6px;background:#fff;font-size:14px;}
+    /* 群發面板 */
+    .compose-panel{background:#fff;border:2px solid #b8860b;border-radius:10px;padding:24px;margin-bottom:20px;}
+    .compose-panel h3{margin:0 0 16px;color:#3a2e00;font-size:16px;}
+    .compose-field{margin-bottom:14px;}
+    .compose-field label{display:block;font-size:13px;color:#666;margin-bottom:4px;font-weight:600;}
+    .compose-field input,.compose-field textarea{width:100%;box-sizing:border-box;border:1px solid #d4c9a0;border-radius:6px;padding:8px 12px;font-size:14px;font-family:inherit;}
+    .compose-field textarea{height:160px;resize:vertical;line-height:1.6;}
+    .compose-field input:focus,.compose-field textarea:focus{border-color:#b8860b;outline:none;}
+    .compose-hint{font-size:12px;color:#999;margin-top:4px;}
+    .recipient-preview{background:#f8f3e6;border-radius:6px;padding:10px 14px;font-size:13px;color:#555;max-height:100px;overflow-y:auto;}
+    .compose-actions{display:flex;gap:10px;margin-top:16px;align-items:center;}
+    .send-bar{display:flex;align-items:center;gap:12px;padding:10px 0 6px;flex-wrap:wrap;}
+    .select-all-btn{background:#f0ead8;border:1px solid #d4c9a0;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:13px;}
+    .select-all-btn:hover{background:#e5dcbf;}
+    .email-btn{background:#b8860b;color:#fff;border:none;border-radius:8px;padding:7px 16px;cursor:pointer;font-size:14px;font-weight:600;}
+    .email-btn:disabled{opacity:.4;cursor:default;}
+    .email-btn:not(:disabled):hover{background:#9a6e08;}
+    .sel-count{font-size:13px;color:#7a5c00;font-weight:600;}
+    input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#b8860b;}
   </style>
 </head>
 <body>
@@ -48,7 +59,7 @@
       <div class="subhead">
         <div>
           <h2>學員檔案</h2>
-          <p>以 Email 為單位彙整每位學員的所有測驗紀錄，可展開查看、編輯姓名、刪除特定測驗，並可匯出名單供行銷使用。</p>
+          <p>以 Email 為單位彙整每位學員的所有測驗紀錄，可展開查看、編輯姓名、刪除特定測驗，並可勾選學員群發行銷 Email。</p>
         </div>
       </div>
 
@@ -61,6 +72,34 @@
 
       <div id="memberMsg" class="notice hidden"></div>
 
+      <!-- 群發 Email 面板 -->
+      <div id="composePanel" class="compose-panel" style="display:none">
+        <h3>✉ 群發 Email</h3>
+        <div class="compose-field">
+          <label>收件人</label>
+          <div class="recipient-preview" id="recipientPreview">—</div>
+        </div>
+        <div class="compose-field">
+          <label>寄件者</label>
+          <input type="text" value="知己知途" disabled style="background:#f5f0e8;color:#888">
+        </div>
+        <div class="compose-field">
+          <label>主旨</label>
+          <input type="text" id="emailSubject" placeholder="請輸入信件主旨">
+        </div>
+        <div class="compose-field">
+          <label>信件內容</label>
+          <textarea id="emailContent" placeholder="請輸入信件內容&#10;&#10;支援 {{姓名}} 佔位符，寄出時會自動替換為學員的姓名。&#10;&#10;例如：&#10;親愛的 {{姓名}}，&#10;感謝您參與知己知途職涯測驗……"></textarea>
+          <div class="compose-hint">💡 使用 <code>{{姓名}}</code> 可個別顯示每位學員的姓名</div>
+        </div>
+        <div class="compose-actions">
+          <button class="btn primary" id="sendBtn" onclick="confirmAndSend()">確認寄出（<span id="sendCount">0</span> 封）</button>
+          <button class="btn" onclick="closeCompose()">取消</button>
+          <span id="sendResultMsg" class="notice hidden" style="margin:0;flex:1"></span>
+        </div>
+      </div>
+
+      <!-- 篩選工具列 -->
       <div class="filter-row">
         <input id="searchInput" oninput="onFilterChange()" placeholder="搜尋姓名、Email、何倫碼...">
         <select id="counselorFilter" onchange="onFilterChange()"><option value="">全部諮詢師</option></select>
@@ -82,10 +121,19 @@
         <button class="btn" onclick="loadMembers()">重新整理</button>
       </div>
 
+      <!-- 勾選操作列 -->
+      <div class="send-bar">
+        <button class="select-all-btn" onclick="selectAllFiltered()">全選篩選結果</button>
+        <button class="select-all-btn" onclick="clearSelection()">清除勾選</button>
+        <span class="sel-count" id="selCount">已選 0 位</span>
+        <button class="email-btn" id="emailBtn" disabled onclick="openCompose()">✉ 群發 Email</button>
+      </div>
+
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
+              <th style="width:36px"><input type="checkbox" id="headerCheck" onchange="togglePageAll(this.checked)" title="勾選本頁"></th>
               <th style="width:44px">#</th>
               <th style="min-width:120px">姓名</th>
               <th style="min-width:180px">Email</th>
@@ -106,11 +154,14 @@
 <script src="admin-auth.js"></script>
 <script src="admin-logs.js"></script>
 <script>
+const MARKETING_FUNCTION_URL = SUPABASE_URL + "/functions/v1/send-marketing-email";
+
 let allMembers=[];
 let filteredMembers=[];
 let memberPage=1;
 const PAGE_SIZE=25;
 const expandedEmails=new Set();
+const selectedMembers=new Map(); // email -> {email, name}
 
 (async function init(){
   const auth=await requireOwner();
@@ -143,7 +194,6 @@ function buildMemberList(submissions){
     const vals=Array.isArray(r.value_top)?r.value_top:[];
     m.tests.push({id:r.id,date:r.created_at,hollandCode:r.holland_code||"",primaryType:r.primary_type||"",valueTop2:vals.slice(0,2)});
   });
-  // tests already sorted ascending (query order)
   return [...map.values()].sort((a,b)=>{
     const aD=a.tests[a.tests.length-1]?.date||"";
     const bD=b.tests[b.tests.length-1]?.date||"";
@@ -184,6 +234,7 @@ function onFilterChange(){
   renderMembers();
 }
 
+// ── 渲染 ────────────────────────────────────────────────────────────────────
 function renderMembers(){
   const {pageItems,page,totalPages}=paginate(filteredMembers,memberPage,PAGE_SIZE);
   memberPage=page;
@@ -193,9 +244,11 @@ function renderMembers(){
     const num=offset+li+1;
     const isRepeat=m.tests.length>=2;
     const isOpen=expandedEmails.has(m.email);
+    const isSel=selectedMembers.has(m.email);
     const ri=`ri${li}`;
     html+=`
-    <tr>
+    <tr style="${isSel?"background:#fffbec":""}">
+      <td><input type="checkbox" ${isSel?"checked":""} onchange="toggleSelect(this,'${escAttr(m.email)}','${escAttr(m.name)}')"></td>
       <td style="color:#aaa;font-size:13px">${num}</td>
       <td>
         <span class="name-view" id="nv-${ri}">${esc(m.name)}</span>
@@ -215,7 +268,7 @@ function renderMembers(){
       </td>
     </tr>
     <tr class="detail-row" id="dr-${ri}" style="${isOpen?"":"display:none"}">
-      <td colspan="5">
+      <td colspan="6">
         <div class="detail-inner">
           <div class="detail-info">諮詢師：${esc(m.counselorEmail||"—")}</div>
           ${m.tests.length?`
@@ -236,10 +289,16 @@ function renderMembers(){
       </td>
     </tr>`;
   });
-  document.getElementById("memberRows").innerHTML=html||`<tr><td colspan="5" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
+  document.getElementById("memberRows").innerHTML=html||`<tr><td colspan="6" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
+  // 更新 header checkbox 狀態
+  const pageEmails=pageItems.map(m=>m.email);
+  const allPageSel=pageEmails.length>0&&pageEmails.every(e=>selectedMembers.has(e));
+  const hc=document.getElementById("headerCheck");
+  if(hc){hc.checked=allPageSel;hc.indeterminate=!allPageSel&&pageEmails.some(e=>selectedMembers.has(e));}
   renderPagination("memberPagination",page,totalPages,p=>{memberPage=p;renderMembers();});
 }
 
+// ── 展開 / 收合 ──────────────────────────────────────────────────────────────
 function toggleDetail(ri,email){
   const dr=document.getElementById(`dr-${ri}`);
   const btn=document.getElementById(`eb-${ri}`);
@@ -252,7 +311,7 @@ function toggleDetail(ri,email){
   else expandedEmails.add(email);
 }
 
-// ── 行內編輯姓名 ──────────────────────────────────────────────
+// ── 行內編輯姓名 ──────────────────────────────────────────────────────────────
 function startEdit(ri){
   document.getElementById(`nv-${ri}`).classList.add("hidden");
   document.getElementById(`ni-${ri}`).classList.remove("hidden");
@@ -276,12 +335,13 @@ async function saveEdit(ri,email){
   hideMsg("memberMsg");
   const {error}=await sb.from("submissions").update({name:newName}).eq("email",email);
   if(error){showMsg("memberMsg","更新失敗："+error.message,true);return;}
+  if(selectedMembers.has(email)) selectedMembers.set(email,{email,name:newName});
   expandedEmails.add(email);
   showMsg("memberMsg","姓名已更新。");
   await loadMembers();
 }
 
-// ── 刪除單筆測驗 ──────────────────────────────────────────────
+// ── 刪除單筆測驗 ──────────────────────────────────────────────────────────────
 async function deleteTest(submissionId,email){
   if(!confirm("確定刪除此筆測驗記錄？此操作無法復原。")) return;
   hideMsg("memberMsg");
@@ -293,7 +353,96 @@ async function deleteTest(submissionId,email){
   await loadMembers();
 }
 
-// ── 匯出 CSV ─────────────────────────────────────────────────
+// ── 勾選管理 ──────────────────────────────────────────────────────────────────
+function toggleSelect(chk,email,name){
+  if(chk.checked) selectedMembers.set(email,{email,name});
+  else selectedMembers.delete(email);
+  updateSelUI();
+}
+function togglePageAll(checked){
+  const {pageItems}=paginate(filteredMembers,memberPage,PAGE_SIZE);
+  pageItems.forEach(m=>{
+    if(checked) selectedMembers.set(m.email,{email:m.email,name:m.name});
+    else selectedMembers.delete(m.email);
+  });
+  updateSelUI();
+  renderMembers();
+}
+function selectAllFiltered(){
+  filteredMembers.forEach(m=>selectedMembers.set(m.email,{email:m.email,name:m.name}));
+  updateSelUI();
+  renderMembers();
+}
+function clearSelection(){
+  selectedMembers.clear();
+  updateSelUI();
+  renderMembers();
+}
+function updateSelUI(){
+  const n=selectedMembers.size;
+  document.getElementById("selCount").textContent=`已選 ${n} 位`;
+  const btn=document.getElementById("emailBtn");
+  btn.disabled=n===0;
+  btn.textContent=n>0?`✉ 群發 Email（${n} 位）`:"✉ 群發 Email";
+  // 同步 sendCount
+  const sc=document.getElementById("sendCount");
+  if(sc) sc.textContent=n;
+}
+
+// ── 群發面板 ──────────────────────────────────────────────────────────────────
+function openCompose(){
+  const panel=document.getElementById("composePanel");
+  panel.style.display="";
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
+  hideMsg("sendResultMsg");
+  updateRecipientPreview();
+  document.getElementById("sendCount").textContent=selectedMembers.size;
+}
+function closeCompose(){
+  document.getElementById("composePanel").style.display="none";
+}
+function updateRecipientPreview(){
+  const list=[...selectedMembers.values()];
+  const preview=document.getElementById("recipientPreview");
+  if(!list.length){preview.textContent="尚未選擇收件人";return;}
+  const shown=list.slice(0,5).map(r=>`${esc(r.name||r.email)} &lt;${esc(r.email)}&gt;`).join("<br>");
+  preview.innerHTML=shown+(list.length>5?`<br><span style="color:#aaa">…及另外 ${list.length-5} 位</span>`:"");
+}
+async function confirmAndSend(){
+  const subject=document.getElementById("emailSubject").value.trim();
+  const content=document.getElementById("emailContent").value.trim();
+  const recipients=[...selectedMembers.values()];
+  hideMsg("sendResultMsg");
+  if(!subject){showMsg("sendResultMsg","請填寫信件主旨。",true);return;}
+  if(!content){showMsg("sendResultMsg","請填寫信件內容。",true);return;}
+  if(!recipients.length){showMsg("sendResultMsg","請先勾選收件人。",true);return;}
+  if(recipients.length>100){showMsg("sendResultMsg","單次最多 100 位收件人。",true);return;}
+  if(!confirm(`確定寄出 ${recipients.length} 封 Email？\n主旨：${subject}`)) return;
+
+  const btn=document.getElementById("sendBtn");
+  btn.disabled=true;btn.textContent="寄送中...";
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session) throw new Error("登入已逾時，請重新整理頁面。");
+    const res=await fetch(MARKETING_FUNCTION_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+session.access_token},
+      body:JSON.stringify({recipients,subject,content})
+    });
+    const json=await res.json();
+    if(!json.ok) throw new Error(json.error||"寄送失敗");
+    showHtmlMsg("sendResultMsg",`<strong>✅ 寄送完成！</strong>成功寄出 ${json.sent} 封，共 ${json.total} 位收件人。`,"success");
+    await logAction({actionType:"send_marketing_email",targetType:"members",after:{subject,count:json.sent}});
+    clearSelection();
+    renderMembers();
+  }catch(err){
+    showMsg("sendResultMsg","寄送失敗："+err.message,true);
+  }finally{
+    btn.disabled=false;btn.textContent=`確認寄出（${selectedMembers.size} 封）`;
+  }
+}
+
+// ── 匯出 CSV ──────────────────────────────────────────────────────────────────
 function exportCsv(){
   const headers=["Email","姓名","諮詢師","測驗次數","第1次日期","第1次何倫碼","第1次價值觀前2","第2次日期","第2次何倫碼","第2次價值觀前2"];
   const csvRows=filteredMembers.map(m=>{

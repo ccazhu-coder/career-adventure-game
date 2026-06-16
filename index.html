@@ -1054,6 +1054,7 @@ function computePdfPageRanges(el){
     ranges.push([y,end]);
     y=end;
   }
+  while(ranges.length>1&&(ranges[ranges.length-1][1]-ranges[ranges.length-1][0])<pageHeightPx*0.1)ranges.pop();
   return ranges.length?ranges:[[0,elHeight]];
 }
 async function renderPdfFromEl(el){

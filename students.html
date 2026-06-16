@@ -74,7 +74,7 @@
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>送出時間</th><th style="white-space:nowrap">姓名</th><th>Email</th><th>批次/短碼</th><th>諮詢師Email</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
+              <tr><th>送出時間</th><th style="white-space:nowrap">姓名</th><th>Email</th><th>批次/短碼</th><th>諮詢師</th><th>何倫碼</th><th>價值觀前2</th><th>PDF 狀態</th><th>操作</th></tr>
             </thead>
             <tbody id="submissionRows"></tbody>
           </table>
@@ -331,11 +331,9 @@ function renderSubmissions(){
       <td style="white-space:nowrap"><strong>${esc(r.name)}</strong></td>
       <td>${esc(r.email)}</td>
       <td>${esc(r.batch_name||r.batch_code||"")}<br><span class="code">${esc(r.short_code||"")}</span></td>
-      <td>${esc(r.counselor_email||"")}</td>
+      <td style="white-space:nowrap">${esc(counselorNameMap.get((r.counselor_email||"").toLowerCase())||r.counselor_email||"")}</td>
       <td><span class="code">${esc(r.holland_code)}</span></td>
-      <td>${esc(r.primary_type)}<br>${esc(r.secondary_type)}<br>${esc(r.third_type)}</td>
       <td>${esc(valueTop)}</td>
-      <td>${esc(r.complete_pct)}%</td>
       <td>${esc(r.pdf_send_status||"")}</td>
       <td>
         <button class="btn gold" style="${hasPdf?"":"opacity:.55;pointer-events:none"}" onclick="downloadCasePdf('${escAttr(r.id)}','${escAttr(r.pdf_path||"")}','${escAttr(r.pdf_filename||"報告.pdf")}')">下載個案報告</button>
@@ -346,7 +344,7 @@ function renderSubmissions(){
         ${caseReportText?`<details class="case-box"><summary>查看可複製文字報告</summary><div id="${caseTextId}" class="case-report">${esc(caseReportText)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無文字報告</div>`}
       </td>
     </tr>`;
-  }).join("") : `<tr><td colspan="11" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
+  }).join("") : `<tr><td colspan="9" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
   renderPagination("studentPagination",page,totalPages,p=>{studentPage=p;renderSubmissions();});
 }
 async function downloadPdf(path,filename){

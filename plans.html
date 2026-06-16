@@ -196,12 +196,36 @@ function getCounselorBalance(email){
 function populateCounselorDropdown(){
   const sel=document.getElementById("grantCounselor");
   const cur=sel.value;
-  sel.innerHTML='<option value="">-- 請選擇諮詢師 --</option>'+
-    allCounselorProfiles.map(p=>{
-      const bal=getCounselorBalance(p.email);
-      const label=`${esc(p.display_name||p.email)}（${esc(p.email)}）`;
-      return `<option value="${escAttr(p.email)}">${label}　目前餘額：${bal}</option>`;
-    }).join("");
+
+  // 已建帳號的諮詢師
+  const profileMap=new Map(allCounselorProfiles.map(p=>[(p.email||"").toLowerCase(),p]));
+
+  // 舊資料裡有記錄但無帳號的 email
+  const oldEmails=new Set([
+    ...(allAuthorizations||[]).map(a=>(a.counselor_email||"").toLowerCase()),
+    ...(allCreditTx||[]).map(t=>(t.counselor_email||"").toLowerCase())
+  ]);
+  oldEmails.forEach(e=>{if(e&&!profileMap.has(e)) profileMap.set(e,{email:e,display_name:"",role:"old"});});
+
+  const sorted=[...profileMap.values()].sort((a,b)=>{
+    const aOld=a.role==="old"?1:0,bOld=b.role==="old"?1:0;
+    if(aOld!==bOld) return aOld-bOld;
+    return (a.email||"").localeCompare(b.email||"");
+  });
+
+  sel.innerHTML='<option value="">-- 請選擇諮詢師 --</option>';
+  let lastGroup="";
+  sorted.forEach(p=>{
+    const group=p.role==="old"?"old":"active";
+    if(group!==lastGroup){
+      if(group==="old") sel.innerHTML+=`<option disabled>── 舊資料（無帳號）──</option>`;
+      lastGroup=group;
+    }
+    const bal=getCounselorBalance(p.email);
+    const label=p.display_name?`${p.display_name}（${p.email}）`:p.email;
+    sel.innerHTML+=`<option value="${escAttr(p.email)}">${esc(label)}　目前餘額：${bal}</option>`;
+  });
+
   if(cur) sel.value=cur;
 }
 function populatePlanDropdown(){

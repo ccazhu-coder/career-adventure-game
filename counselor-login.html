@@ -45,11 +45,7 @@ async function login(){
     showMsg("loginMsg","登入失敗，找不到帳號資料，請聯絡管理者。",true);
     return;
   }
-  if(profile.role==="owner"){
-    location.href="dashboard.html";
-    return;
-  }
-  if(profile.role!=="consultant"){
+  if(profile.role!=="consultant" && profile.role!=="owner"){
     await sb.auth.signOut();
     showMsg("loginMsg","此帳號無諮詢師後台權限，請聯絡管理者。",true);
     return;
@@ -64,8 +60,7 @@ async function login(){
   const {data:{session}}=await sb.auth.getSession();
   if(session){
     const {data:profile}=await sb.from("profiles").select("role").eq("id",session.user.id).maybeSingle();
-    if(profile && profile.role==="consultant"){ location.href="counselor-dashboard.html"; return; }
-    if(profile && profile.role==="owner"){ location.href="dashboard.html"; return; }
+    if(profile && (profile.role==="consultant"||profile.role==="owner")){ location.href="counselor-dashboard.html"; return; }
     await sb.auth.signOut();
   }
 })();

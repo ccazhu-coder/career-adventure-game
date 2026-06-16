@@ -24,11 +24,7 @@ async function requireConsultant(){
     location.href=COUNSELOR_LOGIN_PAGE+"?denied=1";
     return null;
   }
-  if(profile.role==="owner"){
-    location.href=OWNER_DASHBOARD_PAGE;
-    return null;
-  }
-  if(profile.role!=="consultant"){
+  if(profile.role!=="consultant" && profile.role!=="owner"){
     await sb.auth.signOut();
     location.href=COUNSELOR_LOGIN_PAGE+"?denied=1";
     return null;

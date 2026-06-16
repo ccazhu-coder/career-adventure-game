@@ -6,7 +6,7 @@
   <title>批次管理｜諮詢師後台｜知己知途</title>
   <link rel="stylesheet" href="admin-layout.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <div class="admin-shell">
@@ -125,8 +125,8 @@ function renderBatches(){
       <td>
         <a class="linkbox" href="${escAttr(link)}" target="_blank" rel="noopener">${esc(link)}</a>
         <br><button class="btn" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="copyText('${escAttr(link)}','batchMsg')">複製連結</button>
-        <canvas id="qrc-${esc(b.short_code)}" class="batch-qr" data-url="${escAttr(link)}" style="display:block;margin-top:10px;border-radius:6px;border:1px solid #ddd"></canvas>
-        <button class="btn" style="margin-top:4px;padding:6px 10px;font-size:12px" onclick="downloadQR('qrc-${esc(b.short_code)}','${escAttr(b.batch_name||b.short_code||"")}')">⬇ 下載 QR</button>
+        <div id="qrc-${esc(b.short_code)}" class="batch-qr-wrap" data-url="${escAttr(link)}" style="display:inline-block;margin-top:10px;border-radius:6px;border:1px solid #ddd;overflow:hidden"></div>
+        <button class="btn" style="display:block;margin-top:4px;padding:6px 10px;font-size:12px" onclick="downloadQR('qrc-${esc(b.short_code)}','${escAttr(b.batch_name||b.short_code||"")}')">⬇ 下載 QR</button>
       </td>
       <td><div class="batch-actions">
         <button class="btn" onclick="editBatch('${escAttr(b.id)}')">修改</button>
@@ -142,22 +142,32 @@ function renderBatches(){
   setTimeout(generateAllQRCodes,0);
 }
 function generateAllQRCodes(){
-  document.querySelectorAll("canvas.batch-qr").forEach(canvas=>{
-    const url=canvas.getAttribute("data-url");
+  if(typeof QRCode!=="function") return;
+  document.querySelectorAll(".batch-qr-wrap").forEach(div=>{
+    if(div.children.length) return;
+    const url=div.getAttribute("data-url");
     if(!url) return;
-    QRCode.toCanvas(canvas,url,{width:160,margin:1,color:{dark:"#2d4a2d",light:"#faf8f3"}},err=>{
-      if(err) console.warn("QR gen failed",err);
-    });
+    new QRCode(div,{text:url,width:160,height:160,colorDark:"#2d4a2d",colorLight:"#faf8f3",correctLevel:QRCode.CorrectLevel.M});
   });
 }
-function downloadQR(canvasId,name){
-  const canvas=document.getElementById(canvasId);
-  if(!canvas) return;
-  const dataUrl=canvas.toDataURL("image/png");
-  const a=document.createElement("a");
-  a.href=dataUrl;
-  a.download="QR_"+(name||"batch").replace(/[\\/:*?"<>|]/g,"_")+".png";
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
+function downloadQR(divId,name){
+  const div=document.getElementById(divId);
+  if(!div) return;
+  const canvas=div.querySelector("canvas");
+  if(canvas){
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download="QR_"+(name||"batch").replace(/[\\/:*?"<>|]/g,"_")+".png";
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    return;
+  }
+  const img=div.querySelector("img");
+  if(img&&img.src){
+    const a=document.createElement("a");
+    a.href=img.src;
+    a.download="QR_"+(name||"batch").replace(/[\\/:*?"<>|]/g,"_")+".png";
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }
 }
 function findBatch(id){return allBatches.find(b=>String(b.id)===String(id))||null;}
 

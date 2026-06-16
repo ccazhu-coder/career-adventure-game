@@ -907,7 +907,7 @@ function pdfActionsCardV2(actionsList){
   </div>`;
 }
 function pdfNoticeCardV2(){
-  return `<div class="pdf-avoid" style="margin-bottom:12px;max-width:100%;"><img src="assets/counselor-notice.png" alt="諮詢師提醒" style="width:100%;display:block;border-radius:18px"/></div>`;
+  return `<div class="pdf-avoid" style="margin-bottom:12px;max-width:100%;text-align:center;"><img src="assets/counselor-notice.png" alt="諮詢師提醒" style="width:62%;display:inline-block;border-radius:18px"/></div>`;
 }
 function pdfFooterV2(){
   return `<div class="rpt-foot">提醒：本結果用於職涯探索與課程討論，不等同於診斷或唯一職業建議。</div>`;
@@ -964,13 +964,13 @@ function pdfHollandDbCardsV2(db,top3,isCounselor){
       const r=tr[x.type]; if(!r) return '';
       return `${rptTextBlock(`${x.meta.emoji} ${x.type}型｜${r.type_name||''}｜${r.role_title||''}`,r.core_traits)}${rptTextBlock('🌱 探索建議',r.exploration_advice)}${isCounselor?rptTextBlock('💼 工作風格',r.work_style):''}`;
     }).join('');
-    if(part1) html+=`<div class="rpt-card"><div class="pdf-avoid">${rptHead('📚','荷倫碼深度報告（單碼解讀，資料庫）','此三碼組合尚未收錄專屬報告，以下提供前三高單碼的深度解讀。')}</div>${part1}</div>`;
+    if(part1) html+=`<div class="rpt-card"><div class="pdf-avoid">${rptHead('📚','荷倫碼深度報告（參考）','此三碼組合尚未收錄專屬報告，以下提供前三高單碼的深度解讀。')}</div>${part1}</div>`;
     if(isCounselor){
       const part2=top3.map(x=>{
         const r=tr[x.type]; if(!r) return '';
         return `<div class="rpt-subhead">${x.meta.emoji} ${x.type}型｜${r.type_name||''}</div>${rptListBlock('優勢',r.strengths,'c-green','💪')}${rptListBlock('風險',r.risks,'c-pink','⚠️')}${rptListBlock('適合職業',r.suitable_jobs,'c-purple','🧰')}`;
       }).join('');
-      if(part2) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、風險與職業方向（單碼解讀，資料庫）')}${part2}</div>`;
+      if(part2) html+=`<div class="rpt-card pdf-avoid">${rptHead('💪','優勢、風險與職業方向（參考）')}${part2}</div>`;
     }
   }
   return html;
@@ -989,8 +989,6 @@ async function pdfCaseReportHtml(){
   const h=calcHolland(), s=calcSuper();
   const role=careerRoleTitle(h,s), top=h.ranking[0] || {type:'-', meta:{name:'-', role:'-', desc:'', emoji:''}};
   const top3=h.ranking.slice(0,3), values=s.ranking.slice(0,5);
-  const db=await fetchReportDbData(h,s);
-  const hollandDb=pdfHollandDbCardsV2(db,top3,false);
   return `<div class="pdf-safe rpt-doc">
     ${pdfHeaderV2('正式個案報告')}
     ${pdfRoleCardV2(h,role,top)}
@@ -999,7 +997,6 @@ async function pdfCaseReportHtml(){
     ${pdfHexCardV2(h)}
     ${pdfSuperCardV2(s)}
     ${pdfRankCardV2(top3,values)}
-    ${hollandDb}
   </div>`;
 }
 async function pdfCounselorReportHtml(){

@@ -1229,7 +1229,62 @@ async function sendPdfToEmail(btn,silent=false){
 function copyReport(){const text=document.getElementById('reportText')?.innerText || makeReport(calcHolland(),calcSuper());navigator.clipboard.writeText(text).then(()=>toast('報告已複製')).catch(()=>toast('無法複製，請手動選取'));}
 function resetGame(){if(confirm('確定要清除目前填答並重新開始嗎？')){cleanupPersistentStorage();state=emptyState();current='profile';accessVerified=false;accessInfo={shortCode:SHORT_CODE_FROM_URL,batchCode:'',batchName:'',serial:'',consultantEmail:'',status:'尚未驗證',message:'請先驗證專屬短碼'};emailSendAttempted=false;submissionInFlight=false;submissionDone=false;emailSendState={kind:'warn',title:'尚未寄送報告',text:'完成測驗後，可下載 PDF 或寄送到你的 Email。'};render();toast('已清空並重新開始');}}
 function escapeHtml(s){return String(s ?? '').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-render();
+// ── PDF 重新產生模式（後台呼叫：index.html?regen=KEY&ptype=case|counselor）──
+(async function initRegenMode(){
+  const params=new URLSearchParams(location.search);
+  const regenKey=params.get('regen');
+  if(!regenKey){render();return;}
+  // Regen mode: skip normal render, generate PDF from stored state
+  const ptype=params.get('ptype')||'case';
+  document.querySelector('.app')?.remove();
+  document.body.style.cssText='font-family:"Microsoft JhengHei",sans-serif;background:#faf8f3;min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0;';
+  const status=document.createElement('div');
+  status.style.cssText='text-align:center;padding:40px;';
+  status.innerHTML='<p style="font-size:18px;color:#2d4a2d">⏳ 正在重新產生 PDF，請稍候...</p>';
+  document.body.appendChild(status);
+  try{
+    const raw=localStorage.getItem('kzt_regen_'+regenKey);
+    if(!raw) throw new Error('找不到重新產生資料，請重新點擊「重新產生」按鈕。');
+    const sub=JSON.parse(raw);
+    localStorage.removeItem('kzt_regen_'+regenKey);
+    const rawAns=sub.raw_answers||{};
+    if(!rawAns.holland) throw new Error('此筆資料無原始答案（可能是系統更新前的舊測驗），無法重新產生。');
+    // Reconstruct state from raw_answers
+    const base=emptyState();
+    if(rawAns.profile) Object.assign(base.profile,rawAns.profile);
+    if(rawAns.holland){
+      Object.keys(base.holland).forEach(sec=>{
+        if(rawAns.holland[sec]) TYPES.forEach(t=>{
+          if(Array.isArray(rawAns.holland[sec][t]))
+            base.holland[sec][t]=base.holland[sec][t].map((_,i)=>rawAns.holland[sec][t][i]??null);
+        });
+      });
+    }
+    if(rawAns.abilityA) TYPES.forEach(t=>{base.abilityA[t]=rawAns.abilityA[t]??null;});
+    if(rawAns.abilityB) TYPES.forEach(t=>{base.abilityB[t]=rawAns.abilityB[t]??null;});
+    if(rawAns.super) DATA.superGroups.forEach(g=>{
+      if(Array.isArray(rawAns.super[g.id]))
+        base.super[g.id]=base.super[g.id].map((_,i)=>rawAns.super[g.id][i]??null);
+    });
+    state.profile=base.profile; state.holland=base.holland;
+    state.abilityA=base.abilityA; state.abilityB=base.abilityB; state.super=base.super;
+    // Generate PDF
+    const htmlContent=ptype==='counselor'?await pdfCounselorReportHtml():await pdfCaseReportHtml();
+    const el=document.createElement('div');
+    el.innerHTML=htmlContent;
+    el.style.cssText='width:170mm;max-width:170mm;background:#fff;box-sizing:border-box;overflow-wrap:anywhere;';
+    document.body.appendChild(el);
+    await waitForImages(el);
+    const pdf=await renderPdfFromEl(el);
+    el.remove();
+    const label=ptype==='counselor'?'諮詢師報告':'個案報告';
+    pdf.save('知己知途_'+label+'_重新產生_'+(state.profile.name||sub.name||'學員')+'.pdf');
+    status.innerHTML='<p style="font-size:18px;color:#2d4a2d">✅ PDF 已重新產生，請查看下載資料夾。</p><button onclick="window.close()" style="margin-top:16px;padding:10px 28px;background:#2d4a2d;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer">關閉此視窗</button>';
+  }catch(err){
+    console.error('[regen]',err);
+    status.innerHTML='<p style="font-size:16px;color:#c0392b">❌ PDF 重新產生失敗：'+escapeHtml(err.message||String(err))+'</p><p style="color:#888;font-size:13px">請關閉此視窗並重試，或確認此筆資料有原始答案。</p>';
+  }
+})();
 </script>
 </body>
 </html>

@@ -74,7 +74,7 @@
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>送出時間</th><th>姓名</th><th>Email</th><th>批次/短碼</th><th>諮詢師Email</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
+              <tr><th>送出時間</th><th style="white-space:nowrap">姓名</th><th>Email</th><th>批次/短碼</th><th>諮詢師Email</th><th>何倫碼</th><th>前三型</th><th>價值觀前2</th><th>完成率</th><th>PDF 狀態</th><th>操作</th></tr>
             </thead>
             <tbody id="submissionRows"></tbody>
           </table>
@@ -328,7 +328,7 @@ function renderSubmissions(){
     const hasCounselorPdf=!!r.counselor_pdf_path;
     return `<tr>
       <td>${esc(fmtTime(r.created_at))}</td>
-      <td><strong>${esc(r.name)}</strong></td>
+      <td style="white-space:nowrap"><strong>${esc(r.name)}</strong></td>
       <td>${esc(r.email)}</td>
       <td>${esc(r.batch_name||r.batch_code||"")}<br><span class="code">${esc(r.short_code||"")}</span></td>
       <td>${esc(r.counselor_email||"")}</td>

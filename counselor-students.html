@@ -163,15 +163,15 @@ async function downloadCounselorPdf(id,path,filename){
   if(ok) await logAction({actionType:"download_counselor_pdf",targetType:"submission",targetId:id,after:{filename}});
 }
 async function regenPdf(id,ptype){
-  showMsg("studentMsg","正在讀取資料...");
+  const win=window.open("","_blank");
   const {data,error}=await sb.from("submissions").select("*").eq("id",id).single();
-  if(error||!data){showMsg("studentMsg","讀取失敗："+(error?.message||""),true);return;}
-  if(!data.raw_answers||!data.raw_answers.holland){showMsg("studentMsg","此筆資料無原始答案，無法重新產生（可能是早期舊資料）。",true);return;}
+  if(error||!data){if(win)win.close();showMsg("studentMsg","讀取失敗："+(error?.message||""),true);return;}
+  if(!data.raw_answers||!data.raw_answers.holland){if(win)win.close();showMsg("studentMsg","此筆資料無原始答案，無法重新產生。",true);return;}
   const key=Math.random().toString(36).slice(2);
   localStorage.setItem('kzt_regen_'+key,JSON.stringify(data));
   const base=location.href.replace(/\/[^/]*$/,'/');
-  window.open(base+'index.html?regen='+key+'&ptype='+ptype,'_blank');
-  hideMsg("studentMsg");
+  if(win) win.location.href=base+'index.html?regen='+key+'&ptype='+ptype;
+  else window.open(base+'index.html?regen='+key+'&ptype='+ptype,'_blank');
 }
 function copyReportSection(elId,msgId,submissionId,actionType){
   const text=document.getElementById(elId)?.innerText||"";

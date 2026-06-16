@@ -1278,8 +1278,9 @@ function escapeHtml(s){return String(s ?? '').replace(/[&<>"]/g,c=>({'&':'&amp;'
     const pdf=await renderPdfFromEl(el);
     el.remove();
     const label=ptype==='counselor'?'諮詢師報告':'個案報告';
-    pdf.save('知己知途_'+label+'_重新產生_'+(state.profile.name||sub.name||'學員')+'.pdf');
-    status.innerHTML='<p style="font-size:18px;color:#2d4a2d">✅ PDF 已重新產生，請查看下載資料夾。</p><button onclick="window.close()" style="margin-top:16px;padding:10px 28px;background:#2d4a2d;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer">關閉此視窗</button>';
+    pdf.save('知己知途_'+label+'_'+(state.profile.name||sub.name||'學員')+'.pdf');
+    status.innerHTML='<p style="font-size:18px;color:#2d4a2d">✅ PDF 已產生，視窗即將關閉…</p>';
+    setTimeout(()=>window.close(),2000);
   }catch(err){
     console.error('[regen]',err);
     status.innerHTML='<p style="font-size:16px;color:#c0392b">❌ PDF 重新產生失敗：'+escapeHtml(err.message||String(err))+'</p><p style="color:#888;font-size:13px">請關閉此視窗並重試，或確認此筆資料有原始答案。</p>';

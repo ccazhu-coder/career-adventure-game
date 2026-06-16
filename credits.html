@@ -6,6 +6,21 @@
   <title>額度管理｜管理後台｜知己知途</title>
   <link rel="stylesheet" href="admin-layout.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    .balance-chip{display:inline-block;padding:3px 12px;border-radius:12px;font-size:13px;font-weight:700;}
+    .bal-ok{background:#d4edda;color:#155724;}
+    .bal-low{background:#fff3cd;color:#856404;}
+    .bal-zero{background:#f8d7da;color:#721c24;}
+    .type-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;}
+    .type-grant{background:#d4edda;color:#155724;}
+    .type-deduct{background:#f8d7da;color:#721c24;}
+    .type-restore{background:#cce5ff;color:#004085;}
+    .type-adjust{background:#e2e3e5;color:#383d41;}
+    .type-batch{background:#fff3cd;color:#856404;}
+    select.full-w{width:100%;height:40px;padding:0 10px;border:1px solid #d4c9a0;border-radius:6px;background:#fff;font-size:14px;}
+    .grant-link{font-size:12px;color:#b8860b;text-decoration:underline;cursor:pointer;margin-left:8px;}
+    .grant-link:hover{color:#9a6e08;}
+  </style>
 </head>
 <body>
 <div class="admin-shell">
@@ -14,92 +29,100 @@
     <header class="topbar" id="topbar"></header>
     <div class="content">
 
+      <!-- ── 諮詢師額度總覽 ─────────────────────────────────────────────── -->
       <div class="subhead">
         <div>
           <h2>諮詢師額度總覽</h2>
-          <p>剩餘額度 = 既有快照（購買數量－已使用數量）加總 + 額度交易紀錄（下方帳本）加總。</p>
+          <p>顯示每位諮詢師的目前剩餘測驗次數。若需新增額度請至「<a href="plans.html">授權方案</a>」頁面。</p>
         </div>
+        <div><button class="btn" onclick="loadAll()">重新整理</button></div>
       </div>
       <div class="toolbar">
-        <div class="left"><input id="summarySearchInput" placeholder="搜尋諮詢師 Email..." oninput="renderSummary()"></div>
-        <div class="right"><button class="btn" onclick="loadAll()">重新整理</button></div>
+        <div class="left"><input id="summarySearch" placeholder="搜尋姓名或 Email..." oninput="renderSummary()"></div>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>諮詢師 Email</th><th>角色</th><th>快照剩餘</th><th>帳本調整</th><th>目前剩餘額度</th></tr></thead>
+          <thead>
+            <tr>
+              <th>諮詢師</th>
+              <th>Email</th>
+              <th>角色</th>
+              <th style="text-align:center">目前餘額</th>
+              <th>操作</th>
+            </tr>
+          </thead>
           <tbody id="summaryRows"></tbody>
         </table>
       </div>
+      <div id="summaryPagination" class="pagination"></div>
 
       <hr class="section-divider">
 
+      <!-- ── 手動調整額度 ─────────────────────────────────────────────────── -->
       <div class="subhead">
         <div>
-          <h2>新增額度交易紀錄</h2>
-          <p>新增額度／扣除額度／補回額度都會寫入「額度交易紀錄」帳本，並計入諮詢師剩餘額度與系統紀錄。</p>
+          <h2>手動調整額度</h2>
+          <p>用於扣除（學員完成測驗）、補回（異常撤銷）或其他修正。若要新增額度請至「<a href="plans.html">授權方案</a>」。</p>
         </div>
       </div>
       <div class="batch-grid">
-        <div class="field"><label>諮詢師 Email</label><input id="txEmail" type="email" placeholder="counselor@example.com"></div>
-        <div class="field"><label>交易類型</label>
-          <select id="txType">
-            <option value="grant">新增額度（grant）</option>
-            <option value="deduct">扣除額度（deduct）</option>
-            <option value="restore">補回額度（restore）</option>
-            <option value="adjust">其他調整（adjust，可輸入負數）</option>
+        <div class="field">
+          <label>諮詢師</label>
+          <select class="full-w" id="adjustCounselor" onchange="onAdjustCounselorChange()">
+            <option value="">-- 請選擇諮詢師 --</option>
           </select>
         </div>
-        <div class="field"><label>數量</label><input id="txAmount" type="number" value="1"></div>
-        <div class="field"><label>原因／備註</label><input id="txReason" placeholder="例如：購買單次測驗授權 x10"></div>
-        <div class="field"><label>&nbsp;</label><button class="btn gold" onclick="createCreditTransaction()">新增交易紀錄</button></div>
+        <div class="field">
+          <label>調整類型</label>
+          <select class="full-w" id="adjustType">
+            <option value="deduct">扣除額度（測驗完成）</option>
+            <option value="restore">補回額度（撤銷測驗）</option>
+            <option value="adjust">其他調整（可輸入負數）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>數量</label>
+          <input id="adjustAmount" type="number" value="1" min="1">
+        </div>
+        <div class="field">
+          <label>原因／備註</label>
+          <input id="adjustReason" placeholder="例如：學員完成測驗 / 誤扣補回">
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end;gap:12px">
+          <button class="btn gold" onclick="doAdjust()">確認調整</button>
+          <span id="adjustMsg" class="notice hidden" style="margin:0"></span>
+        </div>
       </div>
-      <div id="creditMsg" class="notice hidden"></div>
 
       <hr class="section-divider">
 
+      <!-- ── 完整帳本 ────────────────────────────────────────────────────── -->
       <div class="subhead">
         <div>
-          <h2>額度交易紀錄</h2>
-          <p>所有新增／扣除／補回／調整紀錄（依時間新到舊排序）。</p>
+          <h2>完整帳本</h2>
+          <p>所有額度異動紀錄（包含授權方案發放、扣除、補回、調整），依時間新到舊排序。</p>
         </div>
       </div>
       <div class="toolbar">
-        <div class="left"><input id="txSearchInput" placeholder="搜尋諮詢師 Email..." oninput="onTxFilterChange()"></div>
+        <div class="left"><input id="txSearch" placeholder="搜尋諮詢師 Email..." oninput="onTxSearchChange()"></div>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>時間</th><th>諮詢師 Email</th><th>類型</th><th>數量</th><th>原因</th><th>操作者</th><th>管理</th></tr></thead>
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>諮詢師</th>
+              <th>類型</th>
+              <th>數量</th>
+              <th>原因</th>
+              <th>操作者</th>
+              <th>管理</th>
+            </tr>
+          </thead>
           <tbody id="txRows"></tbody>
         </table>
       </div>
       <div id="txPagination" class="pagination"></div>
-
-      <hr class="section-divider">
-
-      <div class="subhead">
-        <div>
-          <h2>額度快照（既有資料）</h2>
-          <p>沿用既有 counselor_authorizations 資料表，建議改用上方「額度交易紀錄」管理增減；此處保留既有修改/刪除功能供舊資料維護。</p>
-        </div>
-      </div>
-      <div class="batch-grid">
-        <div class="field"><label>諮詢師 Email</label><input id="authEmail" type="email" placeholder="counselor@example.com"></div>
-        <div class="field"><label>方案名稱</label><input id="authPlanName" placeholder="例如 單次測驗授權"></div>
-        <div class="field"><label>金額</label><input id="authAmount" type="number" min="0" value="0"></div>
-        <div class="field"><label>購買數量</label><input id="authQuantity" type="number" min="0" value="0"></div>
-        <div class="field"><label>已使用數量</label><input id="authUsed" type="number" min="0" value="0"></div>
-        <div class="field"><label>狀態</label><select id="authStatus"><option>啟用</option><option>停用</option></select></div>
-        <div class="field" style="grid-column:1/-1"><label>備註</label><input id="authNote" placeholder="備註"></div>
-        <div class="field"><label>&nbsp;</label><button class="btn" onclick="saveCounselorAuthorization()">新增額度快照</button></div>
-      </div>
-      <div id="authMsg" class="notice hidden"></div>
-      <div class="table-wrap" style="margin-top:14px">
-        <table>
-          <thead><tr><th>諮詢師 Email</th><th>方案名稱</th><th>金額</th><th>購買數量</th><th>已使用</th><th>剩餘</th><th>狀態</th><th>備註</th><th>管理</th></tr></thead>
-          <tbody id="authRows"></tbody>
-        </table>
-      </div>
-      <div id="authPagination" class="pagination"></div>
 
     </div>
   </div>
@@ -109,14 +132,27 @@
 <script src="admin-auth.js"></script>
 <script src="admin-logs.js"></script>
 <script>
-let allAuthorizations=[];
 let allCreditTx=[];
+let allAuthorizations=[];   // 舊快照，只讀不寫，用於計算餘額
 let allCounselorProfiles=[];
+let summaryPage=1;
 let txPage=1;
-let authPage=1;
-const TX_PAGE_SIZE=10;
-const AUTH_PAGE_SIZE=10;
-const TX_TYPE_LABELS={grant:"新增額度",deduct:"扣除額度",restore:"補回額度",adjust:"調整",batch_create:"建立批次扣除"};
+const PAGE_SIZE=15;
+
+const TX_LABELS={
+  grant:"授權發放",
+  deduct:"扣除",
+  restore:"補回",
+  adjust:"調整",
+  batch_create:"批次建立扣除"
+};
+const TX_CLASS={
+  grant:"type-grant",
+  deduct:"type-deduct",
+  restore:"type-restore",
+  adjust:"type-adjust",
+  batch_create:"type-batch"
+};
 
 (async function init(){
   const auth=await requireOwner();
@@ -126,218 +162,172 @@ const TX_TYPE_LABELS={grant:"新增額度",deduct:"扣除額度",restore:"補回
 })();
 
 async function loadAll(){
-  await Promise.all([loadAuthorizations(),loadCreditTransactions(),loadCounselorProfiles()]);
+  await Promise.all([loadCounselorProfiles(),loadCreditTx(),loadAuthorizations()]);
+  populateAdjustDropdown();
   renderSummary();
+  renderTx();
 }
+
 async function loadCounselorProfiles(){
   try{
     const res=await callAdminFunction({action:"list"});
-    allCounselorProfiles=(res.profiles||[]).filter(p=>p.role!=="owner");
-  }catch(e){
-    allCounselorProfiles=[];
-  }
+    allCounselorProfiles=(res.profiles||[]).filter(p=>p.role==="consultant"||p.role==="pending");
+  }catch(e){ allCounselorProfiles=[]; }
+}
+async function loadCreditTx(){
+  const {data}=await sb.from("credit_transactions").select("*").order("created_at",{ascending:false});
+  allCreditTx=data||[];
 }
 async function loadAuthorizations(){
-  hideMsg("authMsg");
-  const {data,error}=await sb.from("counselor_authorizations").select("*").order("created_at",{ascending:false});
-  if(error){showMsg("authMsg","諮詢師額度讀取失敗："+error.message,true);return;}
+  const {data}=await sb.from("counselor_authorizations").select("*");
   allAuthorizations=data||[];
-  renderAuthorizations();
-}
-async function loadCreditTransactions(){
-  hideMsg("creditMsg");
-  const {data,error}=await sb.from("credit_transactions").select("*").order("created_at",{ascending:false});
-  if(error){showMsg("creditMsg","額度交易紀錄讀取失敗（可能尚未執行 database/admin-backend-new-tables.sql）："+error.message,true);allCreditTx=[];renderTx();return;}
-  allCreditTx=data||[];
-  renderTx();
 }
 
-// ------------------------------------------------------------
-// 諮詢師額度總覽
-// ------------------------------------------------------------
+// ── 餘額計算 ──────────────────────────────────────────────────────────────────
+function getBalance(email){
+  const e=(email||"").toLowerCase();
+  const legacy=(allAuthorizations||[])
+    .filter(a=>(a.counselor_email||"").toLowerCase()===e)
+    .reduce((s,a)=>s+((a.purchased_quantity||0)-(a.used_quantity||0)),0);
+  const ledger=(allCreditTx||[])
+    .filter(t=>(t.counselor_email||"").toLowerCase()===e)
+    .reduce((s,t)=>s+(t.delta||0),0);
+  return legacy+ledger;
+}
+function balClass(n){ return n>5?"bal-ok":(n>0?"bal-low":"bal-zero"); }
+
+// ── 總覽 ──────────────────────────────────────────────────────────────────────
 function renderSummary(){
-  const q=document.getElementById("summarySearchInput").value.trim().toLowerCase();
-  const legacyByEmail={};
-  allAuthorizations.forEach(a=>{
-    const email=(a.counselor_email||"").toLowerCase();
-    if(!email) return;
-    legacyByEmail[email]=(legacyByEmail[email]||0)+((a.purchased_quantity||0)-(a.used_quantity||0));
+  const q=document.getElementById("summarySearch").value.trim().toLowerCase();
+  let rows=allCounselorProfiles.filter(p=>{
+    if(!q) return true;
+    return [p.email,p.display_name].some(v=>String(v||"").toLowerCase().includes(q));
   });
-  const ledgerByEmail={};
-  allCreditTx.forEach(t=>{
-    const email=(t.counselor_email||"").toLowerCase();
-    if(!email) return;
-    ledgerByEmail[email]=(ledgerByEmail[email]||0)+(t.delta||0);
-  });
-  const emails=new Set([
-    ...allCounselorProfiles.map(p=>(p.email||"").toLowerCase()),
-    ...Object.keys(legacyByEmail),
-    ...Object.keys(ledgerByEmail)
+  // 也顯示帳本裡有紀錄但沒建帳號的 email
+  const knownEmails=new Set(allCounselorProfiles.map(p=>(p.email||"").toLowerCase()));
+  const extraEmails=new Set([
+    ...(allCreditTx||[]).map(t=>(t.counselor_email||"").toLowerCase()),
+    ...(allAuthorizations||[]).map(a=>(a.counselor_email||"").toLowerCase())
   ]);
-  let rows=[...emails].filter(e=>e).sort();
-  if(q) rows=rows.filter(e=>e.includes(q));
-  document.getElementById("summaryRows").innerHTML=rows.length ? rows.map(email=>{
-    const legacy=legacyByEmail[email]||0;
-    const ledger=ledgerByEmail[email]||0;
-    const total=legacy+ledger;
-    const isKnown=allCounselorProfiles.some(p=>(p.email||"").toLowerCase()===email);
+  [...extraEmails].filter(e=>e&&!knownEmails.has(e)).forEach(e=>{
+    if(!q||e.includes(q)) rows.push({email:e,display_name:"",role:"—"});
+  });
+
+  const {pageItems,page,totalPages}=paginate(rows,summaryPage,PAGE_SIZE);
+  summaryPage=page;
+
+  document.getElementById("summaryRows").innerHTML=rows.length?pageItems.map(p=>{
+    const bal=getBalance(p.email);
+    const roleLabel=p.role==="consultant"?"諮詢師":(p.role==="pending"?"待審核":p.role||"—");
     return `<tr>
-      <td>${esc(email)}</td>
-      <td><span class="pill">${isKnown?"諮詢師":"未建立帳號"}</span></td>
-      <td>${esc(legacy)}</td>
-      <td>${esc(ledger)}</td>
-      <td><span class="pill${total<=5?" warn":" ok"}">${esc(total)}</span></td>
+      <td><strong>${esc(p.display_name||"—")}</strong></td>
+      <td style="font-size:13px">${esc(p.email)}</td>
+      <td><span class="pill">${esc(roleLabel)}</span></td>
+      <td style="text-align:center">
+        <span class="balance-chip ${balClass(bal)}">${bal} 次</span>
+        ${bal===0?`<a class="grant-link" href="plans.html">前往授權 →</a>`:""}
+      </td>
+      <td>
+        <button class="btn" style="padding:4px 10px;font-size:12px"
+          onclick="quickAdjust('${escAttr(p.email)}')">手動調整</button>
+      </td>
     </tr>`;
-  }).join("") : `<tr><td colspan="5" class="empty-state">尚無額度資料。</td></tr>`;
+  }).join(""):`<tr><td colspan="5" class="empty-state">尚無諮詢師資料。</td></tr>`;
+
+  renderPagination("summaryPagination",page,totalPages,pg=>{summaryPage=pg;renderSummary();});
 }
 
-// ------------------------------------------------------------
-// 額度交易紀錄
-// ------------------------------------------------------------
-function onTxFilterChange(){
-  txPage=1;
-  renderTx();
+// ── 手動調整 ─────────────────────────────────────────────────────────────────
+function populateAdjustDropdown(){
+  const sel=document.getElementById("adjustCounselor");
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- 請選擇諮詢師 --</option>'+
+    allCounselorProfiles.map(p=>{
+      const bal=getBalance(p.email);
+      return `<option value="${escAttr(p.email)}">${esc(p.display_name||p.email)}（餘額：${bal}次）</option>`;
+    }).join("");
+  if(cur) sel.value=cur;
 }
-async function createCreditTransaction(){
-  hideMsg("creditMsg");
-  const email=document.getElementById("txEmail").value.trim().toLowerCase();
-  const type=document.getElementById("txType").value;
-  const amount=parseInt(document.getElementById("txAmount").value,10)||0;
-  const reason=document.getElementById("txReason").value.trim();
-  if(!email){showMsg("creditMsg","請輸入諮詢師 Email。",true);return;}
-  if(!amount){showMsg("creditMsg","請輸入不為 0 的數量。",true);return;}
+function onAdjustCounselorChange(){ hideMsg("adjustMsg"); }
+function quickAdjust(email){
+  document.getElementById("adjustCounselor").value=email;
+  document.getElementById("adjustCounselor").scrollIntoView({behavior:"smooth",block:"center"});
+  document.getElementById("adjustAmount").focus();
+}
+async function doAdjust(){
+  hideMsg("adjustMsg");
+  const email=document.getElementById("adjustCounselor").value.trim().toLowerCase();
+  const type=document.getElementById("adjustType").value;
+  const amount=parseInt(document.getElementById("adjustAmount").value,10)||0;
+  const reason=document.getElementById("adjustReason").value.trim();
+  if(!email){showMsg("adjustMsg","請選擇諮詢師。",true);return;}
+  if(!amount){showMsg("adjustMsg","請輸入不為 0 的數量。",true);return;}
   let delta;
   if(type==="deduct") delta=-Math.abs(amount);
-  else if(type==="grant"||type==="restore") delta=Math.abs(amount);
-  else delta=amount;
+  else if(type==="restore") delta=Math.abs(amount);
+  else delta=amount; // adjust 可輸入負數
+  const bal=getBalance(email);
+  if(type==="deduct"&&delta<0&&bal+delta<0){
+    if(!confirm(`注意：${email} 目前餘額 ${bal} 次，扣除後將為負數（${bal+delta}次），確定繼續？`)) return;
+  }
   const {data,error}=await sb.from("credit_transactions").insert({
-    counselor_email:email,delta,type,reason:reason||null,
-    created_by:currentSession?.user?.id||null,created_by_name:currentProfile?.display_name||null
+    counselor_email:email,delta,type,
+    reason:reason||null,
+    created_by:currentSession?.user?.id||null,
+    created_by_name:currentProfile?.display_name||null
   }).select("*").single();
-  if(error){showMsg("creditMsg","新增失敗（可能尚未執行 database/admin-backend-new-tables.sql）："+error.message,true);return;}
-  showMsg("creditMsg",`已新增交易紀錄：${TX_TYPE_LABELS[type]||type} ${delta>0?"+":""}${delta}`,false);
-  document.getElementById("txReason").value="";
-  await logAction({actionType:"credit_transaction_"+type,targetType:"credit_transaction",targetId:data.id,after:data});
-  await loadCreditTransactions();
+  if(error){showMsg("adjustMsg","調整失敗："+error.message,true);return;}
+  const sign=delta>0?"+":"";
+  showMsg("adjustMsg",`✅ 已完成：${TX_LABELS[type]||type} ${sign}${delta} 次。`,false);
+  document.getElementById("adjustAmount").value="1";
+  document.getElementById("adjustReason").value="";
+  await logAction({actionType:"credit_"+type,targetType:"credit_transaction",targetId:data.id,after:data});
+  await loadCreditTx();
+  populateAdjustDropdown();
   renderSummary();
-}
-function getFilteredTx(){
-  const q=document.getElementById("txSearchInput").value.trim().toLowerCase();
-  if(!q) return allCreditTx;
-  return allCreditTx.filter(t=>String(t.counselor_email||"").toLowerCase().includes(q));
-}
-function renderTx(){
-  const filtered=getFilteredTx();
-  const {pageItems,page,totalPages}=paginate(filtered,txPage,TX_PAGE_SIZE);
-  txPage=page;
-  document.getElementById("txRows").innerHTML=pageItems.length ? pageItems.map(t=>`<tr>
-    <td>${esc(fmtTime(t.created_at))}</td>
-    <td>${esc(t.counselor_email)}</td>
-    <td><span class="pill">${esc(TX_TYPE_LABELS[t.type]||t.type)}</span></td>
-    <td>${t.delta>0?"+":""}${esc(t.delta)}</td>
-    <td>${esc(t.reason||"")}</td>
-    <td>${esc(t.created_by_name||"")}</td>
-    <td><button class="btn danger" onclick="deleteCreditTransaction('${escAttr(t.id)}')">刪除</button></td>
-  </tr>`).join("") : `<tr><td colspan="7" class="empty-state">尚無額度交易紀錄。</td></tr>`;
-  renderPagination("txPagination",page,totalPages,p=>{txPage=p;renderTx();});
-}
-function findCreditTx(id){return allCreditTx.find(t=>String(t.id)===String(id))||null;}
-async function deleteCreditTransaction(id){
-  const t=findCreditTx(id);
-  if(!t){showMsg("creditMsg","找不到此筆紀錄，請重新整理。",true);return;}
-  if(!confirm(`確定要刪除這筆額度交易紀錄？\n${t.counselor_email} ${t.delta>0?"+":""}${t.delta}（${TX_TYPE_LABELS[t.type]||t.type}）`)) return;
-  const {error}=await sb.from("credit_transactions").delete().eq("id",id);
-  if(error){showMsg("creditMsg","刪除失敗："+error.message,true);return;}
-  showMsg("creditMsg","已刪除。");
-  await logAction({actionType:"delete_credit_transaction",targetType:"credit_transaction",targetId:id,before:t});
-  await loadCreditTransactions();
-  renderSummary();
+  renderTx();
 }
 
-// ------------------------------------------------------------
-// 額度快照（既有 counselor_authorizations，1:1 沿用 admin.html）
-// ------------------------------------------------------------
-function renderAuthorizations(){
-  const {pageItems,page,totalPages}=paginate(allAuthorizations,authPage,AUTH_PAGE_SIZE);
-  authPage=page;
-  document.getElementById("authRows").innerHTML=pageItems.length ? pageItems.map(a=>{
-    const remaining=(a.purchased_quantity||0)-(a.used_quantity||0);
+// ── 完整帳本 ─────────────────────────────────────────────────────────────────
+function onTxSearchChange(){ txPage=1; renderTx(); }
+function renderTx(){
+  const q=document.getElementById("txSearch").value.trim().toLowerCase();
+  const filtered=q?allCreditTx.filter(t=>String(t.counselor_email||"").toLowerCase().includes(q)):allCreditTx;
+  const {pageItems,page,totalPages}=paginate(filtered,txPage,PAGE_SIZE);
+  txPage=page;
+  const counselorMap=Object.fromEntries(allCounselorProfiles.map(p=>[(p.email||"").toLowerCase(),p.display_name||p.email]));
+  document.getElementById("txRows").innerHTML=filtered.length?pageItems.map(t=>{
+    const sign=t.delta>0?"+":"";
+    const cls=TX_CLASS[t.type]||"type-adjust";
+    const name=counselorMap[(t.counselor_email||"").toLowerCase()]||"";
     return `<tr>
-      <td>${esc(a.counselor_email)}</td>
-      <td>${esc(a.plan_name||"")}</td>
-      <td>${esc(a.amount)}</td>
-      <td>${esc(a.purchased_quantity)}</td>
-      <td>${esc(a.used_quantity)}</td>
-      <td>${esc(remaining)}</td>
-      <td><span class="pill">${esc(a.status)}</span></td>
-      <td>${esc(a.note||"")}</td>
-      <td><div class="batch-actions">
-        <button class="btn" onclick="editCounselorAuthorization('${escAttr(a.id)}')">修改</button>
-        <button class="btn danger" onclick="deleteCounselorAuthorization('${escAttr(a.id)}')">刪除</button>
-      </div></td>
+      <td style="font-size:12px;white-space:nowrap">${esc(fmtTime(t.created_at))}</td>
+      <td>
+        ${name?`<strong>${esc(name)}</strong><br>`:""}
+        <span style="font-size:12px;color:#888">${esc(t.counselor_email)}</span>
+      </td>
+      <td><span class="type-badge ${cls}">${esc(TX_LABELS[t.type]||t.type)}</span></td>
+      <td style="font-weight:700;color:${t.delta>0?"#155724":"#721c24"}">${sign}${esc(t.delta)}</td>
+      <td style="font-size:13px">${esc(t.reason||"")}</td>
+      <td style="font-size:12px;color:#888">${esc(t.created_by_name||"")}</td>
+      <td><button class="btn danger" style="padding:4px 10px;font-size:12px"
+        onclick="deleteTx('${escAttr(t.id)}')">刪除</button></td>
     </tr>`;
-  }).join("") : `<tr><td colspan="9" class="empty-state">尚未開通諮詢師額度。</td></tr>`;
-  renderPagination("authPagination",page,totalPages,p=>{authPage=p;renderAuthorizations();});
+  }).join(""):`<tr><td colspan="7" class="empty-state">尚無帳本紀錄。</td></tr>`;
+  renderPagination("txPagination",page,totalPages,pg=>{txPage=pg;renderTx();});
 }
-async function saveCounselorAuthorization(){
-  hideMsg("authMsg");
-  const counselorEmail=document.getElementById("authEmail").value.trim().toLowerCase();
-  const planName=document.getElementById("authPlanName").value.trim();
-  const amount=parseFloat(document.getElementById("authAmount").value)||0;
-  const purchasedQuantity=parseInt(document.getElementById("authQuantity").value,10)||0;
-  const usedQuantity=parseInt(document.getElementById("authUsed").value,10)||0;
-  const status=document.getElementById("authStatus").value;
-  const note=document.getElementById("authNote").value.trim();
-  if(!counselorEmail){showMsg("authMsg","請輸入諮詢師 Email。",true);return;}
-  const {data,error}=await sb.from("counselor_authorizations").insert({
-    counselor_email:counselorEmail,plan_name:planName,amount,
-    purchased_quantity:purchasedQuantity,used_quantity:usedQuantity,status,note
-  }).select("*").single();
-  if(error){showMsg("authMsg","新增失敗："+error.message,true);return;}
-  showMsg("authMsg","諮詢師額度已新增。");
-  document.getElementById("authNote").value="";
-  await logAction({actionType:"create_authorization",targetType:"counselor_authorization",targetId:data.id,after:data});
-  await loadAuthorizations();
+async function deleteTx(id){
+  const t=allCreditTx.find(r=>String(r.id)===String(id));
+  if(!t){return;}
+  const sign=t.delta>0?"+":"";
+  if(!confirm(`確定刪除此筆紀錄？\n${t.counselor_email}  ${sign}${t.delta}（${TX_LABELS[t.type]||t.type}）\n\n注意：刪除後此諮詢師餘額將相應變動。`)) return;
+  const {error}=await sb.from("credit_transactions").delete().eq("id",id);
+  if(error){alert("刪除失敗："+error.message);return;}
+  await logAction({actionType:"delete_credit_tx",targetType:"credit_transaction",targetId:id,before:t});
+  await loadCreditTx();
+  populateAdjustDropdown();
   renderSummary();
-}
-function findAuthorization(id){return allAuthorizations.find(a=>String(a.id)===String(id))||null;}
-async function editCounselorAuthorization(id){
-  const a=findAuthorization(id);
-  if(!a){showMsg("authMsg","找不到此筆額度，請重新整理。",true);return;}
-  const planName=prompt("方案名稱",a.plan_name||"");
-  if(planName===null) return;
-  const amount=prompt("金額",a.amount??0);
-  if(amount===null) return;
-  const purchasedQuantity=prompt("購買數量",a.purchased_quantity??0);
-  if(purchasedQuantity===null) return;
-  const usedQuantity=prompt("已使用數量",a.used_quantity??0);
-  if(usedQuantity===null) return;
-  const status=prompt("狀態：啟用 或 停用",a.status||"啟用");
-  if(status===null) return;
-  const note=prompt("備註",a.note||"");
-  if(note===null) return;
-  const patch={
-    plan_name:planName,amount:parseFloat(amount)||0,
-    purchased_quantity:parseInt(purchasedQuantity,10)||0,
-    used_quantity:parseInt(usedQuantity,10)||0,status,note
-  };
-  const {error}=await sb.from("counselor_authorizations").update(patch).eq("id",id);
-  if(error){showMsg("authMsg","更新失敗："+error.message,true);return;}
-  showMsg("authMsg","諮詢師額度已更新。");
-  await logAction({actionType:"update_authorization",targetType:"counselor_authorization",targetId:id,before:a,after:patch});
-  await loadAuthorizations();
-  renderSummary();
-}
-async function deleteCounselorAuthorization(id){
-  const a=findAuthorization(id);
-  if(!a){showMsg("authMsg","找不到此筆額度，請重新整理。",true);return;}
-  if(!confirm(`確定要刪除 ${a.counselor_email||""} 的這筆額度紀錄？`)) return;
-  const {error}=await sb.from("counselor_authorizations").delete().eq("id",id);
-  if(error){showMsg("authMsg","刪除失敗："+error.message,true);return;}
-  showMsg("authMsg","已刪除。");
-  await logAction({actionType:"delete_authorization",targetType:"counselor_authorization",targetId:id,before:a});
-  await loadAuthorizations();
-  renderSummary();
+  renderTx();
 }
 </script>
 </body>

@@ -155,7 +155,7 @@ async function register(){
   try{
     const res=await fetch(COUNSELOR_FUNCTION_URL,{
       method:"POST",
-      headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY},
+      headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY},
       body:JSON.stringify({action:"register",name,email,password:pass})
     });
     const json=await res.json();

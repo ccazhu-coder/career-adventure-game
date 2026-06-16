@@ -150,6 +150,7 @@ const ADMIN_NAV=[
   {key:"members",label:"學員檔案",href:"members.html"},
   {key:"reports",label:"報告資料庫",href:"reports.html"},
   {key:"logs",label:"系統紀錄",href:"logs.html"},
+  {key:"questions",label:"題目管理",href:"questions.html"},
 ];
 
 function renderAdminShell(activeKey,opts={}){

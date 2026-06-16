@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>題目管理｜管理後台｜知己知途</title>
+  <link rel="stylesheet" href="admin-layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    .q-tabs{display:flex;gap:0;border-bottom:2px solid #d4c9a0;margin-bottom:20px;}
+    .q-tab{padding:10px 22px;cursor:pointer;font-size:14px;font-weight:600;color:#7a5c00;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s;}
+    .q-tab.active{color:#3a2e00;border-bottom-color:#b8860b;background:#fff8e8;}
+    .q-tab:hover:not(.active){background:#f8f3e6;}
+    .q-panel{display:none;}
+    .q-panel.active{display:block;}
+
+    .h-sec-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+    .h-sec-btn{padding:7px 16px;border:1.5px solid #d4c9a0;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;background:#f8f3e6;color:#7a5c00;transition:.15s;}
+    .h-sec-btn.active{background:#b8860b;color:#fff;border-color:#b8860b;}
+    .h-sec-panel{display:none;}
+    .h-sec-panel.active{display:block;}
+
+    .accordion{border:1px solid #d4c9a0;border-radius:8px;margin-bottom:10px;overflow:hidden;}
+    .acc-head{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#f8f3e6;cursor:pointer;font-weight:700;font-size:14px;color:#3a2e00;user-select:none;}
+    .acc-head:hover{background:#f0ead8;}
+    .acc-arrow{font-size:12px;transition:.2s;color:#b8860b;}
+    .accordion.open .acc-arrow{transform:rotate(90deg);}
+    .acc-body{display:none;padding:12px 16px 16px;background:#fff;}
+    .accordion.open .acc-body{display:block;}
+
+    .q-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+    .q-num{min-width:26px;font-size:12px;color:#aaa;font-weight:700;text-align:right;}
+    .q-input{flex:1;padding:6px 10px;border:1px solid #d4c9a0;border-radius:6px;font-size:13px;font-family:inherit;transition:.15s;}
+    .q-input:focus{border-color:#b8860b;outline:none;background:#fffbf0;}
+    .q-input.changed{border-color:#e08000;background:#fffbf0;}
+
+    .super-group{border:1px solid #d4c9a0;border-radius:10px;margin-bottom:14px;overflow:hidden;}
+    .super-head{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f8f3e6;cursor:pointer;font-weight:700;font-size:14px;color:#3a2e00;}
+    .super-head:hover{background:#f0ead8;}
+    .super-head .badge{font-size:12px;color:#888;font-weight:400;}
+    .super-body{display:none;padding:12px 16px 16px;}
+    .super-group.open .super-body{display:block;}
+    .super-group.open .acc-arrow{transform:rotate(90deg);}
+    .super-meta{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin-bottom:12px;font-size:13px;align-items:center;}
+    .super-meta label{color:#888;font-weight:600;white-space:nowrap;}
+    .super-meta input,.super-meta textarea{padding:5px 8px;border:1px solid #d4c9a0;border-radius:5px;font-size:13px;font-family:inherit;}
+    .super-meta input:focus,.super-meta textarea:focus{border-color:#b8860b;outline:none;}
+    .super-meta textarea{resize:vertical;min-height:46px;}
+    .super-items-label{font-size:12px;font-weight:700;color:#7a5c00;margin-bottom:6px;margin-top:4px;}
+
+    .riasec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+    .riasec-card{border:1px solid #d4c9a0;border-radius:10px;overflow:hidden;}
+    .riasec-card-head{padding:10px 16px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;}
+    .riasec-card-body{padding:12px 16px 16px;}
+    .r-field{margin-bottom:10px;}
+    .r-field label{display:block;font-size:12px;color:#888;font-weight:600;margin-bottom:3px;}
+    .r-field input,.r-field textarea{width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid #d4c9a0;border-radius:6px;font-size:13px;font-family:inherit;}
+    .r-field input:focus,.r-field textarea:focus{border-color:#b8860b;outline:none;background:#fffbf0;}
+    .r-field textarea{resize:vertical;min-height:56px;}
+
+    .ability-section{margin-bottom:24px;}
+    .ability-section h4{font-size:14px;font-weight:700;color:#3a2e00;margin-bottom:10px;border-bottom:1px solid #e8dfc0;padding-bottom:6px;}
+    .ability-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
+    .ability-item{display:flex;flex-direction:column;gap:4px;}
+    .ability-item label{font-size:12px;color:#888;font-weight:700;}
+    .ability-item input{padding:6px 10px;border:1px solid #d4c9a0;border-radius:6px;font-size:13px;font-family:inherit;}
+    .ability-item input:focus{border-color:#b8860b;outline:none;}
+
+    .action-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding:14px 18px;background:#fff8e8;border:1.5px solid #d4c9a0;border-radius:10px;}
+    .action-bar .version-info{font-size:13px;color:#888;flex:1;min-width:120px;}
+    .action-bar .version-info b{color:#3a2e00;}
+    .btn-publish{background:#b8860b;color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:14px;font-weight:700;cursor:pointer;}
+    .btn-publish:hover:not(:disabled){background:#9a6e08;}
+    .btn-publish:disabled{opacity:.5;cursor:default;}
+    .btn-reset{background:#f0ead8;color:#7a5c00;border:1.5px solid #c9b870;border-radius:8px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;}
+    .btn-reset:hover{background:#e5dcbf;}
+
+    .type-badge{display:inline-block;width:22px;height:22px;border-radius:50%;background:#b8860b;color:#fff;font-size:11px;font-weight:900;line-height:22px;text-align:center;flex-shrink:0;}
+    .R .riasec-card-head{background:#fff3e0;} .R .type-badge{background:#e67e22;}
+    .I .riasec-card-head{background:#e8f4fd;} .I .type-badge{background:#2980b9;}
+    .A .riasec-card-head{background:#fdf0f8;} .A .type-badge{background:#8e44ad;}
+    .S .riasec-card-head{background:#eafaf1;} .S .type-badge{background:#27ae60;}
+    .E .riasec-card-head{background:#fff9e6;} .E .type-badge{background:#f39c12;}
+    .C .riasec-card-head{background:#eaf0fb;} .C .type-badge{background:#2c3e8c;}
+
+    #qMsg{margin-bottom:14px;}
+    .notice.hidden{display:none;}
+  </style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="content">
+
+      <div class="subhead">
+        <div>
+          <h2>題目管理</h2>
+          <p>編輯前台 5 關的所有題目（荷倫 198 題、SUPER 52 題、RIASEC 說明 & 能力標籤），完成後點「發布到前台」即同步。</p>
+        </div>
+      </div>
+
+      <div id="qMsg" class="notice hidden"></div>
+
+      <div class="action-bar">
+        <div class="version-info" id="versionInfo">載入中…</div>
+        <button class="btn-reset" onclick="resetDefault()">還原預設題目</button>
+        <button class="btn-publish" id="btnPublish" onclick="publishQuestions()">發布到前台</button>
+      </div>
+
+      <!-- 主分頁 -->
+      <div class="q-tabs">
+        <button class="q-tab active" onclick="switchTab('holland',this)">荷倫興趣題目</button>
+        <button class="q-tab" onclick="switchTab('super',this)">SUPER 工作價值觀</button>
+        <button class="q-tab" onclick="switchTab('riasec',this)">RIASEC 說明 & 能力標籤</button>
+      </div>
+
+      <!-- Tab 1：荷倫興趣題目 -->
+      <div class="q-panel active" id="panel-holland">
+        <div class="h-sec-tabs" id="hollandSecTabs"></div>
+        <div id="hollandSecPanels"></div>
+      </div>
+
+      <!-- Tab 2：SUPER 工作價值觀 -->
+      <div class="q-panel" id="panel-super">
+        <div id="superPanels"></div>
+      </div>
+
+      <!-- Tab 3：RIASEC 說明 & 能力標籤 -->
+      <div class="q-panel" id="panel-riasec">
+        <div class="riasec-grid" id="riasecCards"></div>
+        <div class="ability-section" style="margin-top:24px;">
+          <h4>能力標籤 A（能力類型名稱）</h4>
+          <div class="ability-grid" id="abilityAGrid"></div>
+        </div>
+        <div class="ability-section">
+          <h4>能力標籤 B（技能類型名稱）</h4>
+          <div class="ability-grid" id="abilityBGrid"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="admin-common.js"></script>
+<script src="admin-auth.js"></script>
+<script>
+// ============================================================
+// 預設題目資料（從 index.html DATA 物件提取，格式完全相同）
+// ============================================================
+const DEFAULT_DATA = {"riasec":{"R":{"name":"現實型","emoji":"🛠️","role":"實作技術家","desc":"喜歡動手操作、工具設備、技術實作、戶外或現場任務，重視具體成果。","advice":"用實作作品、證照技術、現場任務來累積自信；適合先從操作型、工程型、設備型、技術服務型任務探索。"},"I":{"name":"調查研究型","emoji":"🔬","role":"問題研究員","desc":"喜歡觀察、分析、研究、解題與探索原因，重視知識與邏輯。","advice":"用研究題目、資料分析、問題解決專案來探索；適合技術研究、分析、科普、數據與專業知識型工作。"},"A":{"name":"藝術型","emoji":"🎨","role":"創意表達者","desc":"喜歡創作、表達、美感、設計、文字、影像或表演，重視自由與原創。","advice":"用作品集、內容創作、設計任務與個人風格累積能見度；適合創意、設計、文字、影音與品牌表達相關工作。"},"S":{"name":"社會型","emoji":"🤝","role":"助人連結者","desc":"喜歡幫助人、陪伴、教學、溝通、服務與建立關係，重視人際互動。","advice":"用服務經驗、帶領活動、諮詢輔導或教學任務來累積專業；適合教育、諮詢、社福、服務與人際協作型工作。"},"E":{"name":"企業/事業型","emoji":"🚀","role":"影響推動者","desc":"喜歡說服、領導、企劃、推動目標、經營資源與面對挑戰，重視影響力與成果。","advice":"用企劃提案、業務開發、活動主持、專案管理來展現優勢；適合行銷業務、管理、創業、企劃與領導型工作。"},"C":{"name":"常規/傳統型","emoji":"📋","role":"秩序管理者","desc":"喜歡清楚規則、資料整理、行政流程、數字表格與穩定執行，重視正確與效率。","advice":"用流程管理、文件整理、財務行政、品質控管來展現價值；適合行政、會計、資料管理、品質與流程型工作。"}},"hollandSections":[{"id":"interest","title":"任務 1｜興趣活動星球","question":"你喜歡做下列事情嗎？","yes":"喜歡","no":"不喜歡","scoreLabel":"興趣活動","types":{"R":["組裝或維修電子設備、智慧家電或感測器","修理自行車、機車、電動車或簡易交通工具","維護機器、機器零件或自動化設備","做木作、模型製作、3D列印或手作修繕","操作物流車、農機、無人搬運車或其他大型設備","操作 CNC、雷射切割機或自動化機台","騎乘或維護機車、電動車等交通工具","學習金屬工藝、機械加工或智慧製造技術","學習機械製圖、3D建模或工程繪圖","學習木工、室內裝修或空間施工技術","學習電機、機電整合或智慧設備維護技術"],"I":["閱讀科技、AI、資料科學或科普文章","在實驗室、研究室或資料分析環境工作","研究一個科學、資料或社會議題專案","製作模型、原型、機器人或模擬系統","做科學實驗、資料實驗或AI工具測試","閱讀專業論文、技術文件或研究報告","解數學、邏輯、程式或策略型難題","學習物理、工程或科技應用課程","學習化學、材料或生醫相關課程","學習幾何、統計、資料分析或演算法基礎","學習生物、環境、醫療科技或永續議題"],"A":["素描、製圖、繪畫或數位插畫","表演戲劇、短影音、Podcast 或舞台節目","設計家具、空間、介面或生活產品","在舞台、鏡頭或社群平台上表演、演唱或跳舞","演奏樂器、編曲或使用數位音樂工具創作","閱讀小說、劇本、漫畫或故事型內容","參加音樂會、展覽、影展或創意市集","從事攝影、影像拍攝或AI影像創作","閱讀電影、影集、短影音或遊戲劇本","寫詩、寫文案、寫故事或經營個人內容","學習書法、美術、設計或視覺傳達課程"],"S":["主動用訊息、社群或電話關心朋友","參加學校、社區、公司或公協會活動","加入社團、社群、志工隊或專業交流團體","幫助別人解決困難或陪伴他人面對問題","照顧小孩、高齡者或需要支持的人","參加聚會、交流活動、分享會或聯誼活動","參與團體活動、桌遊、舞蹈或互動型課程","參加討論會、讀書會、辯論或共學活動","觀看運動會、競賽、展演或大型活動","拜訪親友、客戶、會員或服務對象","閱讀與溝通、心理、人際關係或助人服務有關的內容"],"E":["說服他人支持一個想法、方案或產品","與人協商價格、合作條件或資源分配","討論公共議題、產業趨勢或商業策略","從事個人品牌、電商、接案或獨立經營活動","出席正式會議、提案簡報或商務場合","做簡報、主持、直播或公開演說","在社團、社群、公協會或專案中擔任幹部","檢視、評估或回饋別人的工作成果","結識產業人士、專家、創作者或意見領袖","帶領一群人完成任務、活動或專案目標","參與公共事務、倡議活動或組織推動"],"C":["保持桌面、檔案、雲端資料夾或工作區整潔","整理文字、表單、會議紀錄或行政資料","處理電子發票、收據、請款或行政紀錄","使用 Excel、Google 試算表或系統進行計算","記錄流水帳、待辦事項、備忘錄或專案進度","學習文書處理、資料輸入或會議紀錄技巧","學習會計、財務、稅務或基礎商業管理","學習商業統計、資料整理或報表分類","分類、歸檔、命名與管理文件資料","為主管或團隊撰寫公文、信函、報告或公告","檢查個人、專案或組織的收支與資料正確性"]}},{"id":"ability","title":"任務 2｜能力寶石星球","question":"你擅長或勝任下列事情嗎？","yes":"擅長","no":"不擅長","scoreLabel":"勝任能力","types":{"R":["能使用基本手工具、電動工具或簡易維修設備","能使用萬用電表或簡易檢測工具","能為自行車、機車或設備做基礎保養","能操作鑽床、研磨機、縫紉機或其他加工設備","能修整木器、家具或簡易生活用品表面","能看懂機械、建築、空間或工程設計圖","能排除簡單家電、電腦周邊或智慧設備故障","能製作簡單家具、模型、原型或實作作品","能繪製機械圖、空間圖或3D建模草圖","能修理簡易影音、通訊或電子設備零件","能處理簡易管線、設備安裝或現場修繕問題"],"I":["了解電子元件、感測器或基本電路的運作原理","知道幾種營養、健康或生物科技相關基礎知識","理解半衰期、風險指標或科學測量概念","能使用公式、表格或工具查找資料並進行推算","能使用計算器、量測工具、試算表或資料分析工具","能使用顯微鏡、檢測工具或資料觀察工具","能辨認星座、自然現象或環境觀測資料","能說明人體、健康或生物功能的基本概念","能解釋簡單化學式、材料特性或科學模型","能理解衛星、導航、雲端或科技系統的基本原理","曾參加科學、資訊、資料分析或研究成果交流"],"A":["能演奏樂器或使用數位音樂工具創作","能參與合唱、配音、Podcast或多人表演","能表演獨奏、獨唱、口語表達或鏡頭前演出","能扮演劇中角色、錄製短影音或設計角色表演","能說故事、寫腳本或進行口語敘事","能表演舞蹈、肢體創作或舞台演出","能畫人物、角色或視覺草圖","能進行油畫、雕塑、插畫或數位藝術創作","能製作陶藝、手作、模型、剪紙或創意作品","能設計服裝、海報、家具、網頁或社群素材","能寫出清楚、有風格或有感染力的文章"],"S":["善於向別人解釋問題或教會別人一件事","曾參加慰問、救濟、志工或公益服務活動","善於與人合作，能配合團隊完成任務","待人親切，能讓服務對象感到被照顧","能用容易理解的方式教育兒童、青年或成人","能為聚會、課程或團體活動安排互動內容","能幫助他人釐清問題並找到解決方法","能協助照護病人、傷患、高齡者或弱勢族群","能安排學校、社團、社區或團隊的集體事務","善於觀察人的情緒、需求或性格特質","善於與年長者、服務對象或不同背景的人相處"],"E":["曾擔任班級、社團、專案或活動幹部並表現良好","善於督促他人完成工作或推動進度","能影響他人採納你的想法、流程或做法","做事有明顯的精力、熱情與目標感","能勝任銷售、募款、招生或推廣工作","能代表團體向外部單位提出建議或溝通需求","曾在領導、主持或專案推動中獲得肯定","能說服別人加入團隊、活動、社群或計畫","能規劃並嘗試創辦商店、品牌、社群或專案","知道如何成為有效的領導者或專案負責人","具備良好的口語表達、簡報或談判能力"],"C":["能快速整理大量文字、資料或文件內容","能熟練使用電腦、試算表或雲端系統","能熟練使用中文輸入、文件編輯與資料輸入工具","善於將信件、文件與雲端檔案迅速分類歸檔","曾做過行政、營運、財務或資料管理工作且表現不錯","核對資料、文章或報表時既快又準確","會使用辦公軟體、雲端文件、掃描或數位設備","善於在短時間內分類和處理大量文件或資料","記帳、開發票、請款或整理報表時既快又準確","善於為自己、團隊或專案製作預算與收支表","能快速整理帳務、收支、借貸或財務資料"]}},{"id":"career","title":"任務 3｜AI時代職業探索星球","question":"你喜歡或想了解下列現代職業與新興工作嗎？","yes":"想做/喜歡","no":"沒興趣","scoreLabel":"職業偏好","types":{"R":["AI伺服器／資料中心設備維護工程師","無人機操作與維修技術人員","自動化產線／智慧製造技術員","機器人維修與整合技術人員","CNC精密機械／智慧機台技術員","電動車維修／充電設備技術人員","物聯網設備安裝與維護人員","半導體設備工程師／製程助理工程師","綠能設備維護人員／太陽能系統技術員","智慧農業設備操作人員","地理資訊／環境監測技術人員"],"I":["AI／機器學習工程師","資料科學家／資料分析師","大數據分析專家","自然語言處理 NLP 工程師","生成式AI應用研究員","生物資訊分析師","氣候風險／永續數據分析師","金融科技 FinTech 數據工程師","資安分析師／威脅情資研究員","科學傳播／科普內容研究員","使用者研究員 UX Researcher"],"A":["AI影像生成設計師","生成式AI內容創作者","品牌視覺設計師","UI／UX介面設計師","短影音企劃與剪輯師","Podcast／影音節目製作人","遊戲美術／角色設定設計師","動畫／動態設計師","文案企劃／品牌故事寫作者","社群內容創作者","沉浸式體驗／AR／VR內容設計師"],"S":["AI輔助職涯諮詢師","就業服務／職涯發展顧問","心理健康支持專員","社工師／社區服務工作者","高齡照顧服務／個案管理師","數位學習講師／線上課程教練","企業培訓師／人才發展專員","醫療個案管理師","多元族群服務專員","青少年輔導員","社群經營與會員關係管理人員"],"E":["AI產品經理","AI專案經理","數位轉型顧問","電商品牌經營者","社群行銷策略師","成長駭客／數位行銷經理","客戶成功經理","創業家／新創營運負責人","永續商業發展經理","企業顧問／營運策略顧問","AI解決方案業務顧問"],"C":["AI資料標註／資料品質管理員","資料治理專員","雲端系統行政／SaaS系統管理員","財務分析助理／會計數位化專員","法遵／個資保護專員","AI風險治理助理","資安合規／稽核助理","營運流程管理專員","文件管理／知識庫管理員","品質管理／流程稽核人員","行政專員／專案行政"]}}],"abilityA":{"R":"機械操作","I":"科學研究","A":"藝術創造","S":"解釋表達","E":"商業洽談","C":"事務執行"},"abilityB":{"R":"體力技能","I":"數學技能","A":"音樂技能","S":"交際技能","E":"領導技能","C":"辦公技能"},"superGroups":[{"id":"V1","name":"利他主義","emoji":"🌱","desc":"工作的目的和價值，在於直接為大眾的幸福和利益盡一份力。","items":["工作能為社會福利帶來看得見的效果","工作使您能常常幫助人","您為他人服務，他人滿意，您自己也很高興","由於您的工作或服務，經常有許多人來感謝您"]},{"id":"V2","name":"美感","emoji":"✨","desc":"工作的目的和價值，在於能不斷追求美的東西，得到美感的享受。","items":["工作帶有藝術性","工作能使世界更美麗","工作結果不是一般產品而是藝術品","工作需要同電影、音樂、美術、文學等藝術打交道"]},{"id":"V3","name":"智力刺激","emoji":"🧠","desc":"工作的目的和價值，在於持續動腦、學習、探索新事物並解決新問題。","items":["工作必須經常解決新的問題","工作是一項對智力的挑戰","工作需要敏銳的思考","在工作中常常要您提出許多新的想法"]},{"id":"V4","name":"成就感","emoji":"🏆","desc":"工作的目的和價值，在於不斷取得成果、被肯定，並實現自己想做的事。","items":["工作使您有不斷取得成功的感覺","您能從工作的成果中知道自己做得不錯","您可以預見自己努力工作的成果","工作成果常常能得到別人的肯定"]},{"id":"V5","name":"獨立性","emoji":"🧭","desc":"工作的目的和價值，在於能按自己的方式、步調或想法做事，不受過多干擾。","items":["您能在工作範圍內自由發揮","您能在工作中試行自己的新想法","您在工作中不會有人常來打擾您","您在工作中是不受別人差遣的"]},{"id":"V6","name":"社會地位","emoji":"🌟","desc":"工作的目的和價值，在於職業受到重視與尊敬，具有較高社會形象。","items":["工作能使朋友和同事非常羨慕","在別人眼裡，您的工作是非常重要的","您的工作作風使您被別人尊重","您從事的工作經常被報刊、電視提到，因而在人們心目中很有地位"]},{"id":"V7","name":"管理","emoji":"🧩","desc":"工作的目的和價值，在於獲得管理權，能指揮、組織與調遣一定範圍內的人或事。","items":["工作賦予您高於別人的權力","工作要求您把一些事物管理得井井有條","工作需要計劃和組織別人的工作","在工作中，您可能做一個負責人，並偏好主導任務"]},{"id":"V8","name":"經濟報酬","emoji":"💰","desc":"工作的目的和價值，在於獲得優厚報酬，使生活更富足。","items":["工作獎金很高","只要努力，工資會高於同齡人或升級加薪可能性更大","工作可以使您獲得較多額外收入","工作有可觀的中夜班費、加班費、保健費或營養費等"]},{"id":"V9","name":"社會交際","emoji":"🌐","desc":"工作的目的和價值，在於能與各種人交往，建立廣泛社會聯繫。","items":["在工作中能接觸到各種不同的人","工作經常要外出，參加各種集會和活動","工作有可能結識各行各業的知名人物","工作會使許多人認識您"]},{"id":"V10","name":"安全感","emoji":"🛡️","desc":"重視工作局面的安穩，不希望因獎金、加薪、調動或主管訓斥而常感不安。","items":["不論怎樣做，您總能和大多數人一樣晉級和加薪","在工作中不會因身體或體力等因素被人瞧不起","只要做這份工作，就不會再被調到其他意想不到的單位或崗位","不必擔心因領導不滿意而受到訓斥或經濟處罰"]},{"id":"V11","name":"舒適","emoji":"☕","desc":"希望工作條件輕鬆、自由、舒適，能降低體力與精神壓力。","items":["工作上下班時間比較隨便、自由","工作單位有舒適的休息室、更衣室、浴室及其他設備","工作場所環境整潔、燈光適度、空間寬敞、溫度適宜","工作體力上比較輕鬆，精神上也不緊張"]},{"id":"V12","name":"人際關係","emoji":"💬","desc":"重視同事與主管人品、關係融洽，工作時感到愉快自然。","items":["工作能使人感覺到您是團體中的一分子","工作中能和同事建立良好的關係","工作單位的同事和領導人品較好，相處比較隨和","在工作中能與領導有融洽的關係"]},{"id":"V13","name":"變異性","emoji":"🎲","desc":"希望工作內容、地點、方式或職務有變化，讓生活豐富不單調。","items":["工作內容經常變換","工作使您有可能經常變換工作地點、工作場所或工作方式","您在工作中經常接觸到新鮮的事物","您在工作單位中，有可能經常變換職務"]}]};
+
+// ============================================================
+// 狀態
+// ============================================================
+let editData = null;
+let dbVersion = null;
+let dbUpdatedAt = null;
+let dbUpdatedBy = null;
+
+const TYPES = ["R","I","A","S","E","C"];
+
+// ============================================================
+// 初始化
+// ============================================================
+(async function init(){
+  const auth = await requireOwner();
+  if(!auth) return;
+  renderAdminShell("questions", {title:"題目管理", sessionLabel: auth.profile.email});
+
+  await loadFromDB();
+  renderAll();
+})();
+
+async function loadFromDB(){
+  try {
+    const { data, error } = await sb.from("questions")
+      .select("data,version,updated_at,updated_by")
+      .eq("id","main")
+      .maybeSingle();
+
+    if(error) throw error;
+    if(data && data.data){
+      const d = data.data;
+      dbVersion = data.version;
+      dbUpdatedAt = data.updated_at;
+      dbUpdatedBy = data.updated_by;
+      editData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      if(d.hollandSections) editData.hollandSections = d.hollandSections;
+      if(d.superGroups)     editData.superGroups = d.superGroups;
+      if(d.riasec)          editData.riasec = d.riasec;
+      if(d.abilityA)        editData.abilityA = d.abilityA;
+      if(d.abilityB)        editData.abilityB = d.abilityB;
+      updateVersionInfo();
+    } else {
+      editData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      document.getElementById("versionInfo").innerHTML = "目前使用<b>預設題目</b>（尚未發布到資料庫）";
+    }
+  } catch(e) {
+    editData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    document.getElementById("versionInfo").innerHTML = `<span style="color:#c00">無法連線資料庫，顯示預設題目（${e.message}）</span>`;
+  }
+}
+
+function updateVersionInfo(){
+  const el = document.getElementById("versionInfo");
+  if(!el) return;
+  const at = dbUpdatedAt ? fmtTime(dbUpdatedAt) : "—";
+  const by = dbUpdatedBy || "—";
+  el.innerHTML = `版本 <b>v${dbVersion||"?"}</b>　最後發布：<b>${at}</b>　發布者：<b>${by}</b>`;
+}
+
+// ============================================================
+// 分頁切換
+// ============================================================
+function switchTab(name, btn){
+  document.querySelectorAll(".q-tab").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".q-panel").forEach(p=>p.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  const p = document.getElementById("panel-"+name);
+  if(p) p.classList.add("active");
+}
+
+// ============================================================
+// 渲染全部
+// ============================================================
+function renderAll(){
+  renderHolland();
+  renderSuper();
+  renderRiasec();
+}
+
+// ============================================================
+// Tab 1：荷倫興趣題目
+// ============================================================
+function renderHolland(){
+  const tabsEl = document.getElementById("hollandSecTabs");
+  const panelsEl = document.getElementById("hollandSecPanels");
+  if(!tabsEl || !panelsEl || !editData) return;
+
+  const sections = editData.hollandSections;
+  tabsEl.innerHTML = sections.map((sec,i)=>`
+    <button class="h-sec-btn${i===0?" active":""}" onclick="switchHollandSec('${sec.id}',this)">${sec.title.split("｜")[0]}</button>
+  `).join("");
+
+  panelsEl.innerHTML = sections.map((sec,i)=>`
+    <div class="h-sec-panel${i===0?" active":""}" id="hpanel-${sec.id}">
+      <div style="margin-bottom:14px;padding:10px 14px;background:#f8f3e6;border-radius:8px;font-size:13px;color:#666;">
+        <b style="color:#3a2e00">${esc(sec.title)}</b>　題目提示：${esc(sec.question)}
+      </div>
+      ${TYPES.map(t=>`
+        <div class="accordion" id="acc-${sec.id}-${t}">
+          <div class="acc-head" onclick="toggleAcc('acc-${sec.id}-${t}')">
+            <span>${esc(editData.riasec[t]?.emoji||"")} ${t} 型 — ${esc(editData.riasec[t]?.name||t)}（11題）</span>
+            <span class="acc-arrow">▶</span>
+          </div>
+          <div class="acc-body" id="body-${sec.id}-${t}">
+            ${(sec.types[t]||[]).map((q,qi)=>`
+              <div class="q-row">
+                <span class="q-num">${qi+1}</span>
+                <input class="q-input" data-sec="${sec.id}" data-type="${t}" data-idx="${qi}"
+                  value="${escAttr(q)}" oninput="onQInput(this)">
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+}
+
+function switchHollandSec(id, btn){
+  document.querySelectorAll(".h-sec-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".h-sec-panel").forEach(p=>p.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  const p = document.getElementById("hpanel-"+id);
+  if(p) p.classList.add("active");
+}
+
+function toggleAcc(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle("open");
+}
+
+function onQInput(input){
+  const sec = input.dataset.sec;
+  const t = input.dataset.type;
+  const idx = parseInt(input.dataset.idx,10);
+  const sectionObj = editData.hollandSections.find(s=>s.id===sec);
+  if(sectionObj) sectionObj.types[t][idx] = input.value;
+  input.classList.add("changed");
+}
+
+// ============================================================
+// Tab 2：SUPER 工作價值觀
+// ============================================================
+function renderSuper(){
+  const el = document.getElementById("superPanels");
+  if(!el || !editData) return;
+  el.innerHTML = editData.superGroups.map((g,gi)=>`
+    <div class="super-group" id="sg-${g.id}">
+      <div class="super-head" onclick="toggleSuperGroup('sg-${g.id}')">
+        <span class="acc-arrow" style="font-size:12px;color:#b8860b;">▶</span>
+        <span>${esc(g.emoji)} ${esc(g.id)} ${esc(g.name)}</span>
+        <span class="badge">（${g.items.length}題）</span>
+      </div>
+      <div class="super-body">
+        <div class="super-meta">
+          <label>群組名稱</label>
+          <input value="${escAttr(g.name)}" oninput="onSuperMeta(${gi},'name',this.value)">
+          <label>Emoji</label>
+          <input value="${escAttr(g.emoji)}" style="width:70px" oninput="onSuperMeta(${gi},'emoji',this.value)">
+          <label>說明</label>
+          <textarea oninput="onSuperMeta(${gi},'desc',this.value)">${esc(g.desc)}</textarea>
+        </div>
+        <div class="super-items-label">4 道題目</div>
+        ${g.items.map((item,ii)=>`
+          <div class="q-row">
+            <span class="q-num">${ii+1}</span>
+            <input class="q-input" value="${escAttr(item)}" oninput="onSuperItem(${gi},${ii},this.value)">
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleSuperGroup(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle("open");
+}
+
+function onSuperMeta(gi, field, val){
+  editData.superGroups[gi][field] = val;
+}
+function onSuperItem(gi, ii, val){
+  editData.superGroups[gi].items[ii] = val;
+}
+
+// ============================================================
+// Tab 3：RIASEC 說明 & 能力標籤
+// ============================================================
+function renderRiasec(){
+  const cardsEl = document.getElementById("riasecCards");
+  const abilityAEl = document.getElementById("abilityAGrid");
+  const abilityBEl = document.getElementById("abilityBGrid");
+  if(!cardsEl || !editData) return;
+
+  cardsEl.innerHTML = TYPES.map(t=>{
+    const r = editData.riasec[t]||{};
+    return `
+      <div class="riasec-card ${t}">
+        <div class="riasec-card-head">
+          <span class="type-badge">${t}</span>
+          <span>${esc(r.emoji||"")} ${esc(r.name||t)}</span>
+        </div>
+        <div class="riasec-card-body">
+          <div class="r-field"><label>名稱</label>
+            <input value="${escAttr(r.name||"")}" oninput="onRiasec('${t}','name',this.value)">
+          </div>
+          <div class="r-field"><label>Emoji</label>
+            <input value="${escAttr(r.emoji||"")}" style="width:80px" oninput="onRiasec('${t}','emoji',this.value)">
+          </div>
+          <div class="r-field"><label>職業角色</label>
+            <input value="${escAttr(r.role||"")}" oninput="onRiasec('${t}','role',this.value)">
+          </div>
+          <div class="r-field"><label>描述</label>
+            <textarea oninput="onRiasec('${t}','desc',this.value)">${esc(r.desc||"")}</textarea>
+          </div>
+          <div class="r-field"><label>職涯建議</label>
+            <textarea oninput="onRiasec('${t}','advice',this.value)">${esc(r.advice||"")}</textarea>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+
+  if(abilityAEl){
+    abilityAEl.innerHTML = TYPES.map(t=>`
+      <div class="ability-item">
+        <label>${t} 型</label>
+        <input value="${escAttr(editData.abilityA[t]||"")}" oninput="editData.abilityA['${t}']=this.value">
+      </div>`).join("");
+  }
+  if(abilityBEl){
+    abilityBEl.innerHTML = TYPES.map(t=>`
+      <div class="ability-item">
+        <label>${t} 型</label>
+        <input value="${escAttr(editData.abilityB[t]||"")}" oninput="editData.abilityB['${t}']=this.value">
+      </div>`).join("");
+  }
+}
+
+function onRiasec(t, field, val){
+  if(!editData.riasec[t]) editData.riasec[t]={};
+  editData.riasec[t][field] = val;
+}
+
+// ============================================================
+// 發布到前台
+// ============================================================
+async function publishQuestions(){
+  const btn = document.getElementById("btnPublish");
+  btn.disabled = true;
+  btn.textContent = "發布中…";
+  hideMsg("qMsg");
+  try {
+    const {data:{session}} = await sb.auth.getSession();
+    if(!session) throw new Error("登入已逾時，請重新整理頁面");
+
+    const newVersion = (dbVersion||0) + 1;
+    const payload = {
+      id: "main",
+      data: editData,
+      version: newVersion,
+      updated_at: new Date().toISOString(),
+      updated_by: currentProfile?.email || session.user.email || "owner"
+    };
+
+    const { error } = await sb.from("questions")
+      .upsert(payload, {onConflict:"id"});
+
+    if(error) throw error;
+
+    dbVersion = newVersion;
+    dbUpdatedAt = payload.updated_at;
+    dbUpdatedBy = payload.updated_by;
+    updateVersionInfo();
+    showMsg("qMsg","✅ 發布成功！前台學員下次進入第2關時將自動載入最新題目。");
+  } catch(e){
+    showMsg("qMsg","❌ 發布失敗："+e.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "發布到前台";
+  }
+}
+
+// ============================================================
+// 還原預設題目
+// ============================================================
+function resetDefault(){
+  if(!confirm("確定要還原為預設題目？（目前在頁面上的所有編輯將被清除，但不會立即影響前台——需再點「發布到前台」才正式同步）")) return;
+  editData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  renderAll();
+  showMsg("qMsg","已還原為預設題目（記得點「發布到前台」才會同步到前台）。");
+}
+</script>
+</body>
+</html>

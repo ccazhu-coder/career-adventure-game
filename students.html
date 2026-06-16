@@ -98,6 +98,7 @@ let allCounselors=[];
 let counselorListStats={};
 let counselorListPage=1;
 const COUNSELOR_LIST_PAGE_SIZE=20;
+let counselorNameMap=new Map(); // email.toLowerCase() → displayName
 
 (async function init(){
   const auth=await requireOwner();
@@ -167,9 +168,23 @@ async function loadCounselorList(){
       callAdminFunction({action:"list"}),
       sb.from("submissions").select("counselor_email,pdf_send_status,created_at")
     ]);
-    allCounselors=(listRes.profiles||[]).filter(p=>p.role==="consultant");
+    // 有帳號的諮詢師（非 owner 皆算，含舊 role="counselor"）
+    const profileMap=new Map((listRes.profiles||[])
+      .filter(p=>p.role!=="owner")
+      .map(p=>[(p.email||"").toLowerCase(),p]));
+
     const submissions=submissionsRes.data||[];
     const today=new Date().toISOString().slice(0,10);
+
+    // 把有送出記錄但無帳號的 counselor_email 也補進來（真正舊資料）
+    submissions.forEach(s=>{
+      const e=(s.counselor_email||"").toLowerCase();
+      if(e && !profileMap.has(e)) profileMap.set(e,{email:e,display_name:"",role:"old"});
+    });
+
+    allCounselors=[...profileMap.values()].sort((a,b)=>(a.email||"").localeCompare(b.email||""));
+    // 同步 name map 給下拉用
+    counselorNameMap=new Map(allCounselors.filter(p=>p.display_name).map(p=>[(p.email||"").toLowerCase(),p.display_name]));
 
     counselorListStats={};
     allCounselors.forEach(p=>{
@@ -250,9 +265,13 @@ function onStudentFilterChange(){
 
 async function loadSubmissions(){
   hideMsg("studentMsg");
-  const {data,error}=await sb.from("submissions").select("*").order("created_at",{ascending:false});
-  if(error){showMsg("studentMsg","學員資料讀取失敗："+error.message,true);return;}
-  allSubmissions=data||[];
+  const [submissionsRes,profilesRes]=await Promise.all([
+    sb.from("submissions").select("*").order("created_at",{ascending:false}),
+    callAdminFunction({action:"list"}).catch(()=>({profiles:[]}))
+  ]);
+  if(submissionsRes.error){showMsg("studentMsg","學員資料讀取失敗："+submissionsRes.error.message,true);return;}
+  allSubmissions=submissionsRes.data||[];
+  counselorNameMap=new Map((profilesRes.profiles||[]).map(p=>[(p.email||"").toLowerCase(),p.display_name||p.email]));
   populateFilters();
   renderSubmissions();
 }
@@ -268,7 +287,11 @@ function populateFilters(){
     if(r.counselor_email) counselors.add(r.counselor_email);
   });
   batchSel.innerHTML='<option value="">全部批次</option>'+[...batches.entries()].map(([code,name])=>`<option value="${escAttr(code)}">${esc(name)}（${esc(code)}）</option>`).join("");
-  counselorSel.innerHTML='<option value="">全部諮詢師</option><option value="__unassigned__">（未指派）</option>'+[...counselors].sort().map(e=>`<option value="${escAttr(e)}">${esc(e)}</option>`).join("");
+  counselorSel.innerHTML='<option value="">全部諮詢師</option><option value="__unassigned__">（未指派）</option>'+[...counselors].sort().map(e=>{
+    const name=counselorNameMap.get(e.toLowerCase());
+    const label=name?`${esc(name)}（${esc(e)}）`:esc(e);
+    return `<option value="${escAttr(e)}">${label}</option>`;
+  }).join("");
   if(curBatch && batches.has(curBatch)) batchSel.value=curBatch;
   if(curCounselor && (curCounselor==="__unassigned__" || counselors.has(curCounselor))) counselorSel.value=curCounselor;
 }

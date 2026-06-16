@@ -7,16 +7,35 @@
   <link rel="stylesheet" href="admin-layout.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
-    .test-cell{display:flex;flex-direction:column;gap:3px;min-width:130px;}
-    .test-date{font-size:12px;color:#888;}
-    .test-code{font-weight:700;font-size:15px;letter-spacing:.5px;color:#3a2e00;}
-    .test-vals{font-size:12px;color:#555;}
-    .test-empty{color:#bbb;font-size:13px;}
-    .repeat-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;background:#d4edda;color:#155724;}
-    .more-tests{font-size:11px;color:#999;margin-top:2px;}
+    .repeat-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;background:#d4edda;color:#155724;}
+    .cnt-badge{color:#888;font-size:13px;}
+
+    /* 展開按鈕 */
+    .expand-btn{background:#f0ead8;border:1px solid #d4c9a0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;white-space:nowrap;}
+    .expand-btn:hover{background:#e5dcbf;}
+    .expand-btn.open{background:#3a2e00;color:#fff;border-color:#3a2e00;}
+
+    /* 展開的測驗明細列 */
+    .detail-row td{padding:0 !important;}
+    .detail-inner{padding:0 16px 14px 48px;border-bottom:2px solid #e8dfc0;}
+    .detail-info{font-size:12px;color:#888;margin-bottom:8px;}
+    .inner-table{width:100%;border-collapse:collapse;font-size:13px;}
+    .inner-table th{background:#f8f3e6;text-align:left;padding:5px 10px;border-bottom:1px solid #d4c9a0;font-weight:600;color:#4a3c00;}
+    .inner-table td{padding:6px 10px;border-bottom:1px solid #f0ead8;vertical-align:middle;}
+    .inner-table tr:last-child td{border-bottom:none;}
+    .test-code{font-weight:700;font-size:14px;letter-spacing:.5px;}
+    .no-tests{color:#bbb;font-size:13px;padding:10px 0;}
+
+    /* 姓名行內編輯 */
+    .name-input{width:120px;padding:3px 6px;border:1px solid #b8860b;border-radius:4px;font-size:14px;}
+    .icon-btn{background:none;border:none;cursor:pointer;padding:2px 4px;font-size:13px;color:#7a5c00;}
+    .icon-btn:hover{color:#b8860b;}
+    .icon-btn.green{color:#155724;}
+    .icon-btn.red{color:#721c24;}
+
+    /* filter-row */
     .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
-    .filter-row select, .filter-row input{height:36px;padding:0 10px;border:1px solid #d4c9a0;border-radius:6px;background:#fff;font-size:14px;}
-    .export-btn{margin-left:auto;}
+    .filter-row select,.filter-row input{height:36px;padding:0 10px;border:1px solid #d4c9a0;border-radius:6px;background:#fff;font-size:14px;}
   </style>
 </head>
 <body>
@@ -29,7 +48,7 @@
       <div class="subhead">
         <div>
           <h2>學員檔案</h2>
-          <p>以 Email 為單位彙整每位學員的測驗紀錄，追蹤何倫碼與價值觀跨時間的變化，並可匯出名單供行銷使用。</p>
+          <p>以 Email 為單位彙整每位學員的所有測驗紀錄，可展開查看、編輯姓名、刪除特定測驗，並可匯出名單供行銷使用。</p>
         </div>
       </div>
 
@@ -59,7 +78,7 @@
           <option value="E">E（企業型）</option>
           <option value="C">C（事務型）</option>
         </select>
-        <button class="btn export-btn" onclick="exportCsv()">匯出 CSV</button>
+        <button class="btn" style="margin-left:auto" onclick="exportCsv()">匯出 CSV</button>
         <button class="btn" onclick="loadMembers()">重新整理</button>
       </div>
 
@@ -67,12 +86,11 @@
         <table>
           <thead>
             <tr>
-              <th>Email</th>
-              <th>姓名</th>
-              <th>諮詢師</th>
-              <th style="text-align:center">測驗次數</th>
-              <th>第 1 次測驗</th>
-              <th>第 2 次測驗</th>
+              <th style="width:44px">#</th>
+              <th style="min-width:120px">姓名</th>
+              <th style="min-width:180px">Email</th>
+              <th style="width:100px;text-align:center">測驗次數</th>
+              <th>測驗結果管理</th>
             </tr>
           </thead>
           <tbody id="memberRows"></tbody>
@@ -92,6 +110,7 @@ let allMembers=[];
 let filteredMembers=[];
 let memberPage=1;
 const PAGE_SIZE=25;
+const expandedEmails=new Set();
 
 (async function init(){
   const auth=await requireOwner();
@@ -122,8 +141,9 @@ function buildMemberList(submissions){
     if(r.name) m.name=r.name;
     if(r.counselor_email) m.counselorEmail=r.counselor_email;
     const vals=Array.isArray(r.value_top)?r.value_top:[];
-    m.tests.push({date:r.created_at,hollandCode:r.holland_code||"",primaryType:r.primary_type||"",valueTop2:vals.slice(0,2)});
+    m.tests.push({id:r.id,date:r.created_at,hollandCode:r.holland_code||"",primaryType:r.primary_type||"",valueTop2:vals.slice(0,2)});
   });
+  // tests already sorted ascending (query order)
   return [...map.values()].sort((a,b)=>{
     const aD=a.tests[a.tests.length-1]?.date||"";
     const bD=b.tests[b.tests.length-1]?.date||"";
@@ -136,7 +156,7 @@ function populateCounselorFilter(){
   const cur=sel.value;
   const set=new Set(allMembers.map(m=>m.counselorEmail).filter(Boolean));
   sel.innerHTML='<option value="">全部諮詢師</option>'+[...set].sort().map(e=>`<option value="${escAttr(e)}">${esc(e)}</option>`).join("");
-  if(cur && set.has(cur)) sel.value=cur;
+  if(cur&&set.has(cur)) sel.value=cur;
 }
 
 function updateStats(){
@@ -154,10 +174,10 @@ function onFilterChange(){
   const repeat=document.getElementById("repeatFilter").value;
   const holland=document.getElementById("hollandFilter").value;
   filteredMembers=allMembers.filter(m=>{
-    if(counselor && m.counselorEmail!==counselor) return false;
-    if(repeat==="repeat" && m.tests.length<2) return false;
-    if(repeat==="single" && m.tests.length!==1) return false;
-    if(holland && !m.tests.some(t=>t.primaryType===holland)) return false;
+    if(counselor&&m.counselorEmail!==counselor) return false;
+    if(repeat==="repeat"&&m.tests.length<2) return false;
+    if(repeat==="single"&&m.tests.length!==1) return false;
+    if(holland&&!m.tests.some(t=>t.primaryType===holland)) return false;
     if(!q) return true;
     return [m.email,m.name,...m.tests.map(t=>t.hollandCode)].some(v=>String(v||"").toLowerCase().includes(q));
   });
@@ -167,62 +187,133 @@ function onFilterChange(){
 function renderMembers(){
   const {pageItems,page,totalPages}=paginate(filteredMembers,memberPage,PAGE_SIZE);
   memberPage=page;
-  document.getElementById("memberRows").innerHTML=pageItems.length ? pageItems.map(m=>{
-    const t1=m.tests[0]||null;
-    const t2=m.tests[1]||null;
-    const extra=m.tests.length>2?m.tests.length-2:0;
+  const offset=(page-1)*PAGE_SIZE;
+  let html="";
+  pageItems.forEach((m,li)=>{
+    const num=offset+li+1;
     const isRepeat=m.tests.length>=2;
-    return `<tr>
-      <td>${esc(m.email)}</td>
-      <td>${esc(m.name)}</td>
-      <td style="font-size:13px">${esc(m.counselorEmail||"—")}</td>
-      <td style="text-align:center">
-        ${isRepeat?`<span class="repeat-badge">複測 ${m.tests.length}次</span>`:`<span style="color:#888;font-size:13px">${m.tests.length}次</span>`}
+    const isOpen=expandedEmails.has(m.email);
+    const ri=`ri${li}`;
+    html+=`
+    <tr>
+      <td style="color:#aaa;font-size:13px">${num}</td>
+      <td>
+        <span class="name-view" id="nv-${ri}">${esc(m.name)}</span>
+        <input class="name-input hidden" id="ni-${ri}" value="${escAttr(m.name)}">
+        <button class="icon-btn" id="nb-edit-${ri}" onclick="startEdit('${ri}')" title="編輯姓名">✏</button>
+        <button class="icon-btn green hidden" id="nb-save-${ri}" onclick="saveEdit('${ri}','${escAttr(m.email)}')" title="儲存">✓</button>
+        <button class="icon-btn red hidden" id="nb-cancel-${ri}" onclick="cancelEdit('${ri}','${escAttr(m.name)}')" title="取消">✗</button>
       </td>
-      <td>${t1?`<div class="test-cell">
-        <span class="test-date">${esc(fmtTime(t1.date).slice(0,10))}</span>
-        <span class="test-code">${esc(t1.hollandCode)}</span>
-        <span class="test-vals">${t1.valueTop2.length?esc(t1.valueTop2.join("、")):"—"}</span>
-      </div>`:'<span class="test-empty">—</span>'}</td>
-      <td>${t2?`<div class="test-cell">
-        <span class="test-date">${esc(fmtTime(t2.date).slice(0,10))}</span>
-        <span class="test-code">${esc(t2.hollandCode)}</span>
-        <span class="test-vals">${t2.valueTop2.length?esc(t2.valueTop2.join("、")):"—"}</span>
-        ${extra?`<span class="more-tests">+ 另有 ${extra} 筆</span>`:""}
-      </div>`:'<span class="test-empty">—</span>'}</td>
+      <td style="font-size:13px">${esc(m.email)}</td>
+      <td style="text-align:center">
+        ${isRepeat?`<span class="repeat-badge">複測 ${m.tests.length}次</span>`:`<span class="cnt-badge">${m.tests.length}次</span>`}
+      </td>
+      <td>
+        <button class="expand-btn${isOpen?" open":""}" id="eb-${ri}" onclick="toggleDetail('${ri}','${escAttr(m.email)}')">
+          ${isOpen?"▲ 收合":"▼ 展開記錄"}
+        </button>
+      </td>
+    </tr>
+    <tr class="detail-row" id="dr-${ri}" style="${isOpen?"":"display:none"}">
+      <td colspan="5">
+        <div class="detail-inner">
+          <div class="detail-info">諮詢師：${esc(m.counselorEmail||"—")}</div>
+          ${m.tests.length?`
+          <table class="inner-table">
+            <thead><tr><th>#</th><th>測驗日期</th><th>何倫碼</th><th>價值觀前2</th><th>操作</th></tr></thead>
+            <tbody>
+              ${m.tests.map((t,ti)=>`
+              <tr>
+                <td style="color:#aaa">${ti+1}</td>
+                <td>${esc(String(t.date||"").slice(0,10))}</td>
+                <td><span class="test-code">${esc(t.hollandCode)}</span></td>
+                <td>${t.valueTop2.length?esc(t.valueTop2.join("、")):"—"}</td>
+                <td><button class="btn danger" style="padding:4px 10px;font-size:12px" onclick="deleteTest('${escAttr(t.id)}','${escAttr(m.email)}')">刪除此筆</button></td>
+              </tr>`).join("")}
+            </tbody>
+          </table>`:`<div class="no-tests">尚無測驗記錄。</div>`}
+        </div>
+      </td>
     </tr>`;
-  }).join("") : `<tr><td colspan="6" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
+  });
+  document.getElementById("memberRows").innerHTML=html||`<tr><td colspan="5" class="empty-state">尚無符合條件的學員資料。</td></tr>`;
   renderPagination("memberPagination",page,totalPages,p=>{memberPage=p;renderMembers();});
 }
 
+function toggleDetail(ri,email){
+  const dr=document.getElementById(`dr-${ri}`);
+  const btn=document.getElementById(`eb-${ri}`);
+  if(!dr) return;
+  const isOpen=dr.style.display!=="none";
+  dr.style.display=isOpen?"none":"";
+  btn.textContent=isOpen?"▼ 展開記錄":"▲ 收合";
+  btn.classList.toggle("open",!isOpen);
+  if(isOpen) expandedEmails.delete(email);
+  else expandedEmails.add(email);
+}
+
+// ── 行內編輯姓名 ──────────────────────────────────────────────
+function startEdit(ri){
+  document.getElementById(`nv-${ri}`).classList.add("hidden");
+  document.getElementById(`ni-${ri}`).classList.remove("hidden");
+  document.getElementById(`nb-edit-${ri}`).classList.add("hidden");
+  document.getElementById(`nb-save-${ri}`).classList.remove("hidden");
+  document.getElementById(`nb-cancel-${ri}`).classList.remove("hidden");
+  document.getElementById(`ni-${ri}`).focus();
+  document.getElementById(`ni-${ri}`).select();
+}
+function cancelEdit(ri,origName){
+  document.getElementById(`ni-${ri}`).value=origName;
+  document.getElementById(`nv-${ri}`).classList.remove("hidden");
+  document.getElementById(`ni-${ri}`).classList.add("hidden");
+  document.getElementById(`nb-edit-${ri}`).classList.remove("hidden");
+  document.getElementById(`nb-save-${ri}`).classList.add("hidden");
+  document.getElementById(`nb-cancel-${ri}`).classList.add("hidden");
+}
+async function saveEdit(ri,email){
+  const newName=document.getElementById(`ni-${ri}`).value.trim();
+  if(!newName){showMsg("memberMsg","姓名不可空白。",true);return;}
+  hideMsg("memberMsg");
+  const {error}=await sb.from("submissions").update({name:newName}).eq("email",email);
+  if(error){showMsg("memberMsg","更新失敗："+error.message,true);return;}
+  expandedEmails.add(email);
+  showMsg("memberMsg","姓名已更新。");
+  await loadMembers();
+}
+
+// ── 刪除單筆測驗 ──────────────────────────────────────────────
+async function deleteTest(submissionId,email){
+  if(!confirm("確定刪除此筆測驗記錄？此操作無法復原。")) return;
+  hideMsg("memberMsg");
+  const {error}=await sb.from("submissions").delete().eq("id",submissionId);
+  if(error){showMsg("memberMsg","刪除失敗："+error.message,true);return;}
+  expandedEmails.add(email);
+  showMsg("memberMsg","測驗記錄已刪除。");
+  await logAction({actionType:"delete_submission",targetType:"submission",targetId:submissionId,after:{email}});
+  await loadMembers();
+}
+
+// ── 匯出 CSV ─────────────────────────────────────────────────
 function exportCsv(){
-  const rows=filteredMembers;
   const headers=["Email","姓名","諮詢師","測驗次數","第1次日期","第1次何倫碼","第1次價值觀前2","第2次日期","第2次何倫碼","第2次價值觀前2"];
-  const csvRows=rows.map(m=>{
+  const csvRows=filteredMembers.map(m=>{
     const t1=m.tests[0]||null;
     const t2=m.tests[1]||null;
     return [
-      m.email,
-      m.name,
-      m.counselorEmail||"",
-      m.tests.length,
-      t1?fmtTime(t1.date).slice(0,10):"",
-      t1?t1.hollandCode:"",
-      t1?(t1.valueTop2.join("、")):"",
-      t2?fmtTime(t2.date).slice(0,10):"",
-      t2?t2.hollandCode:"",
-      t2?(t2.valueTop2.join("、")):"",
+      m.email, m.name, m.counselorEmail||"", m.tests.length,
+      t1?String(t1.date||"").slice(0,10):"", t1?t1.hollandCode:"", t1?t1.valueTop2.join("、"):"",
+      t2?String(t2.date||"").slice(0,10):"", t2?t2.hollandCode:"", t2?t2.valueTop2.join("、"):"",
     ];
   });
   const csv=[headers,...csvRows].map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
   const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8;"});
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
-  const date=new Date().toISOString().slice(0,10);
-  a.href=url;a.download=`學員檔案_${date}.csv`;
+  a.href=url;
+  a.download=`學員檔案_${new Date().toISOString().slice(0,10)}.csv`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  logAction({actionType:"export_members",targetType:"members",after:{count:rows.length}});
+  logAction({actionType:"export_members",targetType:"members",after:{count:filteredMembers.length}});
 }
 </script>
 </body>

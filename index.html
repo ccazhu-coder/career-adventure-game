@@ -1072,6 +1072,8 @@ async function renderPdfFromEl(el){
   el.parentNode.insertBefore(pageWrap,el);
   pageWrap.appendChild(el);
   el.style.position='relative';
+  el.style.left='';
+  el.style.top='';
   const {jsPDF}=window.jspdf;
   const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
   for(let i=0;i<ranges.length;i++){
@@ -1085,7 +1087,7 @@ async function renderPdfFromEl(el){
     pdf.addImage(imgData,'JPEG',PDF_MARGIN_MM,PDF_MARGIN_MM,PDF_CONTENT_W_MM,hMM);
   }
   pageWrap.replaceWith(el);
-  el.style.marginTop='';el.style.position='';
+  el.style.marginTop='';el.style.position='';el.style.left='';el.style.top='';
   return pdf;
 }
 async function createPdfBlob(type='case'){

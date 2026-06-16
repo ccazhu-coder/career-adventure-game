@@ -169,9 +169,9 @@ async function downloadCounselorPdf(id,path,filename){
   if(ok) await logAction({actionType:"download_counselor_pdf",targetType:"submission",targetId:id,after:{filename}});
 }
 function copyReportSection(elId,msgId,submissionId,actionType){
-  const text=document.getElementById(elId)?.innerText||"";
+  const text=document.getElementById(elId)?.textContent||"";
   if(!text){showMsg(msgId,"這筆資料尚無可複製的內容。",true);return;}
-  navigator.clipboard.writeText(text).then(()=>{
+  navigator.clipboard.writeText(text.trim()).then(()=>{
     showMsg(msgId,"已複製內容。");
     logAction({actionType,targetType:"submission",targetId:submissionId});
   }).catch(()=>showMsg(msgId,"無法自動複製，請手動選取文字。",true));

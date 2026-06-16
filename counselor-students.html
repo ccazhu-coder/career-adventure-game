@@ -124,6 +124,14 @@ function renderSubmissions(){
     const reportId=`advisorReport_${escAttr(r.id)}`;
     const caseTextId=`caseReportText_${escAttr(r.id)}`;
     const hasRawAnswers=!!(r.raw_answers&&r.raw_answers.holland);
+    const ideals=[r.ideal1,r.ideal2,r.ideal3].filter(Boolean);
+    const idealsLine=ideals.length?`理想職業：${ideals.join("、")}`:"";
+    let displayAdvisorReport=advisorReport;
+    if(idealsLine){
+      displayAdvisorReport=advisorReport.includes("一、個案摘要")
+        ?advisorReport.replace("一、個案摘要",idealsLine+"\n\n一、個案摘要")
+        :(advisorReport?idealsLine+"\n\n"+advisorReport:idealsLine);
+    }
     return `<tr>
       <td>${esc(fmtTime(r.created_at))}</td>
       <td><strong>${esc(r.name)}</strong></td>
@@ -137,8 +145,8 @@ function renderSubmissions(){
       <td>
         <button class="btn gold" style="${hasRawAnswers?"":"opacity:.55;pointer-events:none"}" onclick="regenPdf('${escAttr(r.id)}','case')">下載個案報告</button>
         <button class="btn gold" style="margin-top:6px;${hasRawAnswers?"":"opacity:.55;pointer-events:none"}" onclick="regenPdf('${escAttr(r.id)}','counselor')">下載諮詢報告</button>
-        <button class="btn" style="margin-top:6px;${advisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyReportSection('${reportId}','studentMsg','${escAttr(r.id)}','copy_advisor_report')">複製諮詢建議</button>
-        ${advisorReport?`<details class="advisor-box"><summary>查看諮詢師專用分析</summary><div id="${reportId}" class="advisor-report">${esc(advisorReport)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無諮詢分析</div>`}
+        <button class="btn" style="margin-top:6px;${displayAdvisorReport?"":"opacity:.55;pointer-events:none"}" onclick="copyReportSection('${reportId}','studentMsg','${escAttr(r.id)}','copy_advisor_report')">複製諮詢建議</button>
+        ${displayAdvisorReport?`<details class="advisor-box"><summary>查看諮詢師專用分析</summary><div id="${reportId}" class="advisor-report" style="white-space:pre-wrap">${esc(displayAdvisorReport)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無諮詢分析</div>`}
         <button class="btn" style="margin-top:6px;${caseReportText?"":"opacity:.55;pointer-events:none"}" onclick="copyReportSection('${caseTextId}','studentMsg','${escAttr(r.id)}','copy_case_report')">複製文字報告</button>
         ${caseReportText?`<details class="case-box"><summary>查看可複製文字報告</summary><div id="${caseTextId}" class="case-report">${esc(caseReportText)}</div></details>`:`<div class="muted" style="margin-top:6px">尚無文字報告</div>`}
       </td>
@@ -174,9 +182,9 @@ async function regenPdf(id,ptype){
   else window.open(base+'index.html?regen='+key+'&ptype='+ptype,'_blank');
 }
 function copyReportSection(elId,msgId,submissionId,actionType){
-  const text=document.getElementById(elId)?.innerText||"";
+  const text=document.getElementById(elId)?.textContent||"";
   if(!text){showMsg(msgId,"這筆資料尚無可複製的內容。",true);return;}
-  navigator.clipboard.writeText(text).then(()=>{
+  navigator.clipboard.writeText(text.trim()).then(()=>{
     showMsg(msgId,"已複製內容。");
     logAction({actionType,targetType:"submission",targetId:submissionId});
   }).catch(()=>showMsg(msgId,"無法自動複製，請手動選取文字。",true));

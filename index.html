@@ -306,7 +306,7 @@ function renderNav(){
   nav.innerHTML=`<div class="nav-head"><strong>職涯冒險地圖</strong><span>已完成 ${doneCount} / 5 關</span></div>` + STEPS.map(st=>`<button class="${current===st.id?'active':''} ${stepDone(st.id)?'done':''}" onclick="go('${st.id}')"><span><span class="dot"></span> ${st.icon} ${st.title}</span><span>${stepDone(st.id)?'✓':Math.round(missionProgress(st.id)*100)+'%'}</span></button>`).join('') + `<button onclick="resetGame()"><span><span class="dot"></span> ♻️ 重新開始</span></button>`;
 }
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||'').trim());}
-function getShortCode(){return String(state.profile.accessCode || SHORT_CODE_FROM_URL || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,12);}
+function getShortCode(){return String(state.profile.accessCode || SHORT_CODE_FROM_URL || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,32);}
 function isSupabaseReady(){
   return /^https:\/\/.+\.supabase\.co$/.test(String(SUPABASE_URL||'').trim()) && !!String(SUPABASE_ANON_KEY||'').trim() && SUPABASE_ANON_KEY!=='YOUR_ANON_KEY';
 }
